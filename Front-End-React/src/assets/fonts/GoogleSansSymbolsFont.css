@@ -1,0 +1,79 @@
+/* Google Sans Regular Symbols */
+@font-face {
+  font-display: swap;
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/google-sans-symbols/google-sans-symbols-regular.woff2")
+    format("woff2");
+}
+
+/* Google Sans Italic Symbols */
+@font-face {
+  font-display: swap;
+  font-family: "Google Sans";
+  font-style: italic;
+  font-weight: 400;
+  src: url("/fonts/google-sans-symbols/google-sans-symbols-italic.woff2")
+    format("woff2");
+}
+
+/* Google Sans 500 Symbols */
+@font-face {
+  font-display: swap;
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/google-sans-symbols/google-sans-symbols-500.woff2")
+    format("woff2");
+}
+
+/* Google Sans 500 Italic Symbols */
+@font-face {
+  font-display: swap;
+  font-family: "Google Sans";
+  font-style: italic;
+  font-weight: 500;
+  src: url("/fonts/google-sans-symbols/google-sans-symbols-500italic.woff2")
+    format("woff2");
+}
+
+/* Google Sans 600 Symbols */
+@font-face {
+  font-display: swap;
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 600;
+  src: url("/fonts/google-sans-symbols/google-sans-symbols-600.woff2")
+    format("woff2");
+}
+
+/* Google Sans 600 Italic Symbols */
+@font-face {
+  font-display: swap;
+  font-family: "Google Sans";
+  font-style: italic;
+  font-weight: 600;
+  src: url("/fonts/google-sans-symbols/google-sans-symbols-600italic.woff2")
+    format("woff2");
+}
+
+/* Google Sans 700 Symbols */
+@font-face {
+  font-display: swap;
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/google-sans-symbols/google-sans-symbols-700.woff2")
+    format("woff2");
+}
+
+/* Google Sans 700 Italic Symbols */
+@font-face {
+  font-display: swap;
+  font-family: "Google Sans";
+  font-style: italic;
+  font-weight: 700;
+  src: url("/fonts/google-sans-symbols/google-sans-symbols-700italic.woff2")
+    format("woff2");
+}
