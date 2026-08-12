@@ -60,4 +60,15 @@ export const publicRoutes = [
       };
     },
   },
+
+  {
+    path: "/contact",
+    lazy: async () => {
+      const module = await import("../pages/ContactPage");
+
+      return {
+        Component: module.default,
+      };
+    },
+  },
 ];
