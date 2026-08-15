@@ -14,15 +14,60 @@ class ManufacturerSeeder extends Seeder
     public function run(): void
     {
         $Manufacturers = [
-            ['name' => 'Maxx Medical Company', 'country' => 'USA'],
-            ['name' => 'Marapole Medical Company', 'country' => 'China'],
-            ['name' => 'Medtronic', 'country' => 'Ireland'],
-            ['name' => 'Johnson & Johnson', 'country' => 'USA'],
-            ['name' => 'Siemens Healthineers', 'country' => 'Germany'],
-            ['name' => 'GE Healthcare', 'country' => 'USA'],
-            ['name' => 'Philips Healthcare', 'country' => 'Netherlands'],
-            ['name' => 'Abbott Laboratories', 'country' => 'USA'],
-            ['name' => 'Baxter International', 'country' => 'USA']
+            [
+                "name" => 'MAXX',
+                "origin" => 'USA',
+                "logo_text" => 'MAXX Orthopedics',
+                "description" => 'Innovative Joint Replacement Systems Engineered for Patient Precision and Biomechanical Longevity.',
+                "website" => 'https://maxxortho.com',
+                "is_active" => true,
+                "product_count" => 28
+            ],
+            [
+                "name" => 'Zimmer',
+                "origin" => 'USA',
+                "logo_text" => 'Zimmer Biomet',
+                "description" => 'Global Leader in Musculoskeletal Healthcare, Joint Reconstruction, and Trauma Technologies.',
+                "website" => 'https://zimmerbiomet.com',
+                "is_active" => true,
+                "product_count" => 35
+            ],
+            [
+                "name" => 'Normmed',
+                "origin" => 'Turkey',
+                "logo_text" => 'Normmed Medical',
+                "description" => 'Turkey Precision Orthopedic Implant Manufacturer Specializing in Advanced Plate-and-Screw Systems.',
+                "website" => 'https://www.normmed.com.tr/',
+                "is_active" => true,
+                "product_count" => 19
+            ],
+            [
+                "name" => 'Aysam',
+                "origin" => 'Turkey',
+                "logo_text" => 'Aysam Ortho',
+                "description" => 'High-Grade Surgical Implants and Intramedullary Nailing Systems For Complex Trauma Surgery.',
+                "website" => 'https://aysam.com.tr',
+                "is_active" => true,
+                "product_count" => 22
+            ],
+            [
+                "name" => 'Smith & Nephew',
+                "origin" => 'UK',
+                "logo_text" => 'Smith & Nephew',
+                "description" => 'Worldwide Medical Technology Company Producing Sports Medicine and Joint Reconstruction Solutions.',
+                "website" => 'https://smith-nephew.com',
+                "is_active" => true,
+                "product_count" => 18
+            ],
+            [
+                "name" => 'Ortonomed Medical',
+                "origin" => 'Italy',
+                "logo_text" => "Ortonomed Surgical",
+                "description" => 'Specialized European manufacturer of trauma products, cerclage cables, and cannulated screw systems.',
+                "website" => 'https://www.orthomed.com.tr',
+                "is_active" => true,
+                "product_count" => 14
+            ],
         ];
 
         foreach ($Manufacturers as $Manufacturer) {

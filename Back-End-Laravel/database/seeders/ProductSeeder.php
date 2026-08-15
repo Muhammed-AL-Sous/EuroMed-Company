@@ -14,23 +14,82 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         Product::create([
-            'code' => 'P001',
-            'name' => 'Product 1',
-            'description' => 'Description for Product 1',
+            'code' => 'MTUUX100-K',
+            'name' => 'TIBIAL BASE 1 METALBACKED',
+            'description' => 'Description for TIBIAL BASE 1 METALBACKED',
             'manufacturer_id' => 1,
             'category_id' => 1,
-            'subcategory_id' => 1,
-            'price' => 100.00,
+            'subcategory_id' => 2,
+            'price' => 500,
         ]);
 
         Product::create([
-            'code' => 'P002',
-            'name' => 'Product 2',
-            'description' => 'Description for Product 2',
-            'manufacturer_id' => 2,
-            'category_id' => 2,
+            'code' => 'MTUUX200-K',
+            'name' => 'TIBIAL BASE 2 METALBACKED',
+            'description' => 'Description for TIBIAL BASE 2 METALBACKED',
+            'manufacturer_id' => 1,
+            'category_id' => 1,
             'subcategory_id' => 2,
-            'price' => 200.00,
+            'price' => 500,
+        ]);
+        Product::create([
+            'code' => 'MTUUX300-K',
+            'name' => 'TIBIAL BASE 3 METALBACKED',
+            'description' => 'Description for TIBIAL BASE 3 METALBACKED',
+            'manufacturer_id' => 1,
+            'category_id' => 1,
+            'subcategory_id' => 2,
+            'price' => 500,
+        ]);
+
+        Product::create([
+            'code' => 'MTUUX400-K',
+            'name' => 'TIBIAL BASE 4 METALBACKED',
+            'description' => 'Description for TIBIAL BASE 4 METALBACKED',
+            'manufacturer_id' => 1,
+            'category_id' => 1,
+            'subcategory_id' => 2,
+            'price' => 500,
+        ]);
+
+        Product::create([
+            'code' => 'MTUUX500-K',
+            'name' => 'TIBIAL BASE 5 METALBACKED',
+            'description' => 'Description for TIBIAL BASE 5 METALBACKED',
+            'manufacturer_id' => 1,
+            'category_id' => 1,
+            'subcategory_id' => 2,
+            'price' => 500,
+        ]);
+
+        Product::create([
+            'code' => 'MTUUX600-K',
+            'name' => 'TIBIAL BASE 6 METALBACKED',
+            'description' => 'Description for TIBIAL BASE 6 METALBACKED',
+            'manufacturer_id' => 1,
+            'category_id' => 1,
+            'subcategory_id' => 2,
+            'price' => 500,
+        ]);
+
+        Product::create([
+            'code' => 'MTUUX700-K',
+            'name' => 'TIBIAL BASE 7 METALBACKED',
+            'description' => 'Description for TIBIAL BASE 7 METALBACKED',
+            'manufacturer_id' => 1,
+            'category_id' => 1,
+            'subcategory_id' => 2,
+            'price' => 500,
+        ]);
+        
+        Product::create([
+            'code' => 'MTUUX800-K',
+            'name' => 'TIBIAL BASE 8 METALBACKED',
+            'description' => 'Description for TIBIAL BASE 8 METALBACKED',
+            'manufacturer_id' => 1,
+            'category_id' => 1,
+            'subcategory_id' => 2,
+            'price' => 500,
         ]);
     }
 }

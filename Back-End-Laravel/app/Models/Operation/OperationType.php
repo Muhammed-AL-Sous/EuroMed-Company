@@ -14,6 +14,9 @@ class OperationType extends Model
 
     protected $fillable = [
         'name',
+        'code',
+        'description',
+        'product_count'
     ];
 
     public function operations(): HasMany

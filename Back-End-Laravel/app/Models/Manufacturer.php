@@ -9,7 +9,12 @@ class Manufacturer extends Model
 {
     protected $fillable = [
         'name',
-        'country',
+        'origin',
+        "logo_text",
+        "description",
+        "website",
+        "is_active",
+        "product_count"
     ];
 
     public function products(): HasMany

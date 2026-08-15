@@ -34,6 +34,15 @@ const baseQueryWith419Handler = async (args, api, extraOptions) => {
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWith419Handler,
-  tagTypes: ["User", "Auth", "Doctors", "Lookup", "Stats"],
+  tagTypes: [
+    "User",
+    "Auth",
+    "Doctors",
+    "Lookup",
+    "Stats",
+    "Categories",
+    "OperationTypes",
+    "Manufacturers",
+  ],
   endpoints: () => ({}),
 });
