@@ -60,11 +60,11 @@ class ManufacturerSeeder extends Seeder
                 "product_count" => 18
             ],
             [
-                "name" => 'Ortonomed Medical',
+                "name" => 'Ortonommedical',
                 "origin" => 'Italy',
-                "logo_text" => "Ortonomed Surgical",
+                "logo_text" => "Ortonommedical Surgical",
                 "description" => 'Specialized European manufacturer of trauma products, cerclage cables, and cannulated screw systems.',
-                "website" => 'https://www.orthomed.com.tr',
+                "website" => 'https://ortonommedical.com',
                 "is_active" => true,
                 "product_count" => 14
             ],

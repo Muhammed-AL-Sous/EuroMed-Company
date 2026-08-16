@@ -1,6 +1,7 @@
 import BrandsShowcase from "../components/home/BrandsShowcase";
 import CompanyIntro from "../components/home/CompanyIntro";
 import HeroSection from "../components/home/HeroSection";
+import PatientPortalCTA from "../components/home/PatientPortalCTA";
 import ProductCategoriesGrid from "../components/home/ProductCategoriesGrid";
 
 const HomePage = () => {
@@ -10,6 +11,7 @@ const HomePage = () => {
       <CompanyIntro />
       <ProductCategoriesGrid />
       <BrandsShowcase />
+      <PatientPortalCTA />
     </div>
   );
 };

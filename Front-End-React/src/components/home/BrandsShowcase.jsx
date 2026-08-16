@@ -33,7 +33,7 @@ const BrandsShowcase = () => {
             initialBrands.map((brand) => (
               <div
                 key={brand.id}
-                className="group bg-slate-50 hover:bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between"
+                className="group bg-slate-50 hover:bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-sky-300 hover:-translate-y-1 duration-300 transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
