@@ -1,3 +1,4 @@
+import LocationMap from "../components/common/LocationMap";
 import BrandsShowcase from "../components/home/BrandsShowcase";
 import CompanyIntro from "../components/home/CompanyIntro";
 import HeroSection from "../components/home/HeroSection";
@@ -12,6 +13,25 @@ const HomePage = () => {
       <ProductCategoriesGrid />
       <BrandsShowcase />
       <PatientPortalCTA />
+
+      {/* Location Map Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="text-xs font-bold uppercase tracking-widest text-sky-700 bg-sky-50 px-3 py-1 rounded-full border border-sky-100">
+              Erbil Headquarters
+            </span>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight mt-3">
+              Visit Our Main Office & Warehouse
+            </h2>
+            <p className="text-slate-600 text-sm mt-2">
+              Serving hospitals, surgical centers, and orthopedic surgeons
+              throughout Erbil and Kurdistan Region.
+            </p>
+          </div>
+          <LocationMap />
+        </div>
+      </section>
     </div>
   );
 };

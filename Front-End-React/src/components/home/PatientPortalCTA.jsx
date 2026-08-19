@@ -173,7 +173,6 @@ const PatientPortalCTA = () => {
                       aria-describedby={
                         errors.errorsCode ? "operation-code-error" : undefined
                       }
-                      placeholder="For Example : A0001"
                       className={`w-full bg-slate-800 text-white pl-11 pr-4 py-3 rounded-xl border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-sm font-mono tracking-wider uppercase font-bold ${
                         errors.errorsCode
                           ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"

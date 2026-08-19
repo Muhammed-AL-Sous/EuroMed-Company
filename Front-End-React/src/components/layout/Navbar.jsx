@@ -1,14 +1,6 @@
-import {
-  Activity,
-  KeyRound,
-  LogOut,
-  Menu,
-  ShieldCheck,
-  User,
-  X,
-} from "lucide-react";
+import { KeyRound, LogOut, Menu, ShieldCheck, User, X } from "lucide-react";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router";
 // import { logout } from "../../store/slices/authSlice.js";
 
@@ -16,7 +8,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   // const { user, isAuthenticated } = useSelector((state) => state.auth);
   const user = true;
   const isAuthenticated = true;
@@ -74,7 +66,7 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-11 h-11 rounded-xl bg-linear-to-br from-sky-600 to-slate-900 text-white flex items-center justify-center font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
+          <div className="w-11 h-11 rounded-xl bg-linear-to-br from-sky-500 to-slate-900 flex items-center justify-center group-hover:rotate-2">
             <img
               src="/images/Euromed-logo-icon.png"
               alt="EuroMed-Logo"
@@ -82,9 +74,10 @@ export default function Navbar() {
             />
           </div>
           <div className="flex flex-col">
-            <span className="text-2xl font-black tracking-tight text-slate-900 font-sans leading-none flex items-center gap-1">
+            <span className="text-2xl font-bold text-slate-600 tracking-tight flex items-center gap-0.5">
               Euro<span className="text-sky-600">Med</span>
             </span>
+
             <span className="text-[10px] tracking-wider uppercase font-bold text-slate-400 mt-1">
               Orthopedic & Surgical Implants
             </span>
