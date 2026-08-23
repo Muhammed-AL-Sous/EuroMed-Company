@@ -3,6 +3,7 @@ import bipolar from "../../assets/images/categories/bipolar.png";
 import totalHip from "../../assets/images/categories/T-Hip.png";
 import { Link } from "react-router";
 import { useGetOperationTypesQuery } from "../../features/OperationTypes/OperationTypesApiSlice";
+import { motion } from "motion/react";
 
 const ProductCategoriesGrid = () => {
   const getCategoryIcon = (code) => {
@@ -124,7 +125,7 @@ const ProductCategoriesGrid = () => {
   return (
     <section className="py-20 bg-slate-50 border-y border-slate-200/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        <div className="mb-12 text-center">
           <div>
             <span className="text-xs font-extrabold uppercase tracking-widest text-sky-600 bg-sky-100 px-3 py-1 rounded-full border border-sky-200">
               Orthopedic Materials
@@ -132,51 +133,62 @@ const ProductCategoriesGrid = () => {
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-3">
               Main Product Categories
             </h2>
-            <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-xl">
+            <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">
               High-precision surgical hardware and joint replacement systems
               engineered for long-term clinical efficacy.
             </p>
           </div>
-          <Link
-            to="/products"
-            className="inline-flex items-center gap-2 font-bold text-sky-600 hover:text-sky-700 hover:underline text-sm shrink-0"
-          >
-            Browse Full Product Catalog <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="w-full text-right">
+            <Link
+              to="/products"
+              className="inline-flex items-center gap-2 font-bold text-sky-600 hover:text-sky-700 hover:underline text-sm shrink-0"
+            >
+              Browse Full Product Catalog <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {initialCategories && initialCategories.length > 0 ? (
-            initialCategories.map((cat) => (
-              <Link
+            initialCategories.map((cat, index) => (
+              <motion.div
                 key={cat.id}
-                // TODO
-                to={`/products?category=${cat.id}`}
-                className="group bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:shadow-xl hover:border-sky-300 hover:-translate-y-1 duration-300 transition-all flex flex-col justify-between"
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: index * 0.1 }}
+                className="h-full"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shadow-xs">
-                      {getCategoryIcon(cat.code)}
+                <Link
+                  key={cat.id}
+                  // TODO
+                  to={`/products?category=${cat.id}`}
+                  className="group h-full bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:shadow-xl hover:border-sky-300 hover:-translate-y-1 duration-300 transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shadow-xs">
+                        {getCategoryIcon(cat.code)}
+                      </div>
+                      <span className="text-xs font-mono font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">
+                        {cat.product_count} Products
+                      </span>
                     </div>
-                    <span className="text-xs font-mono font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">
-                      {cat.product_count} Products
-                    </span>
+                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-sky-600 transition-colors">
+                      {cat.name}
+                    </h3>
+                    <p className="text-slate-500 text-xs sm:text-sm mt-2 leading-relaxed">
+                      {cat.description}
+                    </p>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 group-hover:text-sky-600 transition-colors">
-                    {cat.name}
-                  </h3>
-                  <p className="text-slate-500 text-xs sm:text-sm mt-2 leading-relaxed">
-                    {cat.description}
-                  </p>
-                </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-sky-600">
-                  <span>View Products</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
+                  <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-sky-600">
+                    <span>View Products</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              </motion.div>
             ))
           ) : (
             <p className="text-md text-slate-900 font-semibold">

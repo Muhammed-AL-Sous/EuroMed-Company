@@ -30,9 +30,9 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="py-12 sm:py-16 bg-slate-50 min-h-screen space-y-16">
+    <div className="py-12 sm:py-16 bg-slate-50 min-h-screen space-y-12">
       {/* Header Banner */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-xl relative overflow-hidden">
           <div className="mx-auto text-center max-w-5xl space-y-4">
             <span className="inline-block text-xs font-bold tracking-widest uppercase text-sky-400 bg-sky-500/20 px-3.5 py-1.5 rounded-full border border-sky-400/30">
@@ -92,7 +92,7 @@ const AboutPage = () => {
             EuroMed Headquarters & Distribution Hub
           </h2>
           <p className="text-slate-600 text-sm">
-            Located on Koya Road, Hiwa City, Zone A, Building 142, Erbil, Iraq.
+            Located on Koya Road, Hewa City, Zone A, Building 142, Erbil, Iraq.
           </p>
         </div>
         <LocationMap />

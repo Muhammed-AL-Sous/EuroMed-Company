@@ -3,6 +3,7 @@ import { useState } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router";
 // import { logout } from "../../store/slices/authSlice.js";
+import { motion } from "motion/react";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -40,12 +41,12 @@ export default function Navbar() {
       <div className="bg-slate-900 text-slate-300 text-xs py-1.5 px-4 sm:px-6 flex justify-between items-center">
         <div className="flex items-center gap-2 max-w-7xl mx-auto w-full justify-between">
           <div className="flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
             <span className="font-medium text-white">
               Erbil HQ & Regional Distribution Center :
             </span>
             <span className="hidden sm:inline text-slate-400">
-              Koya Road, Hiwa City, Zone A, Building 142
+              Koya Road, Hewa City, Zone A, Building 142
             </span>
           </div>
           <div className="flex items-center gap-4 text-xs">
@@ -65,14 +66,30 @@ export default function Navbar() {
       {/* Main Navbar */}
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Brand Logo */}
+
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-11 h-11 rounded-xl bg-linear-to-br from-sky-500 to-slate-900 flex items-center justify-center group-hover:rotate-2">
-            <img
-              src="/images/Euromed-logo-icon.png"
-              alt="EuroMed-Logo"
-              className="w-6 h-6 text-sky-300"
-            />
-          </div>
+          <motion.div
+            whileHover={{
+              scale: [null, 1.1, 1.2],
+              transition: {
+                duration: 0.5,
+                times: [0, 0.6, 1],
+                ease: ["easeInOut", "easeOut"],
+              },
+            }}
+            transition={{
+              duration: 0.3,
+              ease: "easeOut",
+            }}
+          >
+            <div className="w-11 h-11 rounded-xl bg-linear-to-br from-sky-500 to-slate-900 flex items-center justify-center">
+              <img
+                src="/images/Euromed-logo-icon.png"
+                alt="EuroMed-Logo"
+                className="w-6 h-6 text-sky-300"
+              />
+            </div>
+          </motion.div>
           <div className="flex flex-col">
             <span className="text-2xl font-bold text-slate-600 tracking-tight flex items-center gap-0.5">
               Euro<span className="text-sky-600">Med</span>

@@ -69,7 +69,7 @@ const CompanyIntro = () => {
                         EuroMed HQ Erbil
                       </h4>
                       <p className="text-xs text-slate-500 font-medium">
-                        Koya Road, Hiwa City, Zone A, Building 142
+                        Koya Road, Hewa City, Zone A, Building 142
                       </p>
                     </div>
                   </div>
@@ -119,10 +119,10 @@ const CompanyIntro = () => {
             {stats.map((stat, idx) => (
               <motion.div
                 key={stat.label}
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.7 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.9, delay: idx * 0.1 }}
+                transition={{ duration: 0.4, delay: idx * 0.4 }}
               >
                 <div
                   key={idx}

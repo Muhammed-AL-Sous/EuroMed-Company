@@ -124,7 +124,7 @@ const Footer = () => {
               <li className="flex items-start gap-2.5">
                 <Building2 className="w-4 h-4 text-sky-400 shrink-0 mt-1" />
                 <span>
-                  Koya Road, Hiwa City
+                  Koya Road, Hewa City
                   <br />
                   Zone A, Building 142
                   <br />

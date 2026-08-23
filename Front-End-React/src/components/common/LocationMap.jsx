@@ -14,9 +14,9 @@ const LocationMap = () => {
               Erbil Headquarters
             </h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-6">
-              EuroMed is strategically located in Erbil, Kurdistan Region, Iraq,
-              serving healthcare facilities, orthopedic centers, and specialized
-              hospitals across the region.
+              EuroMed is Strategically Located in Erbil, Kurdistan Region, Iraq,
+              Serving Healthcare Facilities, Orthopedic Centers, and Specialized
+              Hospitals Across the Region.
             </p>
 
             <div className="space-y-4 text-sm text-slate-300">
@@ -25,9 +25,11 @@ const LocationMap = () => {
                   <Building2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="font-semibold text-white">Address</div>
-                  <div className="text-slate-400">
-                    Koya Road, Hiwa City
+                  <div className="font-bold text-white text-[14px]">
+                    Address
+                  </div>
+                  <div className="text-slate-400 text-[11.5px] font-semibold">
+                    Koya Road, Hewa City
                     <br />
                     Zone A, Building 142
                     <br />
@@ -41,11 +43,15 @@ const LocationMap = () => {
                   <Phone className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="font-semibold text-white">
+                  <div className="font-bold text-white text-[14px]">
                     Direct Line & Hotline
                   </div>
-                  <div className="text-slate-400">+964 750 376 9545</div>
-                  <div className="text-slate-400">+964 750 000 0000</div>
+                  <div className="text-slate-400 text-[11.5px] font-semibold">
+                    +964 750 376 9545
+                  </div>
+                  <div className="text-slate-400 text-[11.5px] font-semibold">
+                    +964 750 000 0000
+                  </div>
                 </div>
               </div>
 
@@ -54,8 +60,10 @@ const LocationMap = () => {
                   <Compass className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="font-semibold text-white">Coordinates</div>
-                  <div className="text-slate-400 text-xs font-mono">
+                  <div className="font-bold text-white text-[14px]">
+                    Coordinates
+                  </div>
+                  <div className="text-slate-400 text-[11.5px] font-semibold">
                     36°12'11.7"N 44°05'30.7"E
                   </div>
                 </div>
@@ -126,7 +134,7 @@ const LocationMap = () => {
               EuroMed Medical Supplies
             </h4>
             <p className="text-xs text-slate-300 font-medium mb-3">
-              Hiwa City, Zone A, Building 142
+              Hewa City, Zone A, Building 142
             </p>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-semibold border border-emerald-500/30">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />{" "}
