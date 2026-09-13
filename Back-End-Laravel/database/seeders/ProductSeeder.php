@@ -81,7 +81,7 @@ class ProductSeeder extends Seeder
             'subcategory_id' => 2,
             'price' => 500,
         ]);
-        
+
         Product::create([
             'code' => 'MTUUX800-K',
             'name' => 'TIBIAL BASE 8 METALBACKED',
@@ -90,6 +90,36 @@ class ProductSeeder extends Seeder
             'category_id' => 1,
             'subcategory_id' => 2,
             'price' => 500,
+        ]);
+
+        Product::create([
+            'code' => 'MO-MSEC-40/MA',
+            'name' => 'Cementless Modular Shell 40mm',
+            'description' => 'Description for Cementless Modular Shell 40mm',
+            'manufacturer_id' => 1,
+            'category_id' => 1,
+            'subcategory_id' => 1,
+            'price' => 550,
+        ]);
+
+        Product::create([
+            'code' => 'MO-MSEC-42/MA',
+            'name' => 'Cementless Modular Shell 42mm',
+            'description' => 'Description for Cementless Modular Shell 42mm',
+            'manufacturer_id' => 1,
+            'category_id' => 1,
+            'subcategory_id' => 1,
+            'price' => 550,
+        ]);
+
+        Product::create([
+            'code' => 'MO-MSEC-44/MB',
+            'name' => 'Cementless Modular Shell 44mm',
+            'description' => 'Description for Cementless Modular Shell 44mm',
+            'manufacturer_id' => 1,
+            'category_id' => 1,
+            'subcategory_id' => 1,
+            'price' => 550,
         ]);
     }
 }

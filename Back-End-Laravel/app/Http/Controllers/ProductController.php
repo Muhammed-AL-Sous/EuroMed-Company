@@ -35,6 +35,39 @@ class ProductController extends Controller
         return self::success($products);
     }
 
+    public function getProducts(Request $request): JsonResponse
+    {
+        $products = Product::query()
+            ->with(['manufacturer', 'category', 'subCategory'])
+            ->when(
+                $request->query('category_id'),
+                fn($q, $categoryId) => $q->where('category_id', $categoryId)
+            )
+            ->when(
+                $request->query('manufacturer_id'),
+                fn($q, $manufacturerId) => $q->where('manufacturer_id', $manufacturerId)
+            )
+            ->when(
+                $request->query('subcategory_id'),
+                fn($q, $subcategoryId) => $q->where('subcategory_id', $subcategoryId)
+            )
+            ->latest()
+            ->paginate($request->integer('per_page', 15));
+
+        return self::success($products);
+    }
+
+    public function getProductsBySubCategory(int $subCategoryId): JsonResponse
+    {
+        $products = Product::query()
+            ->with(['manufacturer', 'category', 'subCategory'])
+            ->where('subcategory_id', $subCategoryId)
+            ->latest()
+            ->paginate(15);
+
+        return self::success($products);
+    }
+
     public function store(StoreProductRequest $request): JsonResponse
     {
         $product = Product::create($request->validated());

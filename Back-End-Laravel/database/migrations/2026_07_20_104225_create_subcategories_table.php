@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->text('description')->nullable();
+            $table->string('code')->unique();
+            $table->unsignedTinyInteger('product_count');
             $table->timestamps();
         });
     }

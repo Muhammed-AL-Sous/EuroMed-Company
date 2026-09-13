@@ -3,15 +3,17 @@ import BrandsShowcase from "../components/home/BrandsShowcase";
 import CompanyIntro from "../components/home/CompanyIntro";
 import HeroSection from "../components/home/HeroSection";
 import PatientPortalCTA from "../components/home/PatientPortalCTA";
-import ProductCategoriesGrid from "../components/home/ProductCategoriesGrid";
+import ProductSubCategoriesGrid from "../components/home/ProductSubCategoriesGrid";
+import { useGetSubCategoriesQuery } from "../features/SubCategories/SubCategoriesApiSlice";
 import { motion } from "motion/react";
 
 const HomePage = () => {
+  const { data: subCategories = [] } = useGetSubCategoriesQuery();
   return (
     <div className="space-y-0">
       <HeroSection />
       <CompanyIntro />
-      <ProductCategoriesGrid />
+      <ProductSubCategoriesGrid subCategories={subCategories} />
       <BrandsShowcase />
       <PatientPortalCTA />
 

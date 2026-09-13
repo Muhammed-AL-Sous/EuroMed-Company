@@ -14,15 +14,54 @@ class SubCategorySeeder extends Seeder
     public function run(): void
     {
         $subCategories = [
-            ["name" => 'Total Hip Replacement', "description" => 'A surgical procedure in which a damaged hip joint is replaced with an artificial joint.'],
-            ["name" => 'Total Knee Replacement', "description" => 'A surgical procedure in which a damaged knee joint is replaced with an artificial joint.'],
-            ["name" => 'Spinal Fusion', "description" => 'A surgical procedure in which two or more vertebrae are permanently joined together to eliminate motion between them.'],
-            ["name" => 'Cardiac Surgery', "description" => 'A surgical procedure performed on the heart or great vessels to treat various heart conditions.'],
-            ["name" => 'Neurosurgery', "description" => 'A surgical specialty that focuses on the diagnosis and treatment of disorders of the nervous system, including the brain, spinal cord, and peripheral nerves.'],
-            ["name" => 'Plastic Surgery', "description" => 'A surgical specialty that focuses on the reconstruction, restoration, or alteration of the human body.'],
-            ["name" => 'Orthopedic Surgery', "description" => 'A surgical specialty that focuses on the diagnosis and treatment of musculoskeletal disorders, including bones, joints, ligaments, tendons, and muscles.'],
-            ["name" => 'Ophthalmic Surgery', "description" => 'A surgical specialty that focuses on the diagnosis and treatment of eye disorders and diseases.'],
-            ["name" => 'ENT Surgery', "description" => 'A surgical specialty that focuses on the diagnosis and treatment of disorders of the ear, nose, and throat.']
+            [
+                "name" => 'T Knee Replacement',
+                "code" => 'TK',
+                "description" => 'Total Knee Replacement Prosthesis, Femoral & Tibial Components, and Polyethylene Inserts.',
+                "product_count" => 14
+            ],
+            [
+                "name" => 'T Hip Replacement',
+                "code" => 'TH',
+                "description" => 'Total Hip Replacement Stems, Acetabular Cups, Ceramic & Metallic Heads, Liners.',
+                "product_count" => 10
+            ],
+            [
+                "name" => 'Bipolar',
+                "code" => 'BP',
+                "description" => 'Bipolar Hip Prosthesis Systems For Hemi-Arthroplasty Procedures.',
+                "product_count" => 8
+            ],
+            [
+                "name" => 'Plate & Screw',
+                "code" => 'PS',
+                "description" => 'Anatomical Locking Compression Plates, Cortical & Cancellous Bone Fixation Screws.',
+                "product_count" => 30
+            ],
+            [
+                "name" => 'Herbert Screw',
+                "code" => 'HS',
+                "description" => 'Headless Compression Herbert Screws For Osteochondral Fractures & Nonunions.',
+                "product_count" => 6
+            ],
+            [
+                "name" => 'Tibial Nail',
+                "code" => 'TN',
+                "description" => 'Intramedullary Tibial Interlocking Nails.',
+                "product_count" => 40
+            ],
+            [
+                "name" => 'Femoral Nail',
+                "code" => 'FN',
+                "description" => 'Intramedullary Femoral Interlocking Nails.',
+                "product_count" => 50
+            ],
+            [
+                "name" => 'Other Products',
+                "code" => 'OP',
+                "description" => 'Bone Cement, Surgical Power Tools, Pulse Lavage, and Specialized Orthopedic Instruments.',
+                "product_count" => 9
+            ],
         ];
 
         foreach ($subCategories as $subCategory) {
