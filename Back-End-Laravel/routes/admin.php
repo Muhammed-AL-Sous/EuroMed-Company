@@ -24,14 +24,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('users', UserController::class);
     });
 
-    Route::apiResource('hospitals', HospitalController::class)->only(['index', 'show']);
-    Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
-    Route::apiResource('subcategories', SubCategoryController::class)->only(['index', 'show']);
-    Route::apiResource('manufacturers', ManufacturerController::class)->only(['index', 'show']);
-    Route::apiResource('products', ProductController::class)->only(['index', 'show']);
-    Route::apiResource('operation-types', OperationTypeController::class)->only(['index', 'show']);
     Route::apiResource('patients', PatientController::class)->only(['index', 'show']);
-    Route::apiResource('doctors', DoctorController::class)->only(['index', 'show']);
 
     Route::middleware('role:admin|data_entry')->group(function () {
         Route::apiResource('hospitals', HospitalController::class)->except(['index', 'show']);

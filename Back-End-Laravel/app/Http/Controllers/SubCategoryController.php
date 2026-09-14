@@ -17,11 +17,6 @@ class SubCategoryController extends Controller
         return self::success(SubCategory::all());
     }
 
-    public function getSubCategories(): JsonResponse
-    {
-        return self::success(SubCategory::all());
-    }
-
     public function store(StoreSubCategoryRequest $request): JsonResponse
     {
         $subCategory = SubCategory::create($request->validated());
