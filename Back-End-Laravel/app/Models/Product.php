@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -15,7 +16,21 @@ class Product extends Model
         'category_id',
         'subcategory_id',
         'price',
+        'image_url',
     ];
+    protected $appends = [
+        'image_url',
+    ];
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value, $attributes) =>
+            !empty($attributes['image_url'])
+                ? asset('storage/' . $attributes['image_url'])
+                : null,
+        );
+    }
 
     protected function casts(): array
     {

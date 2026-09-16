@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->foreignId('subcategory_id')->constrained('subcategories')->onDelete('cascade');
             $table->decimal('price', 10, 2)->nullable();
+            $table->string('image_url')->nullable();
             $table->timestamps();
         });
     }

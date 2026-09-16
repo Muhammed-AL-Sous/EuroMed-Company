@@ -3,11 +3,12 @@ import { baseApi } from "../../api/apiSlice";
 export const ProductsApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: ({ subcategory_id, search }) => ({
+      query: ({ subcategory_id, search, manufacturer_id }) => ({
         url: "/products",
         params: {
           subcategory_id,
           search,
+          manufacturer_id,
         },
       }),
 

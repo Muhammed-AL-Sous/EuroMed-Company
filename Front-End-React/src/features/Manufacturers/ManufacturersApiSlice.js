@@ -3,7 +3,7 @@ import { baseApi } from "../../api/apiSlice";
 export const ManufacturersApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getManufacturers: builder.query({
-      query: () => "/manufacturers-brands",
+      query: () => "/manufacturers",
       transformResponse: (response) =>
         Array.isArray(response?.data) ? response.data : [],
       providesTags: (result) =>

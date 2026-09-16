@@ -4,12 +4,8 @@ import PublicLayout from "../components/layout/PublicLayout";
 
 export const router = createBrowserRouter([
   {
-    children: [
-      {
-        path: "/",
-        element: <PublicLayout />,
-        children: [...publicRoutes],
-      },
-    ],
+    path: "/",
+    element: <PublicLayout />,
+    children: publicRoutes,
   },
 ]);
