@@ -38,7 +38,7 @@ class ProductController extends Controller
                 }
             )
             ->latest()
-            ->paginate($request->integer('per_page', 15));
+            ->paginate($request->integer('per_page', 10));
 
         return self::success($products);
     }

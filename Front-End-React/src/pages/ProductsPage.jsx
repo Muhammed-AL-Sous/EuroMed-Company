@@ -6,9 +6,19 @@ import { useGetProductsQuery } from "../features/Products/ProductsApiSlice";
 import { useGetSubCategoriesQuery } from "../features/SubCategories/SubCategoriesApiSlice";
 import { useGetManufacturersQuery } from "../features/Manufacturers/ManufacturersApiSlice";
 
+import Pagination from "../components/utility/Pagination";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
+
 const ProductsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get("search") || "",
+  );
+
+  const [page, setPage] = useState(1);
 
   // --------------------------------------------------
   // URL Filters
@@ -17,6 +27,12 @@ const ProductsPage = () => {
   const search = searchParams.get("search") || "";
   const subCategoryId = searchParams.get("subcategory_id") || "";
   const manufacturerId = searchParams.get("manufacturer_id") || "";
+
+  // --------------------------------------------------
+  // Debounced Search
+  // --------------------------------------------------
+
+  const debouncedSearch = useDebouncedValue(searchInput, 400);
 
   // --------------------------------------------------
   // Subcategories
@@ -35,20 +51,27 @@ const ProductsPage = () => {
   // --------------------------------------------------
 
   const {
-    data: products = [],
+    data: productsResponse,
     isLoading,
     isFetching,
   } = useGetProductsQuery({
-    search,
+    search: debouncedSearch,
     subcategory_id: subCategoryId,
     manufacturer_id: manufacturerId,
+    page,
   });
-  console.log(products);
+
+  const products = productsResponse?.products ?? [];
+  const meta = productsResponse?.meta ?? null;
+
   // --------------------------------------------------
   // Search Handler
   // --------------------------------------------------
 
   const handleSearchChange = (value) => {
+    setSearchInput(value);
+    setPage(1);
+
     setSearchParams((params) => {
       if (value.trim()) {
         params.set("search", value);
@@ -65,6 +88,8 @@ const ProductsPage = () => {
   // --------------------------------------------------
 
   const handleSubCategoryChange = (value) => {
+    setPage(1);
+
     setSearchParams((params) => {
       if (value) {
         params.set("subcategory_id", value);
@@ -81,6 +106,8 @@ const ProductsPage = () => {
   // --------------------------------------------------
 
   const handleManufacturerChange = (value) => {
+    setPage(1);
+
     setSearchParams((params) => {
       if (value) {
         params.set("manufacturer_id", value);
@@ -97,15 +124,26 @@ const ProductsPage = () => {
   // --------------------------------------------------
 
   const clearFilters = () => {
+    setSearchInput("");
+    setPage(1);
     setSearchParams({});
   };
 
   // --------------------------------------------------
-  // Check Active Filters
+  // Active Filters
   // --------------------------------------------------
 
   const hasActiveFilters =
     Boolean(search) || Boolean(subCategoryId) || Boolean(manufacturerId);
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <div className="py-10 bg-slate-50 min-h-screen">
@@ -132,7 +170,7 @@ const ProductsPage = () => {
 
           <div className="text-right">
             <span className="text-3xl font-black text-sky-400 font-mono">
-              {products.length}
+              {meta?.total_items ?? products.length}
             </span>
 
             <span className="block text-xs text-slate-400 uppercase font-semibold">
@@ -154,7 +192,7 @@ const ProductsPage = () => {
 
               <input
                 type="text"
-                value={search}
+                value={searchInput}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 placeholder="Search Product Name..."
                 className="w-full bg-slate-50 text-slate-900 pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 focus:outline-none transition"
@@ -259,11 +297,11 @@ const ProductsPage = () => {
           </div>
         ) : (
           /* ==================================================
-              Products Grid
+              Products
           ================================================== */
 
           <div className="relative">
-            {/* Small fetching indicator */}
+            {/* Fetching Indicator */}
 
             {isFetching && !isLoading && (
               <div className="absolute right-2 -top-6 text-xs text-slate-400">
@@ -310,8 +348,6 @@ const ProductsPage = () => {
                     {/* Product Information */}
 
                     <div className="p-5 space-y-3 flex flex-col flex-1">
-                      {/* Category */}
-
                       <div className="flex items-center justify-between gap-3 text-xs font-semibold text-sky-600">
                         <span>{product.category_name}</span>
 
@@ -322,19 +358,13 @@ const ProductsPage = () => {
                         </span>
                       </div>
 
-                      {/* Name */}
-
                       <h3 className="text-lg font-bold text-slate-900 leading-snug">
                         {product.name}
                       </h3>
 
-                      {/* Description */}
-
                       <p className="text-slate-600 text-xs line-clamp-2 leading-relaxed">
                         {product.description || "No description available."}
                       </p>
-
-                      {/* Medical Usage */}
 
                       <div className="pt-2 text-xs text-slate-500 border-t border-slate-100 mt-auto">
                         <strong className="text-slate-700">Usage:</strong>{" "}
@@ -357,6 +387,16 @@ const ProductsPage = () => {
                 </div>
               ))}
             </div>
+
+            {/* ==================================================
+                Pagination
+            ================================================== */}
+
+            <Pagination
+              meta={meta}
+              onPageChange={handlePageChange}
+              disabled={isFetching}
+            />
           </div>
         )}
 
