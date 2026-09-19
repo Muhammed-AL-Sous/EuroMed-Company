@@ -17,6 +17,9 @@ class Product extends Model
         'subcategory_id',
         'price',
         'image_url',
+        'medical_usage',
+        'specifications',
+        'available_sizes',
     ];
     protected $appends = [
         'image_url',
@@ -36,9 +39,11 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'specifications' => 'array',
+            'available_sizes' => 'array',
         ];
     }
-
+    
     public function manufacturer(): BelongsTo
     {
         return $this->belongsTo(Manufacturer::class);

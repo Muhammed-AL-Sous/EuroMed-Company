@@ -21,6 +21,9 @@ return new class extends Migration
             $table->foreignId('subcategory_id')->constrained('subcategories')->onDelete('cascade');
             $table->decimal('price', 10, 2)->nullable();
             $table->string('image_url')->nullable();
+            $table->text('medical_usage')->nullable();
+            $table->json('specifications')->nullable();
+            $table->json('available_sizes')->nullable();
             $table->timestamps();
         });
     }

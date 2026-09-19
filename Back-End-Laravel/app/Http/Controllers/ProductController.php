@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -40,7 +41,9 @@ class ProductController extends Controller
             ->latest()
             ->paginate($request->integer('per_page', 10));
 
-        return self::success($products);
+        return self::success(
+            ProductResource::collection($products)
+        );
     }
 
     public function store(StoreProductRequest $request): JsonResponse

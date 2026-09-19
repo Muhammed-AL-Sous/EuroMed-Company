@@ -22,6 +22,14 @@ class ProductSeeder extends Seeder
                 'subcategory_id' => 2,
                 'price' => 500,
                 'image_url' => 'products/tibial_base.png',
+                'medical_usage' => 'Medical usage information for TIBIAL BASE 1 METALBACKED',
+                'specifications' => [
+                    'Material' => 'CoCr Alloy (Cobalt Chrome)',
+                    'Fixation' => 'Cemented / Porous Coated',
+                    'Sizes' => 'Size 1 to Size 8 (Left/Right)',
+                    'Flexion Range' => 'Up to 155°'
+                ],
+                'available_sizes' => ['1', '2', '3', '4', '5', '6', '7', '8'],
             ],
 
             [

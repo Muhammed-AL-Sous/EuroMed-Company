@@ -63,7 +63,8 @@ const ProductsPage = () => {
 
   const products = productsResponse?.products ?? [];
   const meta = productsResponse?.meta ?? null;
-
+  console.log(JSON.stringify(products[0], null, 2));
+  // console.log(products[0].manufacturer.name);
   // --------------------------------------------------
   // Search Handler
   // --------------------------------------------------
@@ -151,7 +152,6 @@ const ProductsPage = () => {
         {/* ==================================================
             Page Header
         ================================================== */}
-
         <div className="bg-slate-900 text-white p-8 sm:p-10 rounded-3xl border border-slate-800 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-sky-400 bg-sky-500/20 px-3 py-1 rounded-full border border-sky-400/30">
@@ -178,11 +178,9 @@ const ProductsPage = () => {
             </span>
           </div>
         </div>
-
         {/* ==================================================
             Filters
         ================================================== */}
-
         <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Search */}
@@ -255,11 +253,9 @@ const ProductsPage = () => {
             </div>
           )}
         </div>
-
         {/* ==================================================
             Loading
         ================================================== */}
-
         {isLoading ? (
           <div className="py-20 text-center">
             <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
@@ -338,9 +334,9 @@ const ProductsPage = () => {
 
                       {/* Manufacturer */}
 
-                      {product.brand_name && (
+                      {product.manufacturer?.name && (
                         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-slate-900 text-xs px-2.5 py-1 rounded-md font-bold border border-slate-200">
-                          {product.brand_name}
+                          {product.manufacturer?.name}
                         </div>
                       )}
                     </div>
@@ -349,12 +345,10 @@ const ProductsPage = () => {
 
                     <div className="p-5 space-y-3 flex flex-col flex-1">
                       <div className="flex items-center justify-between gap-3 text-xs font-semibold text-sky-600">
-                        <span>{product.category_name}</span>
+                        <span>{product.subcategory?.name}</span>
 
                         <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-mono whitespace-nowrap">
-                          {product.status === "available"
-                            ? "In Stock"
-                            : "Low Stock"}
+                          In Stock
                         </span>
                       </div>
 
@@ -367,7 +361,7 @@ const ProductsPage = () => {
                       </p>
 
                       <div className="pt-2 text-xs text-slate-500 border-t border-slate-100 mt-auto">
-                        <strong className="text-slate-700">Usage:</strong>{" "}
+                        <strong className="text-slate-700">Usage:</strong>
                         {product.medical_usage || "Not specified"}
                       </div>
                     </div>
@@ -399,137 +393,125 @@ const ProductsPage = () => {
             />
           </div>
         )}
-
-        {/* ==================================================
-            Product Detail Modal
-        ================================================== */}
-
+        {/* ================================================== Product Detail Modal ================================================== */}
         {selectedProduct && (
           <div
-            className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-x-0 top-20 bottom-0 z-100 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm"
             onClick={() => setSelectedProduct(null)}
           >
+            {/* Modal */}
             <div
-              className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl relative"
+              className="relative w-full max-w-3xl max-h-[75vh] rounded-3xl bg-white shadow-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close */}
-
+              {/* Close Button */}
               <button
                 type="button"
                 onClick={() => setSelectedProduct(null)}
-                className="absolute top-6 right-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition"
+                className="absolute top-5 right-5 z-30 rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200"
                 aria-label="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="h-5 w-5" />
               </button>
-
-              {/* Product Header */}
-
-              <div className="flex items-center gap-3 pr-10">
-                {selectedProduct.code && (
-                  <span className="px-3 py-1 rounded-md bg-sky-100 text-sky-700 text-xs font-bold font-mono">
-                    {selectedProduct.code}
-                  </span>
-                )}
-
-                <span className="text-xs font-bold text-slate-500 uppercase">
-                  {selectedProduct.brand_name || "Unknown Manufacturer"}
-                  {" • "}
-                  {selectedProduct.category_name || "Uncategorized"}
-                </span>
-              </div>
-
-              {/* Product Name */}
-
-              <h2 className="text-2xl font-black text-slate-900">
-                {selectedProduct.name}
-              </h2>
-
-              {/* Description */}
-
-              <p className="text-slate-600 text-sm leading-relaxed">
-                {selectedProduct.description || "No description available."}
-              </p>
-
-              {/* Medical Indication */}
-
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Medical Indication
-                </h4>
-
-                <p className="text-xs text-slate-600">
-                  {selectedProduct.medical_usage || "Not specified."}
-                </p>
-              </div>
-
-              {/* Technical Specifications */}
-
-              {selectedProduct.specifications &&
-                Object.keys(selectedProduct.specifications).length > 0 && (
-                  <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                      Technical Specifications
-                    </h4>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                      {Object.entries(selectedProduct.specifications).map(
-                        ([key, value]) => (
-                          <div
-                            key={key}
-                            className="bg-white p-2.5 rounded-lg border border-slate-200"
-                          >
-                            <span className="block font-semibold text-slate-500">
-                              {key}
-                            </span>
-
-                            <span className="font-bold text-slate-900">
-                              {String(value)}
-                            </span>
-                          </div>
-                        ),
-                      )}
-                    </div>
-                  </div>
-                )}
-
-              {/* Available Sizes */}
-
-              {Array.isArray(selectedProduct.available_sizes) &&
-                selectedProduct.available_sizes.length > 0 && (
-                  <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                      Available Sizes in Stock
-                    </h4>
-
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProduct.available_sizes.map((size, index) => (
-                        <span
-                          key={`${size}-${index}`}
-                          className="px-3 py-1.5 rounded-lg bg-sky-50 text-sky-800 text-xs font-mono font-bold border border-sky-200"
-                        >
-                          {size}
+              {/* ================================================== Scroll Area يوجد فراغ أعلى وأسفل الـ scrollbar ================================================== */}
+              <div className="max-h-[75vh] overflow-hidden px-2 py-3">
+                <div className="custom-scrollbar max-h-[calc(75vh-24px)] overflow-y-auto pr-2">
+                  <div className="space-y-6 p-6 sm:p-8">
+                    {/* Product Header */}
+                    <div className="flex items-center gap-3 pr-12">
+                      {selectedProduct.code && (
+                        <span className="rounded-md bg-sky-100 px-3 py-1 font-mono text-xs font-bold text-sky-700">
+                          {selectedProduct.code}
                         </span>
-                      ))}
+                      )}
+                      <span className="text-xs font-bold uppercase text-slate-500">
+                        {selectedProduct.manufacturer?.name ||
+                          "Unknown Manufacturer"}
+                        {" • "}
+                        {selectedProduct.subcategory?.name || "Uncategorized"}
+                      </span>
+                    </div>
+                    {/* Product Name */}
+                    <h2 className="text-2xl font-black text-slate-900">
+                      {selectedProduct.name}
+                    </h2>
+                    {/* Description */}
+                    <p className="text-sm leading-relaxed text-slate-600">
+                      {selectedProduct.description ||
+                        "No description available."}
+                    </p>
+                    {/* Medical Indication */}
+                    <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4">
+                      <h4 className="text-sm font-bold tracking-wider text-slate-700">
+                        Medical Indication
+                      </h4>
+                      <p className="text-xs text-slate-600">
+                        {selectedProduct.medical_usage || "Not specified."}
+                      </p>
+                    </div>
+                    {/* Technical Specifications */}
+                    {selectedProduct.specifications &&
+                      Object.keys(selectedProduct.specifications).length >
+                        0 && (
+                        <div>
+                          <h4 className="mb-3 px-1 text-sm font-bold tracking-wider text-slate-700">
+                            Technical Specifications
+                          </h4>
+                          <div className="grid grid-cols-1 gap-3 px-1 text-xs sm:grid-cols-2">
+                            {Object.entries(selectedProduct.specifications).map(
+                              ([key, value]) => (
+                                <div
+                                  key={key}
+                                  className="bg-white p-2.5 rounded-lg border border-slate-200"
+                                >
+                                  <span className="block font-bold mb-1 text-slate-500">
+                                    {key}
+                                  </span>
+                                  <span className="font-semibold  text-slate-900">
+                                    {String(value)}
+                                  </span>
+                                </div>
+                              ),
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    {/* Available Sizes */}
+                    {Array.isArray(selectedProduct.available_sizes) &&
+                      selectedProduct.available_sizes.length > 0 && (
+                        <div>
+                          <h4 className="text-sm font-bold tracking-wider text-slate-700 mb-2">
+                            Available Sizes in Stock
+                          </h4>
+                          <div className="flex flex-wrap gap-2 px-1">
+                            {selectedProduct.available_sizes.map(
+                              (size, index) => (
+                                <span
+                                  key={`${size}-${index}`}
+                                  className="rounded-lg border border-sky-200 bg-sky-50 px-2 py-1.5 font-mono text-xs font-bold text-sky-800"
+                                >
+                                  Size: {size}
+                                </span>
+                              ),
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    {/* Footer */}
+                    <div className="flex items-center justify-between gap-4 border-t border-slate-100 px-1 pt-4">
+                      <span className="text-xs text-slate-500">
+                        Distributed by EuroMed Erbil HQ
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedProduct(null)}
+                        className="rounded-xl bg-slate-900/90 px-6 py-2.5 text-xs font-bold text-white transition hover:bg-slate-900"
+                      >
+                        Close
+                      </button>
                     </div>
                   </div>
-                )}
-
-              {/* Footer */}
-
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
-                <span className="text-xs text-slate-500">
-                  Distributed by EuroMed Erbil HQ
-                </span>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedProduct(null)}
-                  className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition"
-                >
-                  Close
-                </button>
+                </div>
               </div>
             </div>
           </div>
