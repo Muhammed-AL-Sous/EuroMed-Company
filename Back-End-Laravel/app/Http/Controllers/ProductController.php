@@ -34,8 +34,8 @@ class ProductController extends Controller
                 $request->filled('search'),
                 function ($query) use ($request) {
                     $search = $request->search;
-
-                    $query->where('name', 'like', "%{$search}%");
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('code', 'like', "%{$search}%");
                 }
             )
             ->latest()

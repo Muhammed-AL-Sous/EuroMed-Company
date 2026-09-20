@@ -63,8 +63,7 @@ const ProductsPage = () => {
 
   const products = productsResponse?.products ?? [];
   const meta = productsResponse?.meta ?? null;
-  console.log(JSON.stringify(products[0], null, 2));
-  // console.log(products[0].manufacturer.name);
+
   // --------------------------------------------------
   // Search Handler
   // --------------------------------------------------
@@ -163,8 +162,8 @@ const ProductsPage = () => {
             </h1>
 
             <p className="text-slate-300 text-sm mt-2 max-w-xl">
-              Browse total knee and hip arthroplasty systems, trauma locking
-              plates, cannulated screws, and intramedullary nails.
+              Browse Total Knee and Hip Arthroplasty Systems, Trauma Locking
+              Plates, Cannulated Screws, and Intramedullary Nails.
             </p>
           </div>
 
@@ -192,7 +191,7 @@ const ProductsPage = () => {
                 type="text"
                 value={searchInput}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                placeholder="Search Product Name..."
+                placeholder="Search For a Product By Name or Code..."
                 className="w-full bg-slate-50 text-slate-900 pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-sky-500 focus:ring-1 focus:ring-sky-500 focus:outline-none transition"
               />
             </div>
@@ -239,7 +238,7 @@ const ProductsPage = () => {
           {hasActiveFilters && (
             <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-4 text-xs">
               <span className="text-slate-500 font-medium">
-                Active filters applied
+                Active Filters Applied
               </span>
 
               <button
@@ -261,7 +260,7 @@ const ProductsPage = () => {
             <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
 
             <p className="text-slate-500 text-sm font-medium">
-              Loading EuroMed product catalog from API...
+              Loading EuroMed Products ...
             </p>
           </div>
         ) : products.length === 0 ? (
@@ -273,12 +272,12 @@ const ProductsPage = () => {
             <ShieldAlert className="w-12 h-12 text-slate-400 mx-auto" />
 
             <h3 className="text-lg font-bold text-slate-800">
-              No products match your filter criteria
+              No Products Match Your Filter Criteria
             </h3>
 
             <p className="text-slate-500 text-sm">
-              Try clearing your search query or selecting a different
-              manufacturer or subcategory.
+              Try Clearing Your Search Query or Selecting a Different
+              Manufacturer or Subcategory.
             </p>
 
             {hasActiveFilters && (
@@ -300,8 +299,12 @@ const ProductsPage = () => {
             {/* Fetching Indicator */}
 
             {isFetching && !isLoading && (
-              <div className="absolute right-2 -top-6 text-xs text-slate-400">
-                Updating...
+              <div className="py-20 text-center">
+                <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+
+                <p className="text-slate-500 text-sm font-medium">
+                  Loading EuroMed Products ...
+                </p>
               </div>
             )}
 
@@ -361,7 +364,7 @@ const ProductsPage = () => {
                       </p>
 
                       <div className="pt-2 text-xs text-slate-500 border-t border-slate-100 mt-auto">
-                        <strong className="text-slate-700">Usage:</strong>
+                        <strong className="text-slate-700">Usage : </strong>
                         {product.medical_usage || "Not specified"}
                       </div>
                     </div>
