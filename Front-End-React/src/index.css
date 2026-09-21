@@ -67,3 +67,26 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #016dac;
 }
+
+/* ================================================================= */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print\:block-grid {
+    display: block !important;
+  }
+
+  .print-avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

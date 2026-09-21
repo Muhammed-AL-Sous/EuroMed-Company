@@ -11,9 +11,11 @@ import {
   ShieldCheck,
   Stethoscope,
   User,
+  Download,
 } from "lucide-react";
 
-import { useEffect, useState } from "react";
+import { useReactToPrint } from "react-to-print";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router";
 
 import { useVerifyPatientOperationMutation } from "../features/patients/PatientOperationApiSlice";
@@ -29,6 +31,8 @@ const OperationDetailsPage = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
   const [operationData, setOperationData] = useState(null);
+  const printRef = useRef(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const [verifyPatientOperation, { isLoading }] =
     useVerifyPatientOperationMutation();
@@ -49,8 +53,6 @@ const OperationDetailsPage = () => {
         date,
       }).unwrap();
 
-      console.log("Patient Operation Response:", response);
-
       if (response?.status && response?.data) {
         setOperationData(response.data);
       } else {
@@ -60,8 +62,6 @@ const OperationDetailsPage = () => {
         );
       }
     } catch (error) {
-      console.error("Patient Operation Error:", error);
-
       setErrorMessage(
         error?.data?.message ||
           "We Couldn't Find an Operation Matching The Provided Information. Please Verify Your Operation Code And Date.",
@@ -88,8 +88,6 @@ const OperationDetailsPage = () => {
           date: initialDate,
         }).unwrap();
 
-        console.log("Patient Operation Response:", response);
-
         if (response?.status && response?.data) {
           setOperationData(response.data);
         } else {
@@ -99,8 +97,6 @@ const OperationDetailsPage = () => {
           );
         }
       } catch (error) {
-        console.error("Patient Operation Error:", error);
-
         setErrorMessage(
           error?.data?.message ||
             "We Couldn't Find an Operation Matching The Provided Information. Please Verify Your Operation Code And Date.",
@@ -115,8 +111,76 @@ const OperationDetailsPage = () => {
   // Print
   // =========================================================
 
-  const handlePrint = () => {
-    window.print();
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: operationData
+      ? `Operation-${operationData.patient_access_code}`
+      : "Operation-Certificate",
+  });
+
+  // -------------------------------
+  // تحميل PDF من السيرفر (Laravel + Browsershot)
+  // -------------------------------
+  const handleDownloadPdf = async () => {
+    if (!printRef.current || !operationData) return;
+
+    setIsDownloading(true);
+
+    try {
+      const clonedContent = printRef.current.cloneNode(true);
+
+      clonedContent
+        .querySelectorAll(".print\\:hidden")
+        .forEach((element) => element.remove());
+
+      const contentHtml = clonedContent.outerHTML;
+
+      const stylesheets = Array.from(document.styleSheets)
+        .map((sheet) => {
+          try {
+            return Array.from(sheet.cssRules)
+              .map((rule) => rule.cssText)
+              .join("\n");
+          } catch {
+            return "";
+          }
+        })
+        .join("\n");
+
+      const response = await fetch("/api/operations/pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          html: contentHtml,
+          css: stylesheets,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate PDF");
+      }
+
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Operation-${operationData.patient_access_code}.pdf`;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("PDF generation error:", error);
+      setErrorMessage("Failed to download PDF. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   // =========================================================
@@ -251,7 +315,10 @@ const OperationDetailsPage = () => {
         ====================================================== */}
 
         {operationData && (
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden print:shadow-none">
+          <div
+            ref={printRef}
+            className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden print:shadow-none print:rounded-none print:border-none"
+          >
             {/* =================================================
                 Header
             ================================================== */}
@@ -275,13 +342,24 @@ const OperationDetailsPage = () => {
                 </p>
               </div>
 
-              <button
-                onClick={handlePrint}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-bold border border-slate-700 print:hidden"
-              >
-                <Printer className="w-4 h-4 text-sky-400" />
-                Print Certificate
-              </button>
+              <div className="flex items-center gap-2 print:hidden">
+                <button
+                  onClick={handlePrint}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-bold border border-slate-700"
+                >
+                  <Printer className="w-4 h-4 text-sky-400" />
+                  Print Certificate
+                </button>
+
+                <button
+                  onClick={handleDownloadPdf}
+                  disabled={isDownloading}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:bg-sky-400 text-white text-xs font-bold"
+                >
+                  <Download className="w-4 h-4" />
+                  {isDownloading ? "Generating..." : "Download PDF"}
+                </button>
+              </div>
             </div>
 
             {/* =================================================
