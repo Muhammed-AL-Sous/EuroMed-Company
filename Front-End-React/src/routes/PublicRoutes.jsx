@@ -1,10 +1,10 @@
 import HomePage from "../pages/HomePage";
 import AboutPage from "../pages/AboutPage";
 import DoctorsPage from "../pages/DoctorsPage";
-import HospitalsPage from "../pages/HospitalsPage";
 import ProductsPage from "../pages/ProductsPage";
 import OperationDetailsPage from "../pages/OperationDetailsPage";
 import ContactPage from "../pages/ContactPage";
+import BrandsPage from "../pages/BrandsPage";
 
 export const publicRoutes = [
   {
@@ -23,8 +23,8 @@ export const publicRoutes = [
   },
 
   {
-    path: "/hospitals",
-    element: <HospitalsPage />,
+    path: "/brands",
+    element: <BrandsPage />,
   },
 
   {

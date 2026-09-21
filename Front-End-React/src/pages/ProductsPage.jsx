@@ -146,34 +146,30 @@ const ProductsPage = () => {
   };
 
   return (
-    <div className="py-10 bg-slate-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* ==================================================
-            Page Header
-        ================================================== */}
-        <div className="bg-slate-900 text-white p-8 sm:p-10 rounded-3xl border border-slate-800 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <span className="inline-block text-xs font-bold uppercase tracking-widest text-sky-400 bg-sky-500/20 px-3 py-1 rounded-full border border-sky-400/30">
+ <div className="py-12 sm:py-16 bg-slate-50 min-h-screen space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-xl relative overflow-hidden">
+          <div className="mx-auto text-center max-w-5xl space-y-4 ">
+            <span className="inline-block text-xs font-bold tracking-widest uppercase text-sky-400 bg-sky-500/20 px-3.5 py-1.5 rounded-full border border-sky-400/30">
               Orthopedic Product Catalog
             </span>
 
-            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight mt-3">
+            <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
               Surgical Implants & Hardware
             </h1>
 
-            <p className="text-slate-300 text-sm mt-2 max-w-xl">
+            <p className="text-slate-300 text-base sm:text-lg leading-relaxed tracking-wide">
               Browse Total Knee and Hip Arthroplasty Systems, Trauma Locking
               Plates, Cannulated Screws, and Intramedullary Nails.
             </p>
           </div>
 
-          <div className="text-right">
-            <span className="text-3xl font-black text-sky-400 font-mono">
-              {meta?.total_items ?? products.length}
-            </span>
-
+          <div className="text-center w-fit mt-3">
             <span className="block text-xs text-slate-400 uppercase font-semibold">
               Products Available
+            </span>
+            <span className="text-3xl font-black text-center text-sky-400 font-mono">
+              {meta?.total_items ?? products.length}
             </span>
           </div>
         </div>

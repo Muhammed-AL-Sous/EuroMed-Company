@@ -21,9 +21,9 @@ const BrandsShowcase = () => {
             Authorized Partner Brands
           </h2>
           <p className="text-slate-600 text-base mt-2">
-            EuroMed is an authorized distributor for leading international
-            manufacturers of total joint arthroplasty, trauma plates, and
-            specialized surgical systems.
+            EuroMed is an Authorized Distributor For Leading International
+            Manufacturers of Total Joint Arthroplasty, Trauma Plates, and
+            Specialized Surgical Systems.
           </p>
         </div>
 
@@ -36,15 +36,15 @@ const BrandsShowcase = () => {
                 className="group bg-slate-50 hover:bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-sky-300 hover:-translate-y-1 duration-300 transition-all flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-2xl font-black group-hover:text-sky-600 duration-300 transition-colors tracking-tight text-slate-900 font-sans">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-2xl font-black group-hover:text-sky-600 duration-300 transition-colors tracking-tight text-gray-600 font-sans">
                       {brand.name}
                     </span>
                     <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 bg-white px-2.5 py-1 rounded-md border border-slate-200">
                       <Globe className="w-3 h-3 text-sky-500" /> {brand.origin}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed mb-6">
                     {brand.description}
                   </p>
                 </div>

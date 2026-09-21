@@ -8,7 +8,6 @@ import {
   KeyRound,
   Package,
   Printer,
-  ShieldCheck,
   Stethoscope,
   User,
   Download,
@@ -159,7 +158,7 @@ const OperationDetailsPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to generate PDF");
+        throw new Error("Failed to Generate PDF");
       }
 
       const blob = await response.blob();
@@ -214,32 +213,28 @@ const OperationDetailsPage = () => {
   };
 
   return (
-    <div className="py-12 bg-slate-50 min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className="py-12 sm:py-16 bg-slate-50 min-h-screen space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* =====================================================
             Banner
         ====================================================== */}
-
-        <div className="bg-slate-900 text-white p-8 rounded-3xl border border-slate-800 shadow-xl space-y-2">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 text-xs font-bold uppercase tracking-wider border border-sky-400/30">
-            <ShieldCheck className="w-4 h-4" />
-            Secure Verification Portal
-          </span>
-
-          <h1 className="text-3xl font-black text-white tracking-tight">
-            Patient Operation & Material Portal
-          </h1>
-
-          <p className="text-slate-300 text-sm max-w-xl leading-relaxed">
-            Verify the official medical hardware, manufacturer lot codes, and
-            surgical materials used in your operation.
-          </p>
+        <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-xl relative overflow-hidden">
+          <div className="mx-auto text-center max-w-5xl space-y-4">
+            <span className="inline-block text-xs font-bold tracking-widest uppercase text-sky-400 bg-sky-500/20 px-3.5 py-1.5 rounded-full border border-sky-400/30">
+              Secure Verification Portal
+            </span>
+            <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+              Patient Operation & Material Portal
+            </h1>
+            <p className="text-slate-300 text-base sm:text-lg leading-relaxed tracking-wide">
+              Verify the official medical hardware, manufacturer lot codes, and
+              surgical materials used in your operation.
+            </p>
+          </div>
         </div>
-
         {/* =====================================================
             Search Form
         ====================================================== */}
-
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
           <form
             onSubmit={handleVerify}
@@ -309,11 +304,9 @@ const OperationDetailsPage = () => {
             </div>
           )}
         </div>
-
         {/* =====================================================
             RESULT
         ====================================================== */}
-
         {operationData && (
           <div
             ref={printRef}
