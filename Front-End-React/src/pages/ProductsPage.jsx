@@ -372,7 +372,7 @@ const ProductsPage = () => {
                     <button
                       type="button"
                       onClick={() => setSelectedProduct(product)}
-                      className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors"
+                      className="w-full cursor-pointer py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors"
                     >
                       View Specifications & Sizes
                     </button>
@@ -407,7 +407,7 @@ const ProductsPage = () => {
               <button
                 type="button"
                 onClick={() => setSelectedProduct(null)}
-                className="absolute top-5 right-5 z-30 rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200"
+                className="absolute cursor-pointer top-5 right-5 z-30 rounded-full bg-slate-100 p-2 text-slate-600 transition hover:bg-slate-200"
                 aria-label="Close"
               >
                 <X className="h-5 w-5" />
@@ -514,7 +514,7 @@ const ProductsPage = () => {
                       <button
                         type="button"
                         onClick={() => setSelectedProduct(null)}
-                        className="rounded-xl bg-slate-900/90 px-6 py-2.5 text-xs font-bold text-white transition hover:bg-slate-900"
+                        className="rounded-xl cursor-pointer bg-slate-900/90 px-6 py-2.5 text-xs font-bold text-white transition hover:bg-slate-900"
                       >
                         Close
                       </button>
