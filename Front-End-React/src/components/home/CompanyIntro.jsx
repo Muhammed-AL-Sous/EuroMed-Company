@@ -11,22 +11,22 @@ const CompanyIntro = () => {
     {
       label: "Partner Brands",
       value: "6+",
-      description: "Global manufacturers (Zimmer, MAXX, etc.)",
+      description: "Global Manufacturers (Zimmer , MAXX , etc ...)",
     },
     {
       label: "Orthopedic Surgeons",
       value: "350+",
-      description: "Surgeons served across Erbil & Iraq",
+      description: "Surgeons Served Across Erbil & Iraq",
     },
     {
       label: "Partner Hospitals",
       value: "45+",
-      description: "Hospitals & surgical centers supplied",
+      description: "Hospitals & Surgical Centers Supplied",
     },
     {
       label: "Years Experience",
       value: "15+",
-      description: "Dedicated orthopedic excellence",
+      description: "Dedicated Orthopedic Excellence",
     },
   ];
 
@@ -36,7 +36,7 @@ const CompanyIntro = () => {
     "Comprehensive Inventory Stored in Erbil HQ",
     "Expert Surgical Support & Product Training",
     "Rapid Emergency Delivery to Operating Rooms",
-    "Direct Partnerships with European & Global Manufacturers",
+    "Direct Partnerships With European & Global Manufacturers",
   ];
 
   return (
@@ -89,12 +89,12 @@ const CompanyIntro = () => {
               </h2>
 
               <p className="text-slate-600 leading-relaxed text-base">
-                Based in <strong>Erbil, Iraq</strong>, EuroMed specializes in
-                supplying premium orthopedic implants, surgical instrumentation,
-                and trauma fixation products. We bridge the gap between
-                world-leading medical manufacturers and local surgical teams,
-                ensuring patients receive state-of-the-art implants backed by
-                complete lot-level traceability.
+                Based in <strong>Erbil, Iraq</strong>, EuroMed Specializes In
+                Supplying Premium Orthopedic Implants, Surgical Instrumentation,
+                and Trauma Fixation Products. We Bridge The Gap Between
+                World-Leading Medical Manufacturers and Local Surgical Teams,
+                Ensuring Patients Receive State-Of-The-Art Implants Backed By
+                Complete Lot-Level Traceability.
               </p>
 
               {/* Checklist */}

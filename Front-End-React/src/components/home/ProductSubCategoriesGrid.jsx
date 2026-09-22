@@ -80,8 +80,8 @@ const ProductSubCategoriesGrid = ({ subCategories = [] }) => {
             </h2>
 
             <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">
-              High-precision surgical hardware and joint replacement systems
-              engineered for long-term clinical efficacy.
+              High-Precision Surgical Hardware and Joint Replacement Systems
+              Engineered For Long-Term Clinical Efficacy.
             </p>
           </div>
 
@@ -247,7 +247,7 @@ const ProductSubCategoriesGrid = ({ subCategories = [] }) => {
             </p>
 
             <p className="text-slate-500 text-sm mt-1">
-              Product categories will be available soon.
+              Product Categories Will Be Available Soon.
             </p>
           </div>
         )}

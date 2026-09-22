@@ -6,25 +6,25 @@ const AboutPage = () => {
     {
       title: "Uncompromised Quality",
       description:
-        "We source exclusively from ISO 13485 certified European and international implant manufacturers.",
+        "We Source Exclusively From ISO 13485 Certified European and International Implant Manufacturers.",
       icon: Award,
     },
     {
       title: "100% Implant Traceability",
       description:
-        "Every product carries complete lot and serial number records for maximum patient safety and clinical audits.",
+        "Every Product Carries Complete Lot and Serial Number Records For Maximum Patient Safety and Clinical Audits.",
       icon: ShieldCheck,
     },
     {
       title: "Expert Surgical Support",
       description:
-        "Our technical specialists support surgical teams during complex total joint arthroplasty procedures.",
+        "Our Technical Specialists Support Surgical Teams During Complex Total Joint Arthroplasty Procedures.",
       icon: Stethoscope,
     },
     {
       title: "Local Erbil Inventory",
       description:
-        "Our Erbil warehouse maintains immediate stock to prevent surgical delays in emergency trauma cases.",
+        "Our Erbil Warehouse Maintains Immediate Stock To Prevent Surgical Delays in Emergency Trauma Cases.",
       icon: Building2,
     },
   ];
@@ -42,10 +42,10 @@ const AboutPage = () => {
               Pioneering Orthopedic Healthcare in Iraq
             </h1>
             <p className="text-slate-300 text-base sm:text-lg leading-relaxed tracking-wide">
-              EuroMed is an established medical supplies provider based in
-              Erbil, Iraq. We specialize in orthopedic and surgical materials,
-              total joint replacement systems, trauma hardware, and specialized
-              surgical equipment.
+              EuroMed is An Established Medical Supplies Provider Based In
+              Erbil, Iraq. We Specialize In Orthopedic and Surgical Materials,
+              Total Joint Replacement Systems, Trauma Hardware, and Specialized
+              Surgical Equipment.
             </p>
           </div>
         </div>
@@ -58,7 +58,7 @@ const AboutPage = () => {
             Why Hospitals & Surgeons Choose EuroMed
           </h2>
           <p className="text-slate-600 text-sm mt-2">
-            Delivering precision, reliability, and continuous surgical support.
+            Delivering Precision, Reliability, and Continuous Surgical Support.
           </p>
         </div>
 

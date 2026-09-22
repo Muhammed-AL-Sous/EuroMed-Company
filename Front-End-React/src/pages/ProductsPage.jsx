@@ -146,9 +146,9 @@ const ProductsPage = () => {
   };
 
   return (
- <div className="py-12 sm:py-16 bg-slate-50 min-h-screen space-y-12">
+    <div className="py-12 sm:py-16 bg-slate-50 min-h-screen space-y-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-xl relative overflow-hidden">
+        <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-xl relative overflow-hidden">
           <div className="mx-auto text-center max-w-5xl space-y-4 ">
             <span className="inline-block text-xs font-bold tracking-widest uppercase text-sky-400 bg-sky-500/20 px-3.5 py-1.5 rounded-full border border-sky-400/30">
               Orthopedic Product Catalog
@@ -496,6 +496,16 @@ const ProductsPage = () => {
                           </div>
                         </div>
                       )}
+                    {selectedProduct.image_url && (
+                      <div className="w-72 mx-auto border border-gray-100 shadow-2xl shadow-gray-300 rounded-2xl">
+                        <img
+                          src={selectedProduct.image_url}
+                          alt={selectedProduct.name}
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                    )}
                     {/* Footer */}
                     <div className="flex items-center justify-between gap-4 border-t border-slate-100 px-1 pt-4">
                       <span className="text-xs text-slate-500">

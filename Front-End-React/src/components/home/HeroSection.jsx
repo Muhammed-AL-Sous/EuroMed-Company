@@ -36,10 +36,10 @@ const HeroSection = () => {
               </h1>
 
               <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl font-normal">
-                EuroMed supplies high-quality, internationally certified
-                orthopedic and surgical medical materials for doctors,
-                hospitals, and healthcare professionals across Iraq. Precision
-                engineered for arthroplasty, trauma, and joint reconstruction.
+                EuroMed Supplies High-Quality, Internationally Certified
+                Orthopedic and Surgical Medical Materials For Doctors,
+                Hospitals, and Healthcare Professionals Across Iraq. Precision
+                Engineered For Arthroplasty, Trauma, and Joint Reconstruction.
               </p>
 
               {/* CTAs */}

@@ -136,9 +136,9 @@ const PatientPortalCTA = () => {
 
               {/* Description */}
               <p className="text-slate-300 text-base leading-relaxed max-w-xl">
-                Enter your unique operation code and surgery date to securely
-                access the full list of medical materials, implant serial
-                numbers, and manufacturer lot codes used in your procedure.
+                Enter Your Unique Operation Code and Surgery Date To Securely
+                Access The Full List of Medical Materials, Implant Serial
+                Numbers, and Manufacturer Lot Codes Used in Your Procedure.
               </p>
 
               {/* Demo Information */}

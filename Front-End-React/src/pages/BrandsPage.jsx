@@ -4,12 +4,12 @@ import { useGetManufacturersQuery } from "../features/Manufacturers/Manufacturer
 
 const BrandsPage = () => {
   const { data, isLoading } = useGetManufacturersQuery();
-    const brands = data || [];
-  
+  const brands = data || [];
+
   return (
     <div className="py-12 sm:py-16 bg-slate-50 min-h-screen space-y-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-xl relative overflow-hidden">
+        <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-xl relative overflow-hidden">
           <div className="mx-auto text-center max-w-5xl space-y-4">
             <span className="inline-block text-xs font-bold tracking-widest uppercase text-sky-400 bg-sky-500/20 px-3.5 py-1.5 rounded-full border border-sky-400/30">
               International Partnerships
@@ -18,9 +18,9 @@ const BrandsPage = () => {
               Authorized Implant Brands & Manufacturers
             </h1>
             <p className="text-slate-300 text-base sm:text-lg leading-relaxed tracking-wide">
-              EuroMed partners directly with global leaders in orthopedics,
-              total joint arthroplasty, and trauma hardware to deliver certified
-              medical devices to hospitals across Iraq.
+              EuroMed Partners Directly With Global Leaders in Orthopedics,
+              Total Joint Arthroplasty, and Trauma Hardware To Deliver Certified
+              Medical Devices To Hospitals Across Iraq.
             </p>
           </div>
         </div>
@@ -28,9 +28,6 @@ const BrandsPage = () => {
         {isLoading ? (
           <div className="py-20 text-center">
             <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-slate-500 text-sm">
-              Fetching brand partners from EuroMed API...
-            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -19,12 +19,12 @@ const ContactPage = () => {
               Contact EuroMed
             </span>
             <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
-              Get in Touch with Our Erbil Office
+              Get in Touch With Our Erbil Office
             </h1>
             <p className="text-slate-300 text-base sm:text-lg leading-relaxed tracking-wide">
-              Whether you are an orthopedic surgeon, hospital purchasing
-              manager, or patient seeking operation verification assistance, our
-              Erbil team is ready to assist you.
+              Whether You Are An Orthopedic Surgeon, Hospital Purchasing
+              Manager, Or Patient Seeking Operation Verification Assistance, Our
+              Erbil Team is Ready To Assist You.
             </p>
           </div>
         </div>
@@ -86,7 +86,7 @@ const ContactPage = () => {
                     info@euromed.iq
                   </div>
                   <div className="text-slate-600 text-[11.5px] font-semibold">
-                    euromed.iraq@gmail.com
+                    Euromed.iraq@gmail.com
                   </div>
                 </div>
               </div>
@@ -119,11 +119,11 @@ const ContactPage = () => {
             {submitted ? (
               <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold space-y-2">
                 <div className="text-base font-bold">
-                  Thank you for contacting EuroMed!
+                  Thank You For Contacting EuroMed !
                 </div>
                 <div>
-                  Your inquiry has been received. Our medical sales specialist
-                  in Erbil will contact you shortly.
+                  Your Inquiry Has Been Received. Our Medical Sales Specialist
+                  in Erbil Will Contact You Shortly.
                 </div>
               </div>
             ) : (

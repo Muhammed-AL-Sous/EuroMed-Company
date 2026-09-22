@@ -176,7 +176,7 @@ const OperationDetailsPage = () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("PDF generation error:", error);
-      setErrorMessage("Failed to download PDF. Please try again.");
+      setErrorMessage("Failed To Download PDF. Please Try Again.");
     } finally {
       setIsDownloading(false);
     }
@@ -227,8 +227,8 @@ const OperationDetailsPage = () => {
               Patient Operation & Material Portal
             </h1>
             <p className="text-slate-300 text-base sm:text-lg leading-relaxed tracking-wide">
-              Verify the official medical hardware, manufacturer lot codes, and
-              surgical materials used in your operation.
+              Verify The Official Medical Hardware, Manufacturer Lot Codes, and
+              Surgical Materials Used In Your Operation.
             </p>
           </div>
         </div>

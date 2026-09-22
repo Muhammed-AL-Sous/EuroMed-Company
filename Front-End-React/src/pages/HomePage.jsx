@@ -34,8 +34,8 @@ const HomePage = () => {
                 Visit Our Main Office & Warehouse
               </h2>
               <p className="text-slate-600 text-sm mt-2">
-                Serving hospitals, surgical centers, and orthopedic surgeons
-                throughout Erbil and Kurdistan Region.
+                Serving Hospitals, Surgical Centers, and Orthopedic Surgeons
+                Throughout Erbil and Kurdistan Region.
               </p>
             </div>
             <LocationMap />

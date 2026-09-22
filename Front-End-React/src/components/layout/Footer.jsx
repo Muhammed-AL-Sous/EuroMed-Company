@@ -21,9 +21,9 @@ const Footer = () => {
               </span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
-              EuroMed is Iraq’s leading medical supplies provider specializing
-              in premium orthopedic implants, surgical materials, and total
-              joint replacement hardware serving surgeons and hospitals.
+              EuroMed is Iraq’s Leading Medical Supplies Provider Specializing
+              in Premium Orthopedic Implants, Surgical Materials, and Total
+              Joint Replacement Hardware Serving Surgeons and Hospitals.
             </p>
             <div className="pt-2 flex items-center gap-3 text-xs font-semibold text-sky-400">
               <span className="flex items-center gap-1 bg-sky-950/80 px-3 py-1.5 rounded-lg border border-sky-800/50">
@@ -101,8 +101,8 @@ const Footer = () => {
                 </RouterLink>
               </li>
               <li className="text-xs text-slate-500 leading-relaxed pt-1">
-                Patients can enter their operation code and operation date to
-                verify implant materials used during surgery.
+                Patients Can Enter Their Operation Code and Operation Date To
+                Verify Implant Materials Used During Surgery.
               </li>
               <li>
                 <RouterLink
@@ -137,7 +137,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-sky-400 shrink-0" />
-                <span>euromed.iraq@gmail.com</span>
+                <span>Euromed.iraq@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -146,8 +146,8 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-8 pt-4 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-300 tracking-wider gap-4">
           <p>
-            © {new Date().getFullYear()} EuroMed Orthopedic &
-            Surgical Supplies Ltd. All rights reserved.
+            © {new Date().getFullYear()} EuroMed Orthopedic & Surgical Supplies
+            Ltd. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <span className="hover:text-slate-400 duration-300 transition-colors cursor-pointer">

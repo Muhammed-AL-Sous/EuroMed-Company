@@ -35,12 +35,12 @@ export default function Pagination({ meta, onPageChange, disabled = false }) {
               {from}–{to}
             </span>{" "}
             of <span className="font-semibold text-slate-800">{total}</span>{" "}
-            products
+            Products
           </>
         ) : (
           <>
             <span className="font-semibold text-slate-800">{total}</span>{" "}
-            products
+            Products
           </>
         )}
       </p>
