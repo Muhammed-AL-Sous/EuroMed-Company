@@ -46,21 +46,28 @@ const LoginPage = () => {
       const response = await loginPromise;
 
       const { user } = response.data;
-
+      console.log(user);
       dispatch(setCredentials({ user }));
 
-      if (response.user.role === "admin") {
-        navigate("/admin/dashboard");
-      } else if (response.user.role === "doctor") {
-        navigate("/doctor/dashboard");
+      if (user.role.role_name === "admin") {
+        notifySonner("welcome back", "success");
+        setTimeout(() => {
+          navigate("/admin");
+        }, 2000);
+      } else if (user.role.role_name === "doctor") {
+        notifySonner("welcome back", "success");
+        setTimeout(() => {
+          navigate("/doctor");
+        }, 2000);
       } else {
-        navigate("/staff/dashboard");
+        notifySonner("welcome back", "success");
+        setTimeout(() => {
+          navigate("/staff");
+        }, 2000);
       }
-
-      notifySonner("welcome back", "success");
     } catch (err) {
       setErrorMessage(
-        err?.data?.message || "Login failed. Please check your credentials.",
+        err?.data?.message || "Login failed. Please Check Your Credentials.",
       );
 
       const status = err.status;
