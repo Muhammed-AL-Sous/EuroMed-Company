@@ -67,34 +67,13 @@ export default function Navbar() {
         {/* Brand Logo */}
 
         <Link to="/" className="flex items-center gap-3 group">
-          <motion.div
-            whileHover={{
-              scale: [null, 1.1, 1.2],
-              transition: {
-                duration: 0.5,
-                times: [0, 0.6, 1],
-                ease: ["easeInOut", "easeOut"],
-              },
-            }}
-            transition={{
-              duration: 0.3,
-              ease: "easeOut",
-            }}
-          >
-            <div className="w-11 h-11 rounded-xl bg-linear-to-br from-sky-500 to-slate-900 flex items-center justify-center">
-              <img
-                src="/images/Euromed-logo-icon.png"
-                alt="EuroMed-Logo"
-                className="w-6 h-6 text-sky-300"
-              />
-            </div>
-          </motion.div>
           <div className="flex flex-col">
-            <span className="text-2xl font-bold text-slate-600 tracking-tight flex items-center gap-0.5">
-              Euro<span className="text-sky-600">Med</span>
-            </span>
-
-            <span className="text-[10px] tracking-wider uppercase font-bold text-slate-400 mt-1">
+            <img
+              src="/images/EuroMed-Logo-layout.png"
+              alt="EuroMed-Logo"
+              className="w-40 mb-0 mx-auto"
+            />
+            <span className="text-[10px] tracking-wider uppercase font-bold text-slate-400">
               Orthopedic & Surgical Implants
             </span>
           </div>
