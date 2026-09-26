@@ -1,5 +1,4 @@
 import { Award, Building2, ShieldCheck, Stethoscope } from "lucide-react";
-import LocationMap from "./../components/common/LocationMap";
 
 const AboutPage = () => {
   const values = [
@@ -83,19 +82,6 @@ const AboutPage = () => {
             );
           })}
         </div>
-      </div>
-
-      {/* Headquarters Location */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-slate-900">
-            EuroMed Headquarters & Distribution Hub
-          </h2>
-          <p className="text-slate-600 text-sm">
-            Located on Koya Road, Hewa City, Zone A, Building 142, Erbil, Iraq.
-          </p>
-        </div>
-        <LocationMap />
       </div>
     </div>
   );

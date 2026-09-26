@@ -9,7 +9,7 @@ const ProtectedRoute = ({ allowedRoles }) => {
   const user = useSelector(selectCurrentUser);
   const authReady = useSelector(selectAuthReady);
   const location = useLocation();
-  console.log(user);
+
   if (!authReady) {
     return null;
   }

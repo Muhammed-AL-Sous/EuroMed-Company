@@ -1,8 +1,8 @@
 import { AlertCircle, Eye, EyeOff, KeyRound, Lock, Mail } from "lucide-react";
 // ========= React ========= //
 import { useState, useRef, useCallback } from "react";
-import { useNavigate } from "react-router";
 
+import { useNavigate, useLocation } from "react-router";
 // ========= Redux ========= //
 import { useDispatch } from "react-redux";
 
@@ -11,6 +11,8 @@ import { useLoginMutation } from "../authApiSlice";
 import { setCredentials } from "../authSlice";
 import { notifySonner } from "./../../../lib/notifySonner";
 import { Spinner } from "../../../components/common/SpinnerFallback";
+import { getPostAuthDestination } from "../logic/postAuthRedirect";
+import { getLoginFormErrors } from "../validation/authFormValidators";
 
 const LoginPage = () => {
   // ========= React State ========= //
@@ -23,11 +25,14 @@ const LoginPage = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [errors, setErrors] = useState({});
+
   // ========= Refs ========= //
   const passwordRef = useRef(null);
 
   // ========= Router ========= //
   const navigate = useNavigate();
+  const location = useLocation();
 
   // ========= Redux ========= //
   const dispatch = useDispatch();
@@ -35,43 +40,59 @@ const LoginPage = () => {
   // ========= API Mutation ========= //
   const [login, { isLoading }] = useLoginMutation();
 
+  // ========= Validate Login Form ========= //
+  const validateLoginForm = () => {
+    const newErrors = getLoginFormErrors(loginForm);
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const patchClearFieldError = (prevErrors, fieldName) => {
+    if (!prevErrors || !prevErrors[fieldName]) return prevErrors;
+    return { ...prevErrors, [fieldName]: null };
+  };
+
+  // ========= Handle Change Function ========= //
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLoginForm((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => patchClearFieldError(prev, name));
+  };
+
   // ========= Handle Submit Function ========= //
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
+    const isValid = validateLoginForm();
+    if (!isValid) return;
+
     try {
       const loginPromise = login(loginForm).unwrap();
 
       const response = await loginPromise;
-
+     
       const { user } = response.data;
-      console.log(user);
+
       dispatch(setCredentials({ user }));
 
-      if (user.role.role_name === "admin") {
-        notifySonner("welcome back", "success");
-        setTimeout(() => {
-          navigate("/admin");
-        }, 2000);
-      } else if (user.role.role_name === "doctor") {
-        notifySonner("welcome back", "success");
-        setTimeout(() => {
-          navigate("/doctor");
-        }, 2000);
-      } else {
-        notifySonner("welcome back", "success");
-        setTimeout(() => {
-          navigate("/staff");
-        }, 2000);
-      }
+      const destination = getPostAuthDestination(user, {
+        fallbackPath: location.state?.from?.pathname,
+      });
+
+      notifySonner("welcome back", "success");
+
+      setTimeout(() => {
+        navigate(destination, { replace: true });
+      }, 3000);
+
     } catch (err) {
       setErrorMessage(
         err?.data?.message || "Login failed. Please Check Your Credentials.",
       );
 
       const status = err.status;
-      // معالجة الـ 401 (بيانات خاطئة)
+
       if (status === 401) {
         notifySonner("Invalid Email Or Password", "error");
         return;
@@ -125,7 +146,7 @@ const LoginPage = () => {
 
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+          <div className="mb-7">
             <label className="block text-xs font-bold text-slate-700 tracking-wider mb-2">
               Email Address
             </label>
@@ -135,18 +156,28 @@ const LoginPage = () => {
                 type="email"
                 name="email"
                 value={loginForm.email}
-                onChange={(e) => {
-                  const { name, value } = e.target;
-                  setLoginForm((prev) => ({ ...prev, [name]: value }));
-                }}
+                onChange={handleChange}
                 autoComplete="email"
                 placeholder="user@euromed.iq"
-                className="w-full bg-slate-50 text-slate-900 pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:border-sky-500 outline-0 text-sm font-medium"
+                className={`w-full bg-slate-50 text-slate-900 pl-11 pr-4 py-3 rounded-xl border outline-0 text-sm font-medium
+        ${
+          errors.email
+            ? "border-red-500 focus:border-red-500"
+            : "border-slate-200 focus:border-sky-500"
+        }`}
               />
+              {/* ======= Errors Email ======= */}
+              {errors.email && (
+                <div className="absolute left-0 right-0 top-[calc(100%+6px)] w-full">
+                  <p className="text-red-500 text-xs font-semibold px-1">
+                    {errors.email}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          <div>
+          <div className="mb-7">
             <div className="flex items-center justify-between mb-2">
               <label className="block text-xs font-bold text-slate-700 tracking-wider">
                 Password
@@ -179,13 +210,23 @@ const LoginPage = () => {
                       : "normal",
                 }}
                 value={loginForm.password}
-                onChange={(e) => {
-                  const { name, value } = e.target;
-                  setLoginForm((prev) => ({ ...prev, [name]: value }));
-                }}
+                onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full outline-0 bg-slate-50 text-slate-900 pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:border-sky-500 text-sm font-medium"
+                className={`w-full bg-slate-50 text-slate-900 pl-11 pr-4 py-3 rounded-xl border outline-0 text-sm font-medium
+        ${
+          errors.password
+            ? "border-red-500 focus:border-red-500"
+            : "border-slate-200 focus:border-sky-500"
+        }`}
               />
+              {/* ======= Errors password ======= */}
+              {errors.password && (
+                <div className="absolute left-0 right-0 top-[calc(100%+6px)] w-full">
+                  <p className="text-red-500 text-xs font-semibold px-1">
+                    {errors.password}
+                  </p>
+                </div>
+              )}
               {/* ======= Icon Show Hide Password ======= */}
               <button
                 type="button"
@@ -206,7 +247,7 @@ const LoginPage = () => {
           <div className="flex items-center justify-between">
             <label
               htmlFor="remember"
-              className="text-md font-medium text-slate-700 dark:text-slate-300 cursor-pointer"
+              className="text-md font-extrabold text-slate-600 cursor-pointer"
             >
               Remember Me
             </label>

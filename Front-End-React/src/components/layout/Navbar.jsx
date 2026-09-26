@@ -1,18 +1,68 @@
-import { KeyRound, LogOut, Menu, ShieldCheck, User, X } from "lucide-react";
-import { useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router";
-// import { logout } from "../../store/slices/authSlice.js";
-import { motion } from "motion/react";
+import {
+  KeyRound,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  ShieldCheck,
+  X,
+} from "lucide-react";
+import { Link, useLocation } from "react-router";
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from "react";
+import {
+  selectCurrentUser,
+  selectAuthReady,
+} from "../../features/auth/authSlice";
+import { useLogoutMutation } from "../../features/auth/authApiSlice";
+import { useSelector } from "react-redux";
+import { ROLES_CONFIG } from "../../routes/roles.config";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  // const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const user = true;
-  const isAuthenticated = true;
+
+  const user = useSelector(selectCurrentUser);
+  const authReady = useSelector(selectAuthReady);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const menuRef = useRef(null);
+  const toggleRef = useRef(null);
+  const [logout] = useLogoutMutation();
+
+  /* ================= Lock Body Scroll ================= */
+  useLayoutEffect(() => {
+    document.body.style.overflow = isMobileOpen ? "hidden" : "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isMobileOpen]);
+
+  /* ================= Click Outside ================= */
+  const handleClickOutside = useCallback(
+    (event) => {
+      if (
+        isMobileOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        toggleRef.current &&
+        !toggleRef.current.contains(event.target)
+      ) {
+        setIsMobileOpen(false);
+      }
+    },
+    [isMobileOpen],
+  );
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [handleClickOutside]);
+
+  /* ================= Navigation Links ================= */
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Brands", path: "/brands" },
@@ -22,17 +72,26 @@ export default function Navbar() {
     { name: "Contact", path: "/contact" },
   ];
 
-  const handleLogout = () => {
-    // dispatch(logout());
-    navigate("/login");
+  const authButtonClass =
+    "px-4 py-2 bg-linear-to-r from-[#00a6f1] to-[#00a6f4] rounded-full text-white text-sm font-semibold shadow-sky-500 cursor-pointer hover:shadow-xl hover:shadow-[#00a6f4]/30 transition-all duration-300 transform hover:-translate-y-1 transform-will-change";
+
+  const logoutButtonClass =
+    "inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-300 dark:border-white/20 text-gray-800 dark:text-white text-sm font-semibold cursor-pointer hover:bg-slate-100 hover:border-slate-300 dark:hover:bg-white/10 dark:hover:border-white/10 transition-all duration-300 transform hover:-translate-y-1 transform-will-change";
+
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+    } catch {
+      /* session may already be cleared */
+    }
+    setIsMobileOpen(false);
   };
 
-  const getDashboardPath = () => {
-    if (!user) return "/login";
-    if (user.role === "admin") return "/admin/dashboard";
-    if (user.role === "doctor") return "/doctor/dashboard";
-    return "/staff/dashboard";
-  };
+  const isFullyOnboarded = authReady && user;
+
+  const dashboardHref = user
+    ? `/${ROLES_CONFIG[user.role.role_name]?.prefix || "doctor"}`
+    : "/";
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-xs">
@@ -104,21 +163,21 @@ export default function Navbar() {
 
         {/* Right Action CTA */}
         <div className="hidden md:flex items-center gap-3">
-          {isAuthenticated && user ? (
+          {isFullyOnboarded ? (
             <div className="flex items-center gap-2">
               <Link
-                to={getDashboardPath()}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-linear-to-br from-sky-600 to-slate-900 text-white text-sm font-semibold transition-colors shadow-xs"
+                to={dashboardHref}
+                className={`inline-flex items-center gap-2 ${authButtonClass}`}
               >
-                <User className="w-4 h-4 text-sky-400" />{" "}
-                {/* {user.name.split(" ")[0]} ({user.role}) */}
+                <LayoutDashboard size={18} />
+                {user.name.split(" ")[0]} ({user.role.role_name})
               </Link>
               <button
                 onClick={handleLogout}
                 title="Log Out"
-                className="p-2.5 cursor-pointer rounded-xl bg-slate-100 text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors"
+                className={logoutButtonClass}
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut size={18} className="text-[#ed1c24]" />
               </button>
             </div>
           ) : (
@@ -126,7 +185,7 @@ export default function Navbar() {
               to="/login"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 text-white hover:bg-sky-700 text-sm font-semibold transition-colors shadow-xs"
             >
-              <KeyRound className="w-4 h-4" /> Staff Login
+              <KeyRound className="w-4 h-4" /> Login
             </Link>
           )}
         </div>
@@ -168,15 +227,15 @@ export default function Navbar() {
             );
           })}
           <div className="pt-4 border-t border-slate-100">
-            {isAuthenticated && user ? (
+            {isFullyOnboarded ? (
               <div className="space-y-2">
                 <Link
-                  to={getDashboardPath()}
+                  to={dashboardHref}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-900 text-white font-semibold text-center"
+                  className={`inline-flex items-center gap-2 ${authButtonClass}`}
                 >
-                  <User className="w-4 h-4 text-sky-400" /> Go to{" "}
-                  {user.role.toUpperCase()} Dashboard
+                  <LayoutDashboard size={18} /> Go to {user.role.toUpperCase()}{" "}
+                  Dashboard
                 </Link>
                 <button
                   onClick={() => {
