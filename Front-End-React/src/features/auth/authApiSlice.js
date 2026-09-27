@@ -135,7 +135,7 @@ export const authApiSlice = baseApi.injectEndpoints({
         try {
           await queryFulfilled;
           dispatch(logOut());
-          dispatch(baseApi.util.resetApiState());
+          // dispatch(baseApi.util.resetApiState());
           document.cookie =
             "fast_check=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
         } catch (error) {

@@ -11,7 +11,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $admin = User::create([
-            'email' => 'admin@admin.com',
+            'email' => 'admin@euromed.com',
             'name' => 'Admin',
             'password' => 'admin123',
             'email_verified_at' => now(),
@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
         $admin->assignRole('admin');
 
         $dataEntry = User::create([
-            'email' => 'dataentry@dataentry.com',
+            'email' => 'dataentry@euromed.com',
             'name' => 'Data Entry',
             'password' => 'data123',
             'email_verified_at' => now(),
@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
         $dataEntry->assignRole('data_entry');
 
         $doctor = User::create([
-            'email' => 'doctor@doctor.com',
+            'email' => 'doctor@euromed.com',
             'name' => 'Doctor',
             'password' => 'doctor123',
             'email_verified_at' => now(),

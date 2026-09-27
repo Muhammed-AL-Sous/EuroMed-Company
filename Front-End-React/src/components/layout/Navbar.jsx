@@ -6,7 +6,7 @@ import {
   ShieldCheck,
   X,
 } from "lucide-react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import {
   useState,
   useEffect,
@@ -25,7 +25,7 @@ import { ROLES_CONFIG } from "../../routes/roles.config";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-
+  const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
   const authReady = useSelector(selectAuthReady);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -81,10 +81,12 @@ export default function Navbar() {
   const handleLogout = async () => {
     try {
       await logout().unwrap();
-    } catch {
-      /* session may already be cleared */
+    } catch (error) {
+      console.warn("Logout request failed:", error);
     }
-    setIsMobileOpen(false);
+
+    setMobileMenuOpen(false);
+    navigate("/login", { replace: true });
   };
 
   const isFullyOnboarded = authReady && user;

@@ -85,7 +85,7 @@ export default function AuthInitializer({ children }) {
 
   // معالجة استجابة بيانات المستخدم
   useEffect(() => {
-    const userInfo = userData?.data?.user;
+    const userInfo = userData?.data;
     if (userInfo) {
       dispatch(setCredentials({ user: userInfo }));
 
