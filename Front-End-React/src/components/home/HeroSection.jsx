@@ -82,7 +82,7 @@ const HeroSection = () => {
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-md lg:max-w-none rounded-3xl overflow-hidden border border-slate-700/80 bg-slate-800/90 shadow-2xl p-3">
                 <img
-                  src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=800"
+                  src="/images/euromed-landing.png"
                   alt="EuroMed Orthopedic Surgical Implants"
                   className="w-full h-95 object-cover rounded-2xl brightness-95"
                   referrerPolicy="no-referrer"

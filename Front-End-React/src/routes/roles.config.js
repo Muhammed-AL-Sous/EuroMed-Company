@@ -2,20 +2,18 @@ import { lazy } from "react";
 
 // Icons
 import {
-  Activity,
   Award,
   BarChart2,
-  Building2,
   ClipboardList,
   Hospital,
-  Layers,
-  LogOut,
   Package,
-  Plus,
   Settings,
   Stethoscope,
   Users,
-  Video,
+  UserRoundGroup,
+  Blocks,
+  Box,
+  RobotArm,
 } from "lucide-react";
 
 const AdminStats = lazy(
@@ -54,10 +52,6 @@ export const ROLES_CONFIG = {
             to: "/operations/create",
             label: "Create Operation",
           },
-          {
-            to: "/operation-types",
-            label: "Operation Types",
-          },
         ],
       },
       {
@@ -66,42 +60,127 @@ export const ROLES_CONFIG = {
         children: [
           {
             to: "/products",
-            label: "Products",
+            label: "All Products",
           },
           {
-            to: "/categories",
-            label: "Categories",
-          },
-          {
-            to: "/subcategories",
-            label: "Subcategories",
-          },
-          {
-            to: "/manufacturers",
-            label: "Manufacturers",
+            to: "/products/create",
+            label: "Create Product",
           },
         ],
       },
 
       {
-        to: "/doctors",
-        label: "Doctors",
-        icon: Stethoscope,
+        label: "Categories",
+        icon: Blocks,
+        children: [
+          {
+            to: "/categories",
+            label: "All Categories",
+          },
+          {
+            to: "/categories/create",
+            label: "Create Category",
+          },
+        ],
       },
 
       {
-        to: "/hospitals",
-        label: "Hospitals",
-        icon: Hospital,
+        label: "Subcategories",
+        icon: Box,
+        children: [
+          {
+            to: "/subcategories",
+            label: "All Subcategories",
+          },
+          {
+            to: "/subcategories/create",
+            label: "Create Subcategory",
+          },
+        ],
       },
 
+      {
+        label: "Manufacturers",
+        icon: RobotArm,
+        children: [
+          {
+            to: "/manufacturers",
+            label: "All Manufacturers",
+          },
+          {
+            to: "/manufacturers/create",
+            label: "Create Manufacturer",
+          },
+        ],
+      },
+
+      {
+        label: "Doctors",
+        icon: Stethoscope,
+        children: [
+          {
+            to: "/doctors",
+            label: "All Doctors",
+          },
+          {
+            to: "/doctors/create",
+            label: "Create Doctor Profile",
+          },
+        ],
+      },
+
+      {
+        label: "Hospitals",
+        icon: Hospital,
+        children: [
+          {
+            to: "/hospitals",
+            label: "All Hospitals",
+          },
+          { to: "/hospitals/create", label: "Create Hospital" },
+        ],
+      },
+      {
+        label: "Patient Records",
+        icon: Users,
+        children: [
+          { to: "/patients", label: "All Patients" },
+          { to: "/patients/create", label: "Create Patient" },
+        ],
+      },
+      {
+        label: "Brands",
+        icon: Award,
+        children: [
+          {
+            to: "/brands",
+            label: "All Brands",
+          },
+          {
+            to: "/brands/create",
+            label: "Create Brand",
+          },
+        ],
+      },
+      {
+        label: "Users",
+        icon: UserRoundGroup,
+        children: [
+          {
+            to: "/users",
+            label: "All Users",
+          },
+          {
+            to: "/users/create",
+            label: "Create User",
+          },
+        ],
+      },
       {
         to: "/settings",
         label: "Settings",
         icon: Settings,
       },
-      { to: "/patients", label: "Patient Records", icon: Users },
-      { to: "/brands", label: "Brands", icon: Award },
     ],
 
     routes: [{ path: "", element: DashboardPage }],
@@ -114,7 +193,7 @@ export const ROLES_CONFIG = {
 
     doctorComponent: DoctorStats,
 
-    sidebar: [{ icon: BarChart2, label: "dashboard", to: "/doctor" }],
+    sidebar: [{ icon: BarChart2, label: "Dashboard", to: "/doctor" }],
 
     routes: [{ path: "", element: DashboardPage }],
   },
@@ -124,7 +203,7 @@ export const ROLES_CONFIG = {
 
     staffComponent: StaffStats,
 
-    sidebar: [{ icon: BarChart2, label: "dashboard", to: "/staff" }],
+    sidebar: [{ icon: BarChart2, label: "Dashboard", to: "/staff" }],
 
     routes: [{ path: "", element: DashboardPage }],
   },

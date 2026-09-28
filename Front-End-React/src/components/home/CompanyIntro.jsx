@@ -53,7 +53,7 @@ const CompanyIntro = () => {
             <div className="lg:col-span-5 relative">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-slate-900 border border-slate-200">
                 <img
-                  src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&q=80&w=800"
+                  src="/images/euromed-CompanyIntro.png"
                   alt="Orthopedic Surgeons in Surgery"
                   className="w-full h-110 object-cover"
                   referrerPolicy="no-referrer"
