@@ -71,7 +71,7 @@ const LoginPage = () => {
       const loginPromise = login(loginForm).unwrap();
 
       const response = await loginPromise;
-     
+
       const { user } = response.data;
 
       dispatch(setCredentials({ user }));
@@ -80,12 +80,9 @@ const LoginPage = () => {
         fallbackPath: location.state?.from?.pathname,
       });
 
+      navigate(destination, { replace: true });
+      
       notifySonner("welcome back", "success");
-
-      setTimeout(() => {
-        navigate(destination, { replace: true });
-      }, 3000);
-
     } catch (err) {
       setErrorMessage(
         err?.data?.message || "Login failed. Please Check Your Credentials.",

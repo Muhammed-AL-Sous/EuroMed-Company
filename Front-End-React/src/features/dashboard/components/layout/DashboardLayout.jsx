@@ -30,7 +30,7 @@ const DashboardLayout = () => {
 
   return (
     <>
-      <div className="h-dvh w-full overflow-hidden bg-slate-50 dark:bg-black flex selection:bg-red-500/30">
+      <div className="h-dvh w-full overflow-hidden flex">
         {/* ============== Dashboard SideBar ============== */}
         <DashboardSidebar
           isOpen={isSidebarOpen}

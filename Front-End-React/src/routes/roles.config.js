@@ -1,7 +1,22 @@
 import { lazy } from "react";
 
 // Icons
-import { LayoutDashboard } from "lucide-react";
+import {
+  Activity,
+  Award,
+  BarChart2,
+  Building2,
+  ClipboardList,
+  Hospital,
+  Layers,
+  LogOut,
+  Package,
+  Plus,
+  Settings,
+  Stethoscope,
+  Users,
+  Video,
+} from "lucide-react";
 
 const AdminStats = lazy(
   () => import("../features/admin/components/common/AdminStats.jsx"),
@@ -25,9 +40,73 @@ export const ROLES_CONFIG = {
 
     statsComponent: AdminStats,
 
-    sidebar: [{ icon: LayoutDashboard, label: "dashboard", to: "/admin" }],
+    sidebar: [
+      { to: "/admin", label: "Dashboard", icon: BarChart2 },
+      {
+        label: "Operations",
+        icon: ClipboardList,
+        children: [
+          {
+            to: "/operations",
+            label: "All Operations",
+          },
+          {
+            to: "/operations/create",
+            label: "Create Operation",
+          },
+          {
+            to: "/operation-types",
+            label: "Operation Types",
+          },
+        ],
+      },
+      {
+        label: "Products",
+        icon: Package,
+        children: [
+          {
+            to: "/products",
+            label: "Products",
+          },
+          {
+            to: "/categories",
+            label: "Categories",
+          },
+          {
+            to: "/subcategories",
+            label: "Subcategories",
+          },
+          {
+            to: "/manufacturers",
+            label: "Manufacturers",
+          },
+        ],
+      },
+
+      {
+        to: "/doctors",
+        label: "Doctors",
+        icon: Stethoscope,
+      },
+
+      {
+        to: "/hospitals",
+        label: "Hospitals",
+        icon: Hospital,
+      },
+
+      {
+        to: "/settings",
+        label: "Settings",
+        icon: Settings,
+      },
+      { to: "/patients", label: "Patient Records", icon: Users },
+      { to: "/brands", label: "Brands", icon: Award },
+    ],
 
     routes: [{ path: "", element: DashboardPage }],
+
+    colors: ["#0284c7", "#0d9488", "#6366f1", "#f59e0b", "#ec4899", "#8b5cf6"],
   },
 
   doctor: {
@@ -35,7 +114,7 @@ export const ROLES_CONFIG = {
 
     doctorComponent: DoctorStats,
 
-    sidebar: [{ icon: LayoutDashboard, label: "dashboard", to: "/doctor" }],
+    sidebar: [{ icon: BarChart2, label: "dashboard", to: "/doctor" }],
 
     routes: [{ path: "", element: DashboardPage }],
   },
@@ -45,7 +124,7 @@ export const ROLES_CONFIG = {
 
     staffComponent: StaffStats,
 
-    sidebar: [{ icon: LayoutDashboard, label: "dashboard", to: "/staff" }],
+    sidebar: [{ icon: BarChart2, label: "dashboard", to: "/staff" }],
 
     routes: [{ path: "", element: DashboardPage }],
   },
