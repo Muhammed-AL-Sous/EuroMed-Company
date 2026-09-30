@@ -2,7 +2,6 @@ import { lazy } from "react";
 
 // ============== Icons ============== //
 import {
-  Award,
   BarChart2,
   ClipboardList,
   Hospital,
@@ -69,6 +68,54 @@ const SubCategoriesPage = lazy(
 
 const CreateSubCategoryPage = lazy(
   () => import("../features/subCategories/pages/CreateSubCategoryPage.jsx"),
+);
+
+// ============== Manufacturers ============== //
+const ManufacturersPage = lazy(
+  () => import("../features/manufacturers/pages/ManufacturersPage.jsx"),
+);
+
+const CreateManufacturerPage = lazy(
+  () => import("../features/manufacturers/pages/CreateManufacturerPage.jsx"),
+);
+
+// ============== Doctors ============== //
+const DoctorsPage = lazy(
+  () => import("../features/doctors/pages/DoctorsPage.jsx"),
+);
+
+const CreateDoctorProfilePage = lazy(
+  () => import("../features/doctors/pages/CreateDoctorProfilePage.jsx"),
+);
+
+// ============== Hospitals ============== //
+const HospitalsPage = lazy(
+  () => import("./../features/hospitals/pages/HospitalsPage"),
+);
+
+const CreateHospitalPage = lazy(
+  () => import("../features/hospitals/pages/CreateHospitalPage.jsx"),
+);
+
+// ============== Patients ============== //
+const PatientsPage = lazy(
+  () => import("../features/patients/pages/PatientsPage.jsx"),
+);
+
+const CreatePatientPage = lazy(
+  () => import("../features/patients/pages/CreatePatientPage.jsx"),
+);
+
+// ============== Users ============== //
+const UsersPage = lazy(() => import("../features/users/pages/UsersPage.jsx"));
+
+const CreateUserPage = lazy(
+  () => import("../features/users/pages/CreateUserPage.jsx"),
+);
+
+// ============== Settings ============== //
+const EditAccountUserPage = lazy(
+  () => import("../features/users/pages/EditAccountUserPage.jsx"),
 );
 
 export const ROLES_CONFIG = {
@@ -187,20 +234,7 @@ export const ROLES_CONFIG = {
           { to: "/admin/patients/create", label: "Create Patient" },
         ],
       },
-      {
-        label: "Brands",
-        icon: Award,
-        children: [
-          {
-            to: "/admin/brands",
-            label: "All Brands",
-          },
-          {
-            to: "/admin/brands/create",
-            label: "Create Brand",
-          },
-        ],
-      },
+
       {
         label: "Users",
         icon: UserRoundGroup,
@@ -216,9 +250,14 @@ export const ROLES_CONFIG = {
         ],
       },
       {
-        to: "/admin/settings",
         label: "Settings",
         icon: Settings,
+        children: [
+          {
+            to: "/admin/settings/edit-account",
+            label: "Edit Account",
+          },
+        ],
       },
     ],
 
@@ -278,6 +317,81 @@ export const ROLES_CONFIG = {
       {
         path: "subcategories/create",
         element: CreateSubCategoryPage,
+      },
+
+      {
+        path: "manufacturers",
+        element: ManufacturersPage,
+        action: {
+          label: "Create Manufacturer",
+          to: "/admin/manufacturers/create",
+          icon: Plus,
+        },
+      },
+      {
+        path: "manufacturers/create",
+        element: CreateManufacturerPage,
+      },
+
+      {
+        path: "doctors",
+        element: DoctorsPage,
+        action: {
+          label: "Create Doctor Profile",
+          to: "/admin/doctors/create",
+          icon: Plus,
+        },
+      },
+      {
+        path: "doctors/create",
+        element: CreateDoctorProfilePage,
+      },
+
+      {
+        path: "hospitals",
+        element: HospitalsPage,
+        action: {
+          label: "Create Hospital",
+          to: "/admin/hospitals/create",
+          icon: Plus,
+        },
+      },
+      {
+        path: "hospitals/create",
+        element: CreateHospitalPage,
+      },
+
+      {
+        path: "patients",
+        element: PatientsPage,
+        action: {
+          label: "Create Patient",
+          to: "/admin/patients/create",
+          icon: Plus,
+        },
+      },
+      {
+        path: "patients/create",
+        element: CreatePatientPage,
+      },
+
+      {
+        path: "users",
+        element: UsersPage,
+        action: {
+          label: "Create User",
+          to: "/admin/users/create",
+          icon: Plus,
+        },
+      },
+      {
+        path: "users/create",
+        element: CreateUserPage,
+      },
+
+      {
+        path: "settings/edit-account",
+        element: EditAccountUserPage,
       },
     ],
 
