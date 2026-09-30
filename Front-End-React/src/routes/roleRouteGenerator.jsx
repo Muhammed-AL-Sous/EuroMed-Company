@@ -12,6 +12,9 @@ const roleRouteGenerator = () => {
         index: route.path === "",
         path: route.path === "" ? undefined : route.path,
         element: <Page />,
+        handle: {
+          action: route.action,
+        },
       };
     }),
   }));

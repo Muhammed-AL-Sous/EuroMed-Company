@@ -1,6 +1,6 @@
 import { ExternalLink, Globe } from "lucide-react";
 import { Link } from "react-router";
-import { useGetManufacturersQuery } from "../features/Manufacturers/ManufacturersApiSlice";
+import { useGetManufacturersQuery } from "../features/manufacturers/ManufacturersApiSlice";
 
 const BrandsPage = () => {
   const { data, isLoading } = useGetManufacturersQuery();

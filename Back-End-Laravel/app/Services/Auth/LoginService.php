@@ -47,8 +47,11 @@ class LoginService
             $request->session()->regenerate();
         }
 
-        return self::success(['user' => new UserResource($user->load(['roles', 'doctor']))])
-            ->withCookie($this->getFastCheckCookie());
+        return self::success([
+            'user' => new UserResource(
+                $user->load(['roles', 'doctor'])
+            )
+        ]);
     }
 
     private function checkRateLimit(AuthLoginRequest $request): ?JsonResponse

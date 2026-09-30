@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Search, ShieldAlert, X } from "lucide-react";
 import { useSearchParams } from "react-router";
 
-import { useGetProductsQuery } from "../features/Products/ProductsApiSlice";
-import { useGetSubCategoriesQuery } from "../features/SubCategories/SubCategoriesApiSlice";
-import { useGetManufacturersQuery } from "../features/Manufacturers/ManufacturersApiSlice";
+import { useGetProductsQuery } from "../features/products/ProductsApiSlice";
+import { useGetSubCategoriesQuery } from "../features/subCategories/SubCategoriesApiSlice";
+import { useGetManufacturersQuery } from "../features/manufacturers/ManufacturersApiSlice";
 
 import Pagination from "../components/utility/Pagination";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";

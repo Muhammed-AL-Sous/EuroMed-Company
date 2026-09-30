@@ -16,13 +16,6 @@ export default function AuthInitializer({ children }) {
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
 
-  // فحص وجود fast_check cookie
-  const hasFastCheck = useMemo(() => {
-    return document.cookie
-      .split(";")
-      .some((item) => item.trim().startsWith("fast_check="));
-  }, []);
-
   // فحص وجود XSRF-TOKEN
   const hasXSRFToken = useMemo(() => {
     return document.cookie
@@ -88,9 +81,6 @@ export default function AuthInitializer({ children }) {
     const userInfo = userData?.data;
     if (userInfo) {
       dispatch(setCredentials({ user: userInfo }));
-
-      // إضافة fast_check cookie للمرات القادمة
-      document.cookie = "fast_check=1; path=/; SameSite=Lax; max-age=2592000"; // 30 يوم
     }
   }, [userData, dispatch]);
 
@@ -98,9 +88,6 @@ export default function AuthInitializer({ children }) {
   useEffect(() => {
     if (userError) {
       if (userError.status === 401 || userError.status === 419) {
-        // مستخدم غير مصرح له - مسح الكوكيز وتسجيل الخروج
-        document.cookie =
-          "fast_check=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
         dispatch(logOut());
       } else {
         // خطأ آخر - اعرضه في console فقط
@@ -123,8 +110,7 @@ export default function AuthInitializer({ children }) {
     !userError &&
     (isUserLoading || isUserFetching || isUserUninitialized);
 
-  const isAuthLoading =
-    (hasFastCheck && !csrfReady) || isCsrfLoading || isUserDataLoading;
+  const isAuthLoading = !csrfReady || isCsrfLoading || isUserDataLoading;
 
   // إشعار Redux أن Auth جاهز
   const authReady = useSelector(selectAuthReady);

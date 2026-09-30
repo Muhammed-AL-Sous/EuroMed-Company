@@ -21,50 +21,46 @@ import { motion, AnimatePresence } from "motion/react";
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const user = useSelector(selectCurrentUser);
   const location = useLocation();
-  const roleConfig = user?.role.role_name
-    ? ROLES_CONFIG[user.role.role_name]
-    : null;
-  const sidebarLinks = roleConfig?.sidebar || [];
+
+  const roleName = user?.role?.role_name;
+
+  const roleConfig = roleName ? ROLES_CONFIG[roleName] : null;
+
+  const sidebarLinks = roleConfig?.sidebar ?? [];
 
   return (
-    <>
-      <div className="h-dvh w-full overflow-hidden flex">
-        {/* ============== Dashboard SideBar ============== */}
-        <DashboardSidebar
-          isOpen={isSidebarOpen}
-          setIsOpen={setIsSidebarOpen}
-          sidebarLinks={sidebarLinks}
-        />
+    <div className="flex h-dvh w-full overflow-hidden">
+      <DashboardSidebar
+        isOpen={isSidebarOpen}
+        setIsOpen={setIsSidebarOpen}
+        sidebarLinks={sidebarLinks}
+      />
 
-        {/* ============== Main Content Area ============== */}
-        <div
-          className="flex-1 flex flex-col min-w-0 min-h-0 transition-all duration-300 ease-in-out
-        "
-        >
-          {/* ============== Dashboard NavBar ============== */}
-          <DashboardNavbar toggleSidebar={() => setIsSidebarOpen(true)} />
+      <div className="flex min-w-0 min-h-0 flex-1 flex-col">
+        <DashboardNavbar toggleSidebar={() => setIsSidebarOpen(true)} />
 
-          {/* ============== Dashboard Content ============== */}
-          <main className="mesh-gradient no-scroll-anchor flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-8 lg:p-10 relative overflow-x-hidden">
-            {/* ============== Page Transition Animation ============== */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, y: -15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 15 }}
-                transition={{ duration: 0.5, ease: "circOut" }}
-                className="w-full min-h-0"
-              >
-                <Outlet />
-              </motion.div>
-            </AnimatePresence>
-          </main>
-        </div>
+        <main className="mesh-gradient no-scroll-anchor relative flex-1 min-h-0 overflow-x-hidden overflow-y-auto overscroll-contain p-4 md:p-8 lg:p-10">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: -15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 15 }}
+              transition={{
+                duration: 0.5,
+                ease: "circOut",
+              }}
+              className="min-h-0 w-full"
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
+        </main>
       </div>
-    </>
+    </div>
   );
 };
 
