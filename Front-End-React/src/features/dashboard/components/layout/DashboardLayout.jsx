@@ -32,7 +32,7 @@ const DashboardLayout = () => {
   const sidebarLinks = roleConfig?.sidebar ?? [];
 
   return (
-    <div className="flex h-dvh w-full overflow-hidden">
+    <div className="flex h-dvh w-full bg-slate-100 overflow-hidden">
       <DashboardSidebar
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
@@ -40,9 +40,7 @@ const DashboardLayout = () => {
       />
 
       <div className="flex min-w-0 min-h-0 flex-1 flex-col">
-        <DashboardNavbar toggleSidebar={() => setIsSidebarOpen(true)} />
-
-        <main className="mesh-gradient no-scroll-anchor relative flex-1 min-h-0 overflow-x-hidden overflow-y-auto overscroll-contain p-4 md:p-8 lg:p-10">
+        <main className="flex-1 p-6 sm:p-10 space-y-8 overflow-x-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -50,11 +48,15 @@ const DashboardLayout = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 15 }}
               transition={{
-                duration: 0.5,
+                duration: 0.3,
                 ease: "circOut",
               }}
               className="min-h-0 w-full"
             >
+              <DashboardNavbar
+                user={user}
+                toggleSidebar={() => setIsSidebarOpen(true)}
+              />
               <Outlet />
             </motion.div>
           </AnimatePresence>

@@ -27,19 +27,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks }) => {
 
   const [logout] = useLogoutMutation();
 
-  // =========================================================
-  // Stores ONLY manual user interaction.
-  //
-  // Example:
-  // {
-  //   Products: false,
-  //   Operations: true
-  // }
-  //
-  // If a menu doesn't exist here, its state is derived
-  // automatically from the current route.
-  // =========================================================
-
   const [openMenus, setOpenMenus] = useState({});
 
   // =========================================================

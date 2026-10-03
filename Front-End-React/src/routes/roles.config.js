@@ -133,6 +133,7 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/operations",
             label: "All Operations",
+            icon: ClipboardList,
           },
           {
             to: "/admin/operations/create",
@@ -147,6 +148,7 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/products",
             label: "All Products",
+            icon: Package,
           },
           {
             to: "/admin/products/create",
@@ -162,6 +164,7 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/categories",
             label: "All Categories",
+            icon: Blocks,
           },
           {
             to: "/admin/categories/create",
@@ -177,6 +180,7 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/subcategories",
             label: "All Subcategories",
+            icon: Box,
           },
           {
             to: "/admin/subcategories/create",
@@ -192,6 +196,7 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/manufacturers",
             label: "All Manufacturers",
+            icon: RobotArm,
           },
           {
             to: "/admin/manufacturers/create",
@@ -207,6 +212,7 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/doctors",
             label: "All Doctors",
+            icon: Stethoscope,
           },
           {
             to: "/admin/doctors/create",
@@ -222,6 +228,7 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/hospitals",
             label: "All Hospitals",
+            icon: Hospital,
           },
           { to: "/admin/hospitals/create", label: "Create Hospital" },
         ],
@@ -230,7 +237,7 @@ export const ROLES_CONFIG = {
         label: "Patient Records",
         icon: Users,
         children: [
-          { to: "/admin/patients", label: "All Patients" },
+          { to: "/admin/patients", label: "All Patients", icon: Users },
           { to: "/admin/patients/create", label: "Create Patient" },
         ],
       },
@@ -242,6 +249,7 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/users",
             label: "All Users",
+            icon: UserRoundGroup,
           },
           {
             to: "/admin/users/create",
@@ -262,7 +270,13 @@ export const ROLES_CONFIG = {
     ],
 
     routes: [
-      { path: "", element: DashboardPage },
+      {
+        path: "",
+        element: DashboardPage,
+        action: {
+          header: "Dashboard Management",
+        },
+      },
       {
         path: "operations",
         element: OperationsPage,
@@ -270,6 +284,7 @@ export const ROLES_CONFIG = {
           label: "Create Operation",
           to: "/admin/operations/create",
           icon: Plus,
+          header: "Operations Management",
         },
       },
       {
@@ -284,6 +299,7 @@ export const ROLES_CONFIG = {
           label: "Create Product",
           to: "/admin/products/create",
           icon: Plus,
+          header: "Products Management",
         },
       },
       {
@@ -298,6 +314,7 @@ export const ROLES_CONFIG = {
           label: "Create Category",
           to: "/admin/categories/create",
           icon: Plus,
+          header: "Categories Management",
         },
       },
       {
@@ -312,6 +329,7 @@ export const ROLES_CONFIG = {
           label: "Create SubCategory",
           to: "/admin/subcategories/create",
           icon: Plus,
+          header: "Subcategories Management",
         },
       },
       {
@@ -326,6 +344,7 @@ export const ROLES_CONFIG = {
           label: "Create Manufacturer",
           to: "/admin/manufacturers/create",
           icon: Plus,
+          header: "Manufacturers Management",
         },
       },
       {
@@ -340,6 +359,7 @@ export const ROLES_CONFIG = {
           label: "Create Doctor Profile",
           to: "/admin/doctors/create",
           icon: Plus,
+          header: "Doctors Management",
         },
       },
       {
@@ -354,6 +374,7 @@ export const ROLES_CONFIG = {
           label: "Create Hospital",
           to: "/admin/hospitals/create",
           icon: Plus,
+          header: "Hospitals Management",
         },
       },
       {
@@ -368,6 +389,7 @@ export const ROLES_CONFIG = {
           label: "Create Patient",
           to: "/admin/patients/create",
           icon: Plus,
+          header: "Patients Management",
         },
       },
       {
@@ -382,6 +404,7 @@ export const ROLES_CONFIG = {
           label: "Create User",
           to: "/admin/users/create",
           icon: Plus,
+          header: "Users Management",
         },
       },
       {
