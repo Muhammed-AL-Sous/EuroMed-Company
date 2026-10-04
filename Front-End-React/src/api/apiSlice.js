@@ -43,6 +43,7 @@ export const baseApi = createApi({
     "Categories",
     "OperationTypes",
     "Manufacturers",
+    "Hospitals",
   ],
   endpoints: () => ({}),
 });

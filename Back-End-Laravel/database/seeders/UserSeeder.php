@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
         $admin = User::create([
             'email' => 'admin@euromed.com',
             'name' => 'Admin',
-            'password' => 'Euromed!2026#K9vL2',
+            'password' => 'admin123',
             'email_verified_at' => now(),
             'is_active' => true,
         ]);

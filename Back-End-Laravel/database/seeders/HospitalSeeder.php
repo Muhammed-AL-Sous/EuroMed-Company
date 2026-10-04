@@ -7,43 +7,22 @@ use Illuminate\Database\Seeder;
 
 class HospitalSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $hospitals = [
             [
-                'name' => [
-                    'ar' => 'مستشفى رزكاري',
-                    'en' => 'Rizgary Hospital',
-                ],
-                'city' => [
-                    'ar' => 'أربيل',
-                    'en' => 'Erbil',
-                ],
+                'name' => 'Rizgary Hospital',
+                'city' => 'Erbil',
                 'type' => 'Government',
             ],
             [
-                'name' => [
-                    'ar' => 'مستشفى بار',
-                    'en' => 'Par Hospital',
-                ],
-                'city' => [
-                    'ar' => 'السليمانية',
-                    'en' => 'Sulaymaniyah',
-                ],
+                'name' => 'Par Hospital',
+                'city' => 'Sulaymaniyah',
                 'type' => 'Private',
             ],
             [
-                'name' => [
-                    'ar' => 'مستشفى دهوك',
-                    'en' => 'Duhok Hospital',
-                ],
-                'city' => [
-                    'ar' => 'دهوك',
-                    'en' => 'Duhok',
-                ],
+                'name' => 'Rozhawa Hospital',
+                'city' => 'Erbil',
                 'type' => 'Government',
             ],
         ];

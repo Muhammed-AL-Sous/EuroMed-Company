@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('hospitals', function (Blueprint $table) {
             $table->id();
-            $table->json('name');
+            $table->string('name');
             $table->enum('type', ['Government', 'Private'])->default('Private');
-            $table->json('city')->nullable();
+            $table->string('city')->nullable();
             $table->timestamps();
         });
     }

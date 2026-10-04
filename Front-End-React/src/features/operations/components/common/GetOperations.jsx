@@ -1,6 +1,6 @@
 import { Card, Text } from "@radix-ui/themes";
 
-const GetAllOperations = () => {
+const GetOperations = () => {
   return (
     <Card variant="classic">
       <Text as="div" size="2" weight="bold">
@@ -13,4 +13,4 @@ const GetAllOperations = () => {
   );
 };
 
-export default GetAllOperations;
+export default GetOperations;

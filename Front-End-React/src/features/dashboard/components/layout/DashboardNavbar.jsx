@@ -36,7 +36,7 @@ const DashboardNavbar = ({ user }) => {
   const CurrentIcon = currentRoute?.icon;
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 mb-6 border-b border-slate-200">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4  border-b border-slate-200">
       <div>
         <h1 className="text-2xl font-black text-slate-700 ">
           <div className="flex items-center gap-2">

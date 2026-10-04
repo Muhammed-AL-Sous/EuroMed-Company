@@ -16,8 +16,6 @@ class Hospital extends Model
         'city',
     ];
 
-    public array $translatable = ['name', 'city'];
-
     public function operations(): HasMany
     {
         return $this->hasMany(Operation::class);
