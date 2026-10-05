@@ -248,6 +248,7 @@ const ProductsPage = () => {
             </div>
           )}
         </div>
+
         {/* ==================================================
             Loading
         ================================================== */}
@@ -392,6 +393,7 @@ const ProductsPage = () => {
             />
           </div>
         )}
+
         {/* ================================================== Product Detail Modal ================================================== */}
         {selectedProduct && (
           <div
@@ -412,7 +414,10 @@ const ProductsPage = () => {
               >
                 <X className="h-5 w-5" />
               </button>
-              {/* ================================================== Scroll Area يوجد فراغ أعلى وأسفل الـ scrollbar ================================================== */}
+              {/* ================================================== 
+              Scroll Area يوجد فراغ أعلى وأسفل الـ 
+              scrollbar
+               ================================================== */}
               <div className="max-h-[75vh] overflow-hidden px-2 py-3">
                 <div className="custom-scrollbar max-h-[calc(75vh-24px)] overflow-y-auto pr-2">
                   <div className="space-y-6 p-6 sm:p-8">

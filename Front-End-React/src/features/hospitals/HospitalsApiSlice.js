@@ -1,18 +1,36 @@
 import { baseApi } from "../../api/apiSlice";
+import { normalizeHospitalsListResponse } from "./HospitalsQueryUtils";
 
 export const HospitalsApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getHospitals: builder.query({
-      query: () => "/hospitals",
-      transformResponse: (response) =>
-        Array.isArray(response?.data) ? response.data : [],
+      query: ({ search, page = 1 }) => ({
+        url: "/hospitals",
+        params: {
+          search: search || undefined,
+          page,
+        },
+      }),
+      transformResponse: (response) => normalizeHospitalsListResponse(response),
       providesTags: (result) =>
-        result?.length
+        result?.hospitals?.length
           ? [
-              ...result.map(({ id }) => ({ type: "Hospitals", id })),
-              { type: "Hospitals", id: "Hospital_id" },
+              ...result.hospitals.map(({ id }) => ({
+                type: "Hospitals",
+                id,
+              })),
+
+              {
+                type: "Hospitals",
+                id: "Hospitals_Id",
+              },
             ]
-          : [{ type: "Hospitals", id: "Hospital_id" }],
+          : [
+              {
+                type: "Hospitals",
+                id: "Hospitals_Id",
+              },
+            ],
     }),
   }),
 });
