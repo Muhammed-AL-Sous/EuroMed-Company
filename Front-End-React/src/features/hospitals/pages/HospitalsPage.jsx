@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
-import { Search, ShieldAlert, X } from "lucide-react";
+import { Search, ShieldAlert, Trash2, X } from "lucide-react";
 import { useSearchParams } from "react-router";
 import { Card, Text } from "@radix-ui/themes";
-import { useGetHospitalsQuery } from "../HospitalsApiSlice";
+
+import {
+  useDeleteHospitalMutation,
+  useGetHospitalsQuery,
+} from "../HospitalsApiSlice";
+
 import HospitalsTable from "../components/common/HospitalsTable";
 import Pagination from "../../../components/utility/Pagination";
 import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
+import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
 
 const HospitalsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // --------------------------------------------------
+  // ==================================================
   // Search
-  // --------------------------------------------------
+  // ==================================================
 
   const initialSearch = searchParams.get("search") ?? "";
 
@@ -21,32 +27,33 @@ const HospitalsPage = () => {
 
   const debouncedSearch = useDebouncedValue(searchInput, 400);
 
-  // --------------------------------------------------
-  // Sync search with URL
-  // --------------------------------------------------
+  // ==================================================
+  // Sync Search With URL
+  // ==================================================
 
   useEffect(() => {
     const urlSearch = searchParams.get("search") ?? "";
+    const currentSearch = debouncedSearch.trim();
 
-    if (urlSearch !== debouncedSearch) {
-      setSearchParams(
-        (params) => {
-          if (debouncedSearch.trim()) {
-            params.set("search", debouncedSearch.trim());
-          } else {
-            params.delete("search");
-          }
+    if (urlSearch === currentSearch) return;
 
-          return params;
-        },
-        { replace: true },
-      );
-    }
+    setSearchParams(
+      (params) => {
+        if (currentSearch) {
+          params.set("search", currentSearch);
+        } else {
+          params.delete("search");
+        }
+
+        return params;
+      },
+      { replace: true },
+    );
   }, [debouncedSearch, searchParams, setSearchParams]);
 
-  // --------------------------------------------------
+  // ==================================================
   // Hospitals Query
-  // --------------------------------------------------
+  // ==================================================
 
   const { data, isLoading, isFetching, isError } = useGetHospitalsQuery({
     search: debouncedSearch.trim(),
@@ -56,20 +63,51 @@ const HospitalsPage = () => {
   const hospitals = data?.hospitals ?? [];
   const meta = data?.meta ?? null;
 
-  // --------------------------------------------------
+  // ==================================================
   // Derived State
-  // --------------------------------------------------
+  // ==================================================
 
   const hasSearch = Boolean(debouncedSearch.trim());
 
-  // --------------------------------------------------
-  // Handlers
-  // --------------------------------------------------
+  // ==================================================
+  // Delete Hospital
+  // ==================================================
+
+  const [selectedHospital, setSelectedHospital] = useState(null);
+
+  const [deleteHospital, { isLoading: isDeleting }] =
+    useDeleteHospitalMutation();
+
+  const isDeleteModalOpen = Boolean(selectedHospital);
+
+  const handleOpenDeleteModal = (hospital) => {
+    setSelectedHospital(hospital);
+  };
+
+  const handleCloseDeleteModal = () => {
+    if (isDeleting) return;
+
+    setSelectedHospital(null);
+  };
+
+  const handleDeleteHospital = async () => {
+    if (!selectedHospital) return;
+
+    try {
+      await deleteHospital(selectedHospital.id).unwrap();
+
+      setSelectedHospital(null);
+    } catch (error) {
+      console.error("Failed to delete hospital:", error);
+    }
+  };
+
+  // ==================================================
+  // Search Handlers
+  // ==================================================
 
   const handleSearchChange = (event) => {
-    const value = event.target.value;
-
-    setSearchInput(value);
+    setSearchInput(event.target.value);
     setPage(1);
   };
 
@@ -86,6 +124,10 @@ const HospitalsPage = () => {
     );
   };
 
+  // ==================================================
+  // Pagination
+  // ==================================================
+
   const handlePageChange = (newPage) => {
     setPage(newPage);
 
@@ -95,27 +137,54 @@ const HospitalsPage = () => {
     });
   };
 
-  // --------------------------------------------------
+  // ==================================================
   // Render
-  // --------------------------------------------------
+  // ==================================================
 
   return (
     <Card variant="ghost">
-      {/* Header */}
+      {/* ==================================================
+          Header
+      ================================================== */}
+
       <div className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between">
         <Text as="div" size="6" weight="bold" className="text-sky-900">
           All Hospitals
         </Text>
 
+        {/* Search */}
         <div className="relative w-full md:max-w-md">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <Search
+            className="
+              pointer-events-none
+              absolute left-3.5 top-1/2
+              h-5 w-5
+              -translate-y-1/2
+              text-slate-400
+            "
+          />
 
           <input
             type="text"
             value={searchInput}
             onChange={handleSearchChange}
             placeholder="Search for a hospital by name..."
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-11 pr-10 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+            className="
+              w-full
+              rounded-xl
+              border border-slate-200
+              bg-slate-50
+              py-2.5
+              pl-11
+              pr-10
+              text-sm
+              text-slate-900
+              outline-none
+              transition
+              focus:border-sky-500
+              focus:ring-1
+              focus:ring-sky-500
+            "
           />
 
           {searchInput && (
@@ -123,7 +192,13 @@ const HospitalsPage = () => {
               type="button"
               onClick={clearSearch}
               aria-label="Clear search"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-red-500"
+              className="
+                absolute right-3 top-1/2
+                -translate-y-1/2
+                text-slate-400
+                transition
+                hover:text-red-500
+              "
             >
               <X className="h-4 w-4" />
             </button>
@@ -131,9 +206,22 @@ const HospitalsPage = () => {
         </div>
       </div>
 
-      {/* Active Search */}
+      {/* ==================================================
+          Active Search
+      ================================================== */}
+
       {hasSearch && (
-        <div className="flex items-center justify-between gap-4 border-t border-slate-100 px-4 py-3 text-xs">
+        <div
+          className="
+            flex items-center
+            justify-between
+            gap-4
+            border-t
+            border-slate-100
+            px-4 py-3
+            text-xs
+          "
+        >
           <span className="font-medium text-slate-500">
             Searching for:{" "}
             <span className="font-semibold text-slate-700">
@@ -144,7 +232,14 @@ const HospitalsPage = () => {
           <button
             type="button"
             onClick={clearSearch}
-            className="flex items-center gap-1 font-bold text-red-600 transition hover:text-red-700"
+            className="
+              flex items-center
+              gap-1
+              font-bold
+              text-red-600
+              transition
+              hover:text-red-700
+            "
           >
             <X className="h-4 w-4" />
             Reset
@@ -152,25 +247,25 @@ const HospitalsPage = () => {
         </div>
       )}
 
-      {/* Initial Loading */}
+      {/* ==================================================
+          Content
+      ================================================== */}
+
       {isLoading ? (
         <LoadingState />
       ) : isError ? (
         <ErrorState />
       ) : isFetching ? (
-        /*
-         * أثناء البحث أو تغيير الصفحة:
-         * نخفي الجدول بالكامل ونظهر loading.
-         */
         <LoadingState message="Loading hospitals..." />
       ) : hospitals.length === 0 ? (
         <EmptyState hasSearch={hasSearch} onReset={clearSearch} />
       ) : (
         <>
-          {/* Table */}
-          <HospitalsTable hospitals={hospitals} />
+          <HospitalsTable
+            hospitals={hospitals}
+            onDelete={handleOpenDeleteModal}
+          />
 
-          {/* Pagination */}
           <Pagination
             meta={meta}
             onPageChange={handlePageChange}
@@ -178,6 +273,23 @@ const HospitalsPage = () => {
           />
         </>
       )}
+
+      {/* ==================================================
+          Delete Confirmation Modal
+      ================================================== */}
+
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleDeleteHospital}
+        isLoading={isDeleting}
+        title="Delete Hospital"
+        message="Are you sure you want to delete this hospital?"
+        itemLabel={selectedHospital?.name}
+        confirmText="Delete"
+        cancelText="Cancel"
+        icon={Trash2}
+      />
     </Card>
   );
 };
@@ -189,7 +301,17 @@ const HospitalsPage = () => {
 const LoadingState = ({ message = "Loading hospitals..." }) => {
   return (
     <div className="flex min-h-75 flex-col items-center justify-center py-20">
-      <div className="mb-4 h-10 w-10 animate-spin rounded-full border-4 border-sky-600 border-t-transparent" />
+      <div
+        className="
+          mb-4
+          h-10 w-10
+          animate-spin
+          rounded-full
+          border-4
+          border-sky-600
+          border-t-transparent
+        "
+      />
 
       <p className="text-sm font-medium text-slate-500">{message}</p>
     </div>
@@ -202,8 +324,23 @@ const LoadingState = ({ message = "Loading hospitals..." }) => {
 
 const EmptyState = ({ hasSearch, onReset }) => {
   return (
-    <div className="mx-4 rounded-2xl border border-slate-200 bg-transparent p-12 text-center">
-      <ShieldAlert className="mx-auto h-12 w-12 text-slate-400" />
+    <div
+      className="
+        mx-4
+        rounded-2xl
+        border border-slate-200
+        bg-transparent
+        p-12
+        text-center
+      "
+    >
+      <ShieldAlert
+        className="
+          mx-auto
+          h-12 w-12
+          text-slate-400
+        "
+      />
 
       <h3 className="mt-3 text-lg font-bold text-slate-800">
         No Hospitals Found
@@ -219,7 +356,17 @@ const EmptyState = ({ hasSearch, onReset }) => {
         <button
           type="button"
           onClick={onReset}
-          className="mt-5 rounded-xl bg-sky-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-sky-700"
+          className="
+            mt-5
+            rounded-xl
+            bg-sky-600
+            px-4 py-2
+            text-sm
+            font-bold
+            text-white
+            transition
+            hover:bg-sky-700
+          "
         >
           Reset Search
         </button>
@@ -234,8 +381,23 @@ const EmptyState = ({ hasSearch, onReset }) => {
 
 const ErrorState = () => {
   return (
-    <div className="mx-4 rounded-2xl border border-red-200 bg-red-50 p-12 text-center">
-      <ShieldAlert className="mx-auto h-12 w-12 text-red-400" />
+    <div
+      className="
+        mx-4
+        rounded-2xl
+        border border-red-200
+        bg-red-50
+        p-12
+        text-center
+      "
+    >
+      <ShieldAlert
+        className="
+          mx-auto
+          h-12 w-12
+          text-red-400
+        "
+      />
 
       <h3 className="mt-3 text-lg font-bold text-red-800">
         Something went wrong

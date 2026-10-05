@@ -1,9 +1,13 @@
 import { SquarePen, Trash } from "lucide-react";
 
-const HospitalsTable = ({ hospitals = [], onDelete, onEdit }) => {
+const HospitalsTable = ({ hospitals = [], onDelete }) => {
   return (
     <div className="overflow-x-auto rounded-2xl p-4">
       <table className="min-w-full border-collapse text-center">
+        {/* ==================================================
+            Table Header
+        ================================================== */}
+
         <thead>
           <tr>
             <th className="border border-slate-300 bg-sky-500 p-3 text-sm font-semibold text-white">
@@ -24,42 +28,110 @@ const HospitalsTable = ({ hospitals = [], onDelete, onEdit }) => {
           </tr>
         </thead>
 
+        {/* ==================================================
+            Table Body
+        ================================================== */}
+
         <tbody>
           {hospitals.map((hospital) => (
             <tr
               key={hospital.id}
-              className="transition-colors duration-200 hover:bg-sky-50"
+              className="
+                transition-colors
+                duration-200
+                hover:bg-sky-50
+              "
             >
-              <td className="whitespace-nowrap border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700">
+              {/* Hospital Name */}
+              <td
+                className="
+                  whitespace-nowrap
+                  border border-slate-300
+                  px-4 py-3
+                  text-sm
+                  font-medium
+                  text-slate-700
+                "
+              >
                 {hospital.name}
               </td>
 
-              <td className="whitespace-nowrap border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700">
+              {/* Hospital Type */}
+              <td
+                className="
+                  whitespace-nowrap
+                  border border-slate-300
+                  px-4 py-3
+                  text-sm
+                  font-medium
+                  text-slate-700
+                "
+              >
                 {hospital.type}
               </td>
 
-              <td className="whitespace-nowrap border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700">
+              {/* Hospital City */}
+              <td
+                className="
+                  whitespace-nowrap
+                  border border-slate-300
+                  px-4 py-3
+                  text-sm
+                  font-medium
+                  text-slate-700
+                "
+              >
                 {hospital.city}
               </td>
 
-              <td className="whitespace-nowrap border border-slate-300 px-4 py-3">
+              {/* Tools */}
+              <td
+                className="
+                  whitespace-nowrap
+                  border border-slate-300
+                  px-4 py-3
+                "
+              >
                 <div className="flex items-center justify-center gap-2">
+                  {/* Delete */}
                   <button
                     type="button"
-                    onClick={() => onDelete?.(hospital.id)}
+                    onClick={() => onDelete?.(hospital)}
                     aria-label={`Delete ${hospital.name}`}
-                    className="cursor-pointer rounded-lg border border-red-500 p-1 text-red-500 transition-colors duration-200 hover:border-red-600 hover:bg-red-50 hover:text-red-600"
+                    className="
+                      cursor-pointer
+                      rounded-lg
+                      border border-red-500
+                      p-1
+                      text-red-500
+                      transition-colors
+                      duration-200
+                      hover:border-red-600
+                      hover:bg-red-50
+                      hover:text-red-600
+                    "
                   >
-                    <Trash size={18} />
+                    <Trash size={18} aria-hidden="true" />
                   </button>
 
+                  {/* Edit */}
                   <button
                     type="button"
-                    onClick={() => onEdit?.(hospital.id)}
                     aria-label={`Edit ${hospital.name}`}
-                    className="cursor-pointer rounded-lg border border-blue-500 p-1 text-blue-500 transition-colors duration-200 hover:border-blue-600 hover:bg-blue-50 hover:text-blue-600"
+                    className="
+                      cursor-pointer
+                      rounded-lg
+                      border border-blue-500
+                      p-1
+                      text-blue-500
+                      transition-colors
+                      duration-200
+                      hover:border-blue-600
+                      hover:bg-blue-50
+                      hover:text-blue-600
+                    "
                   >
-                    <SquarePen size={18} />
+                    <SquarePen size={18} aria-hidden="true" />
                   </button>
                 </div>
               </td>
