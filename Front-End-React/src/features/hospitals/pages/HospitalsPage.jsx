@@ -51,6 +51,7 @@ const HospitalsPage = () => {
     type: "",
     city: "",
   });
+  const [formErrors, setFormErrors] = useState({});
 
   // ==================================================
   // Hospitals Query
@@ -128,8 +129,15 @@ const HospitalsPage = () => {
       await deleteHospital(selectedDeleteHospital.id).unwrap();
 
       setSelectedDeleteHospital(null);
+
+      notifySonner("Hospital deleted successfully");
     } catch (error) {
       console.error("Failed to delete hospital:", error);
+
+      notifySonner(
+        error?.data?.message || "Failed to delete hospital",
+        "error",
+      );
     }
   };
 
@@ -139,10 +147,11 @@ const HospitalsPage = () => {
 
   const handleOpenEditModal = (hospital) => {
     setSelectedEditHospital(hospital);
+    setFormErrors({});
 
     setEditForm({
       name: hospital.name ?? "",
-      type: hospital.type ?? "",
+      type: hospital.type || "Government",
       city: hospital.city ?? "",
     });
   };
@@ -153,6 +162,7 @@ const HospitalsPage = () => {
     }
 
     setSelectedEditHospital(null);
+    setFormErrors({});
 
     setEditForm({
       name: "",
@@ -168,6 +178,11 @@ const HospitalsPage = () => {
       ...currentForm,
       [name]: value,
     }));
+
+    setFormErrors((currentErrors) => ({
+      ...currentErrors,
+      [name]: undefined,
+    }));
   };
 
   const handleUpdateHospital = async () => {
@@ -181,22 +196,32 @@ const HospitalsPage = () => {
       city: editForm.city.trim(),
     };
 
-    if (!payload.name) {
-      notifySonner("The Name Field is Required", "error");
+    // Validation
+    const errors = {};
+
+    if (!payload.name) errors.name = "The Name Field is Required";
+    if (!payload.type) errors.type = "The Type Field is Required";
+    if (!payload.city) errors.city = "The City Field is Required";
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
       return;
     }
 
-    if (!payload.type) {
-      notifySonner("The Type Field is Required", "error");
+    // No real changes
+    const hasChanges =
+      payload.name !== (selectedEditHospital.name ?? "") ||
+      payload.type !== (selectedEditHospital.type ?? "") ||
+      payload.city !== (selectedEditHospital.city ?? "");
+
+    if (!hasChanges) {
+      setSelectedEditHospital(null);
+      setFormErrors({});
+      setEditForm({ name: "", type: "", city: "" });
       return;
     }
 
-    if (!payload.city) {
-      notifySonner("The City Field is Required", "error");
-      console.log('city')
-      return;
-    }
-
+    // Update
     try {
       await updateHospital({
         id: selectedEditHospital.id,
@@ -204,14 +229,17 @@ const HospitalsPage = () => {
       }).unwrap();
 
       setSelectedEditHospital(null);
+      setFormErrors({});
+      setEditForm({ name: "", type: "", city: "" });
 
-      setEditForm({
-        name: "",
-        type: "",
-        city: "",
-      });
+      notifySonner("Hospital updated successfully");
     } catch (error) {
       console.error("Failed to update hospital:", error);
+
+      notifySonner(
+        error?.data?.message || "Failed to update hospital",
+        "error",
+      );
     }
   };
 
@@ -467,29 +495,32 @@ const HospitalsPage = () => {
             onChange={handleEditFormChange}
             disabled={isUpdating}
             placeholder="Enter hospital name"
-            className="
-              w-full
-              rounded-xl
-              border
-              border-slate-200
-              bg-slate-50
-              px-4
-              py-2.5
-              text-sm
-              text-slate-900
-              outline-none
-              transition
-              placeholder:text-slate-400
-              focus:border-[#0084d1]
-              focus:ring-1
-              focus:ring-[#0084d1]
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-              dark:border-slate-700
-              dark:bg-slate-800
-              dark:text-slate-100
-            "
+            aria-invalid={Boolean(formErrors.name)}
+            aria-describedby={
+              formErrors.name ? "hospital-name-error" : undefined
+            }
+            className={`
+      w-full rounded-xl border bg-slate-50 px-4 py-2.5 text-sm text-slate-900
+      outline-none transition placeholder:text-slate-400
+      disabled:cursor-not-allowed disabled:opacity-60
+      dark:bg-slate-800 dark:text-slate-100
+      ${
+        formErrors.name
+          ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+          : "border-slate-200 focus:border-[#0084d1] focus:ring-1 focus:ring-[#0084d1] dark:border-slate-700"
+      }
+    `}
           />
+
+          {formErrors.name && (
+            <p
+              id="hospital-name-error"
+              role="alert"
+              className="text-xs font-medium text-red-600"
+            >
+              {formErrors.name}
+            </p>
+          )}
         </div>
 
         {/* ==================================================
@@ -515,28 +546,21 @@ const HospitalsPage = () => {
             value={editForm.type}
             onChange={handleEditFormChange}
             disabled={isUpdating}
-            className="
-              w-full
-              cursor-pointer
-              rounded-xl
-              border
-              border-slate-200
-              bg-slate-50
-              px-4
-              py-2.5
-              text-sm
-              text-slate-900
-              outline-none
-              transition
-              focus:border-[#0084d1]
-              focus:ring-1
-              focus:ring-[#0084d1]
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-              dark:border-slate-700
-              dark:bg-slate-800
-              dark:text-slate-100
-            "
+            aria-invalid={Boolean(formErrors.type)}
+            aria-describedby={
+              formErrors.type ? "hospital-type-error" : undefined
+            }
+            className={`
+      w-full rounded-xl border bg-slate-50 px-4 py-2.5 text-sm text-slate-900
+      outline-none transition placeholder:text-slate-400
+      disabled:cursor-not-allowed disabled:opacity-60
+      dark:bg-slate-800 dark:text-slate-100
+      ${
+        formErrors.type
+          ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+          : "border-slate-200 focus:border-[#0084d1] focus:ring-1 focus:ring-[#0084d1] dark:border-slate-700"
+      }
+    `}
           >
             {/* <option value="">Select hospital type</option> */}
 
@@ -544,6 +568,15 @@ const HospitalsPage = () => {
 
             <option value="Private">Private</option>
           </select>
+          {formErrors.type && (
+            <p
+              id="hospital-name-error"
+              role="alert"
+              className="text-xs font-medium text-red-600"
+            >
+              {formErrors.type}
+            </p>
+          )}
         </div>
 
         {/* ==================================================
@@ -571,29 +604,31 @@ const HospitalsPage = () => {
             onChange={handleEditFormChange}
             disabled={isUpdating}
             placeholder="Enter hospital city"
-            className="
-              w-full
-              rounded-xl
-              border
-              border-slate-200
-              bg-slate-50
-              px-4
-              py-2.5
-              text-sm
-              text-slate-900
-              outline-none
-              transition
-              placeholder:text-slate-400
-              focus:border-[#0084d1]
-              focus:ring-1
-              focus:ring-[#0084d1]
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-              dark:border-slate-700
-              dark:bg-slate-800
-              dark:text-slate-100
-            "
+            aria-invalid={Boolean(formErrors.city)}
+            aria-describedby={
+              formErrors.city ? "hospital-city-error" : undefined
+            }
+            className={`
+      w-full rounded-xl border bg-slate-50 px-4 py-2.5 text-sm text-slate-900
+      outline-none transition placeholder:text-slate-400
+      disabled:cursor-not-allowed disabled:opacity-60
+      dark:bg-slate-800 dark:text-slate-100
+      ${
+        formErrors.city
+          ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+          : "border-slate-200 focus:border-[#0084d1] focus:ring-1 focus:ring-[#0084d1] dark:border-slate-700"
+      }
+    `}
           />
+          {formErrors.city && (
+            <p
+              id="hospital-name-error"
+              role="alert"
+              className="text-xs font-medium text-red-600"
+            >
+              {formErrors.city}
+            </p>
+          )}
         </div>
       </EditModal>
     </Card>
