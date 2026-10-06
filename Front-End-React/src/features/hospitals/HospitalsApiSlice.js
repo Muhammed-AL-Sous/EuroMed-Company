@@ -45,18 +45,16 @@ export const HospitalsApiSlice = baseApi.injectEndpoints({
     }),
 
     updateHospital: builder.mutation({
-      query: ({ hospitalId, ...hospitalData }) => ({
-        url: `/hospitals/${hospitalId}`,
+      query: ({ id, data }) => ({
+        url: `/hospitals/${id}`,
         method: "PUT",
-        body: hospitalData,
+        body: data,
       }),
-      invalidatesTags: (result, error, arg) => {
-        const hospitalId = arg?.hospitalId ? arg.hospitalId : arg;
-        return [
-          { type: "Hospitals", id: hospitalId },
-          { type: "Hospitals", id: "Hospitals_Id" },
-        ];
-      },
+
+      invalidatesTags: (result, error, arg) => [
+        { type: "Hospitals", id: arg.id },
+        { type: "Hospitals", id: "Hospitals_Id" },
+      ],
     }),
 
     deleteHospital: builder.mutation({
@@ -64,8 +62,8 @@ export const HospitalsApiSlice = baseApi.injectEndpoints({
         url: `/hospitals/${hospitalId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, hospitalId) => [
-        { type: "Hospitals", id: hospitalId },
+      invalidatesTags: (result, error, arg) => [
+        { type: "Hospitals", id: arg.id },
         { type: "Hospitals", id: "Hospitals_Id" },
       ],
     }),

@@ -1,25 +1,22 @@
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
-const DeleteConfirmModal = ({
+const EditModal = ({
   isOpen,
   onClose,
-  onConfirm,
+  onSubmit,
   isLoading = false,
 
-  title,
-  message,
+  title = "Edit",
   itemLabel,
 
-  confirmText = "Confirm",
+  children,
+
+  submitText = "Save Changes",
   cancelText = "Cancel",
 
   icon: Icon,
-
-  confirmButtonClassName = "bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600",
-
-  titleClassName = "text-slate-800 dark:text-slate-100",
 }) => {
   const portalTarget = typeof document !== "undefined" ? document.body : null;
 
@@ -37,10 +34,12 @@ const DeleteConfirmModal = ({
     onClose?.();
   };
 
-  const handleConfirm = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
     if (isLoading) return;
 
-    onConfirm?.();
+    onSubmit?.(event);
   };
 
   // ==================================================
@@ -51,7 +50,7 @@ const DeleteConfirmModal = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          key="confirm-action-modal"
+          key="edit-modal"
           className="
             fixed
             inset-0
@@ -79,6 +78,7 @@ const DeleteConfirmModal = ({
             className="
               absolute
               inset-0
+              cursor-default
               bg-slate-950/55
               backdrop-blur-[2px]
             "
@@ -89,10 +89,9 @@ const DeleteConfirmModal = ({
           ================================================== */}
 
           <motion.div
-            role="alertdialog"
+            role="dialog"
             aria-modal="true"
-            aria-labelledby="confirm-action-title"
-            aria-describedby="confirm-action-description"
+            aria-labelledby="edit-modal-title"
             onClick={(event) => {
               event.stopPropagation();
             }}
@@ -100,7 +99,7 @@ const DeleteConfirmModal = ({
               relative
               z-61
               w-full
-              max-w-md
+              max-w-lg
               overflow-hidden
               rounded-2xl
               border
@@ -132,93 +131,115 @@ const DeleteConfirmModal = ({
               damping: 32,
             }}
           >
-            {/* ==================================================
-                Content
-            ================================================== */}
-
-            <div className="p-6">
+            <form onSubmit={handleSubmit}>
               {/* ==================================================
-                  Title
-              ================================================== */}
-
-              <h2
-                id="confirm-action-title"
-                className={`
-                  flex
-                  items-center
-                  gap-3
-                  text-lg
-                  font-bold
-                  ${titleClassName}
-                `}
-              >
-                {Icon && (
-                  <span
-                    className="
-                      flex
-                      size-10
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-xl
-                      bg-red-50
-                      text-red-600
-                      dark:bg-red-500/10
-                      dark:text-red-400
-                    "
-                  >
-                    <Icon size={22} strokeWidth={2} aria-hidden="true" />
-                  </span>
-                )}
-
-                <span>{title}</span>
-              </h2>
-
-              {/* ==================================================
-                  Message
+                  Header
               ================================================== */}
 
               <div
-                id="confirm-action-description"
                 className="
-                  mt-5
-                  rounded-xl
-                  border
+                  flex
+                  items-center
+                  justify-between
+                  border-b
                   border-slate-200
-                  bg-slate-50
-                  p-4
-                  text-sm
-                  leading-relaxed
-                  text-slate-700
+                  px-6
+                  py-4
                   dark:border-slate-700
-                  dark:bg-slate-800/60
-                  dark:text-slate-300
                 "
               >
-                {message && <p className="font-semibold">{message}</p>}
+                <div className="flex items-center gap-3">
+                  {Icon && (
+                    <span
+                      className="
+                        flex
+                        size-10
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-xl
+                        bg-[#0084d1]/10
+                        text-[#0084d1]
+                        dark:bg-[#0084d1]/15
+                        dark:text-sky-400
+                      "
+                    >
+                      <Icon size={21} strokeWidth={2} aria-hidden="true" />
+                    </span>
+                  )}
 
-                {itemLabel && (
-                  <div className="mt-3 rounded-lg bg-[#016dac] w-fit mx-auto text-center px-3 py-2 font-semibold text-white">
-                    {itemLabel}
+                  <div>
+                    <h2
+                      id="edit-modal-title"
+                      className="
+                        text-lg
+                        font-bold
+                        text-slate-800
+                        dark:text-slate-100
+                      "
+                    >
+                      {title}
+                    </h2>
+
+                    {itemLabel && (
+                      <p className="mt-0.5 text-xs text-slate-500">
+                        {itemLabel}
+                      </p>
+                    )}
                   </div>
-                )}
+                </div>
+
+                {/* Close */}
+
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  disabled={isLoading}
+                  aria-label="Close"
+                  className="
+                    flex
+                    size-8
+                    cursor-pointer
+                    items-center
+                    justify-center
+                    rounded-lg
+                    text-slate-400
+                    transition
+                    hover:bg-slate-100
+                    hover:text-slate-700
+                    disabled:cursor-not-allowed
+                    disabled:opacity-50
+                    dark:hover:bg-slate-800
+                    dark:hover:text-slate-200
+                  "
+                >
+                  <X size={18} />
+                </button>
               </div>
 
               {/* ==================================================
-                  Actions
+                  Form Content
+              ================================================== */}
+
+              <div className="max-h-[70vh] overflow-y-auto p-6">{children}</div>
+
+              {/* ==================================================
+                  Footer
               ================================================== */}
 
               <div
                 className="
-                  mt-6
                   flex
-                  flex-wrap
                   items-center
                   justify-end
                   gap-2
+                  border-t
+                  border-slate-200
+                  px-6
+                  py-4
+                  dark:border-slate-700
                 "
               >
-                {/* Cancel */}
                 <button
                   type="button"
                   onClick={handleClose}
@@ -234,9 +255,7 @@ const DeleteConfirmModal = ({
                     text-sm
                     font-semibold
                     text-slate-700
-                    transition-all
-                    duration-200
-                    hover:border-slate-300
+                    transition
                     hover:bg-slate-50
                     disabled:cursor-not-allowed
                     disabled:opacity-50
@@ -249,31 +268,29 @@ const DeleteConfirmModal = ({
                   {cancelText}
                 </button>
 
-                {/* Confirm */}
                 <button
-                  type="button"
-                  onClick={handleConfirm}
+                  type="submit"
                   disabled={isLoading}
-                  className={`
+                  className="
                     inline-flex
                     cursor-pointer
                     items-center
                     justify-center
                     gap-2
                     rounded-xl
+                    bg-[#0084d1]
                     px-4
                     py-2.5
                     text-sm
                     font-semibold
                     text-white
                     shadow-sm
-                    transition-all
-                    duration-200
+                    transition
+                    hover:bg-[#016dac]
                     hover:shadow-md
                     disabled:cursor-not-allowed
                     disabled:opacity-60
-                    ${confirmButtonClassName}
-                  `}
+                  "
                 >
                   {isLoading && (
                     <Loader2
@@ -282,10 +299,10 @@ const DeleteConfirmModal = ({
                     />
                   )}
 
-                  {confirmText}
+                  {submitText}
                 </button>
               </div>
-            </div>
+            </form>
           </motion.div>
         </motion.div>
       )}
@@ -294,4 +311,4 @@ const DeleteConfirmModal = ({
   );
 };
 
-export default DeleteConfirmModal;
+export default EditModal;

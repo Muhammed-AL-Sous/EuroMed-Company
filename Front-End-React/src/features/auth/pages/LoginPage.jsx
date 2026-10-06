@@ -187,7 +187,7 @@ const LoginPage = () => {
                     "warning",
                   )
                 }
-                className="text-xs font-semibold text-sky-600 hover:underline"
+                className="text-xs font-semibold text-sky-600 hover:underline outline-none"
               >
                 Forgot Password?
               </button>
@@ -228,7 +228,7 @@ const LoginPage = () => {
               <button
                 type="button"
                 onMouseDown={togglePassword}
-                className="absolute top-1/2 -translate-y-1/2 right-4"
+                className="absolute top-1/2 -translate-y-1/2 right-4 outline-none"
                 style={{
                   cursor: "pointer",
                   zIndex: 10,
@@ -244,7 +244,7 @@ const LoginPage = () => {
           <div className="flex items-center justify-between">
             <label
               htmlFor="remember"
-              className="text-md font-extrabold text-slate-600 cursor-pointer"
+              className="text-md font-extrabold text-slate-600 cursor-pointer outline-none"
             >
               Remember Me
             </label>
@@ -259,7 +259,7 @@ const LoginPage = () => {
               }
               className={`
       relative w-14 h-7 rounded-full
-      transition-colors duration-300 ease-out cursor-pointer
+      transition-colors duration-300 ease-out cursor-pointer outline-none
       ${
         loginForm.remember
           ? "bg-sky-500 shadow-lg shadow-red-500/30"
@@ -280,10 +280,10 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full cursor-pointer py-3.5 px-6 rounded-xl hover:bg-sky-600 bg-sky-500 text-white font-bold text-sm transition-all duration-300 shadow-lg shadow-sky-600/20 flex items-center justify-center gap-2 mt-2"
+            className="w-full cursor-pointer py-3.5 px-6 outline-none rounded-xl hover:bg-sky-600 bg-sky-500 text-white font-bold text-sm transition-all duration-300 shadow-lg shadow-sky-600/20 flex items-center justify-center gap-2 mt-2"
           >
             {isLoading ? (
-              <span className="flex items-center justify-center">
+              <span className="flex items-center justify-center outline-none">
                 <Spinner size="sm" variant="onPrimary" />
               </span>
             ) : (

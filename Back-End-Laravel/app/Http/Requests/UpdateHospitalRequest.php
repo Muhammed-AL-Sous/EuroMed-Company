@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Concerns\HasTranslatableRules;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateHospitalRequest extends FormRequest
 {
-    use HasTranslatableRules;
 
     public function authorize(): bool
     {
@@ -16,9 +14,10 @@ class UpdateHospitalRequest extends FormRequest
 
     public function rules(): array
     {
-        return array_merge(
-            $this->translatableFieldRules('name'),
-            $this->translatableFieldRules('city', required: false),
-        );
+        return [
+            'name' => ['sometimes', 'string', 'max:255'],
+            'city' => ['sometimes', 'string', 'max:255'],
+            'type' => ['sometimes', 'string', 'in:Government,Private'],
+        ];
     }
 }

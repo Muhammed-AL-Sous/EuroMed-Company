@@ -1,23 +1,26 @@
 import { useEffect, useState } from "react";
-import { Search, ShieldAlert, Trash2, X } from "lucide-react";
+import { Search, ShieldAlert, SquarePen, Trash2, X } from "lucide-react";
 import { useSearchParams } from "react-router";
 import { Card, Text } from "@radix-ui/themes";
 
 import {
   useDeleteHospitalMutation,
   useGetHospitalsQuery,
+  useUpdateHospitalMutation,
 } from "../HospitalsApiSlice";
+
+import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 
 import HospitalsTable from "../components/common/HospitalsTable";
 import Pagination from "../../../components/utility/Pagination";
-import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
+import EditModal from "../../../components/utility/EditModal";
 
 const HospitalsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // ==================================================
-  // Search
+  // Search State
   // ==================================================
 
   const initialSearch = searchParams.get("search") ?? "";
@@ -26,6 +29,53 @@ const HospitalsPage = () => {
   const [page, setPage] = useState(1);
 
   const debouncedSearch = useDebouncedValue(searchInput, 400);
+  const normalizedSearch = debouncedSearch.trim();
+
+  const hasSearch = Boolean(normalizedSearch);
+
+  // ==================================================
+  // Delete State
+  // ==================================================
+
+  const [selectedDeleteHospital, setSelectedDeleteHospital] = useState(null);
+
+  // ==================================================
+  // Edit State
+  // ==================================================
+
+  const [selectedEditHospital, setSelectedEditHospital] = useState(null);
+
+  const [editForm, setEditForm] = useState({
+    name: "",
+    type: "",
+    city: "",
+  });
+
+  // ==================================================
+  // Hospitals Query
+  // ==================================================
+
+  const { data, isLoading, isFetching, isError } = useGetHospitalsQuery({
+    search: normalizedSearch,
+    page,
+  });
+
+  const hospitals = data?.hospitals ?? [];
+  const meta = data?.meta ?? null;
+
+  // ==================================================
+  // Delete Mutation
+  // ==================================================
+
+  const [deleteHospital, { isLoading: isDeleting }] =
+    useDeleteHospitalMutation();
+
+  // ==================================================
+  // Update Mutation
+  // ==================================================
+
+  const [updateHospital, { isLoading: isUpdating }] =
+    useUpdateHospitalMutation();
 
   // ==================================================
   // Sync Search With URL
@@ -33,14 +83,15 @@ const HospitalsPage = () => {
 
   useEffect(() => {
     const urlSearch = searchParams.get("search") ?? "";
-    const currentSearch = debouncedSearch.trim();
 
-    if (urlSearch === currentSearch) return;
+    if (urlSearch === normalizedSearch) {
+      return;
+    }
 
     setSearchParams(
       (params) => {
-        if (currentSearch) {
-          params.set("search", currentSearch);
+        if (normalizedSearch) {
+          params.set("search", normalizedSearch);
         } else {
           params.delete("search");
         }
@@ -49,56 +100,105 @@ const HospitalsPage = () => {
       },
       { replace: true },
     );
-  }, [debouncedSearch, searchParams, setSearchParams]);
+  }, [normalizedSearch, searchParams, setSearchParams]);
 
   // ==================================================
-  // Hospitals Query
+  // Delete Handlers
   // ==================================================
-
-  const { data, isLoading, isFetching, isError } = useGetHospitalsQuery({
-    search: debouncedSearch.trim(),
-    page,
-  });
-
-  const hospitals = data?.hospitals ?? [];
-  const meta = data?.meta ?? null;
-
-  // ==================================================
-  // Derived State
-  // ==================================================
-
-  const hasSearch = Boolean(debouncedSearch.trim());
-
-  // ==================================================
-  // Delete Hospital
-  // ==================================================
-
-  const [selectedHospital, setSelectedHospital] = useState(null);
-
-  const [deleteHospital, { isLoading: isDeleting }] =
-    useDeleteHospitalMutation();
-
-  const isDeleteModalOpen = Boolean(selectedHospital);
 
   const handleOpenDeleteModal = (hospital) => {
-    setSelectedHospital(hospital);
+    setSelectedDeleteHospital(hospital);
   };
 
   const handleCloseDeleteModal = () => {
-    if (isDeleting) return;
+    if (isDeleting) {
+      return;
+    }
 
-    setSelectedHospital(null);
+    setSelectedDeleteHospital(null);
   };
 
   const handleDeleteHospital = async () => {
-    if (!selectedHospital) return;
+    if (!selectedDeleteHospital) {
+      return;
+    }
 
     try {
-      await deleteHospital(selectedHospital.id).unwrap();
+      await deleteHospital(selectedDeleteHospital.id).unwrap();
 
-      setSelectedHospital(null);
+      setSelectedDeleteHospital(null);
     } catch (error) {
       console.error("Failed to delete hospital:", error);
+    }
+  };
+
+  // ==================================================
+  // Edit Handlers
+  // ==================================================
+
+  const handleOpenEditModal = (hospital) => {
+    setSelectedEditHospital(hospital);
+
+    setEditForm({
+      name: hospital.name ?? "",
+      type: hospital.type ?? "",
+      city: hospital.city ?? "",
+    });
+  };
+
+  const handleCloseEditModal = () => {
+    if (isUpdating) {
+      return;
+    }
+
+    setSelectedEditHospital(null);
+
+    setEditForm({
+      name: "",
+      type: "",
+      city: "",
+    });
+  };
+
+  const handleEditFormChange = (event) => {
+    const { name, value } = event.target;
+
+    setEditForm((currentForm) => ({
+      ...currentForm,
+      [name]: value,
+    }));
+  };
+
+  const handleUpdateHospital = async () => {
+    if (!selectedEditHospital) {
+      return;
+    }
+
+    const payload = {
+      name: editForm.name.trim(),
+      type: editForm.type,
+      city: editForm.city.trim(),
+    };
+
+    if (!payload.name || !payload.type || !payload.city) {
+      return;
+    }
+
+    try {
+      await updateHospital({
+        id: selectedEditHospital.id,
+        data: payload,
+      }).unwrap();
+
+      setSelectedEditHospital(null);
+
+      setEditForm({
+        name: "",
+        type: "",
+        city: "",
+      });
+    } catch (error) {
+      console.error("Failed to update hospital:", error);
     }
   };
 
@@ -147,18 +247,34 @@ const HospitalsPage = () => {
           Header
       ================================================== */}
 
-      <div className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between">
+      <div
+        className="
+          flex
+          flex-col
+          gap-4
+          p-4
+          md:flex-row
+          md:items-center
+          md:justify-between
+        "
+      >
         <Text as="div" size="6" weight="bold" className="text-sky-900">
           All Hospitals
         </Text>
 
-        {/* Search */}
+        {/* ==================================================
+            Search
+        ================================================== */}
+
         <div className="relative w-full md:max-w-md">
           <Search
             className="
               pointer-events-none
-              absolute left-3.5 top-1/2
-              h-5 w-5
+              absolute
+              left-3.5
+              top-1/2
+              h-5
+              w-5
               -translate-y-1/2
               text-slate-400
             "
@@ -172,7 +288,8 @@ const HospitalsPage = () => {
             className="
               w-full
               rounded-xl
-              border border-slate-200
+              border
+              border-slate-200
               bg-slate-50
               py-2.5
               pl-11
@@ -193,8 +310,11 @@ const HospitalsPage = () => {
               onClick={clearSearch}
               aria-label="Clear search"
               className="
-                absolute right-3 top-1/2
+                absolute
+                right-3
+                top-1/2
                 -translate-y-1/2
+                cursor-pointer
                 text-slate-400
                 transition
                 hover:text-red-500
@@ -213,19 +333,21 @@ const HospitalsPage = () => {
       {hasSearch && (
         <div
           className="
-            flex items-center
+            flex
+            items-center
             justify-between
             gap-4
             border-t
             border-slate-100
-            px-4 py-3
+            px-4
+            py-3
             text-xs
           "
         >
           <span className="font-medium text-slate-500">
             Searching for:{" "}
             <span className="font-semibold text-slate-700">
-              "{debouncedSearch}"
+              "{normalizedSearch}"
             </span>
           </span>
 
@@ -233,7 +355,9 @@ const HospitalsPage = () => {
             type="button"
             onClick={clearSearch}
             className="
-              flex items-center
+              flex
+              cursor-pointer
+              items-center
               gap-1
               font-bold
               text-red-600
@@ -255,8 +379,6 @@ const HospitalsPage = () => {
         <LoadingState />
       ) : isError ? (
         <ErrorState />
-      ) : isFetching ? (
-        <LoadingState message="Loading hospitals..." />
       ) : hospitals.length === 0 ? (
         <EmptyState hasSearch={hasSearch} onReset={clearSearch} />
       ) : (
@@ -264,6 +386,7 @@ const HospitalsPage = () => {
           <HospitalsTable
             hospitals={hospitals}
             onDelete={handleOpenDeleteModal}
+            onEdit={handleOpenEditModal}
           />
 
           <Pagination
@@ -279,17 +402,187 @@ const HospitalsPage = () => {
       ================================================== */}
 
       <DeleteConfirmModal
-        isOpen={isDeleteModalOpen}
+        isOpen={Boolean(selectedDeleteHospital)}
         onClose={handleCloseDeleteModal}
         onConfirm={handleDeleteHospital}
         isLoading={isDeleting}
         title="Delete Hospital"
         message="Are you sure you want to delete this hospital?"
-        itemLabel={selectedHospital?.name}
+        itemLabel={selectedDeleteHospital?.name}
         confirmText="Delete"
         cancelText="Cancel"
         icon={Trash2}
       />
+
+      {/* ==================================================
+          Edit Modal
+      ================================================== */}
+
+      <EditModal
+        isOpen={Boolean(selectedEditHospital)}
+        onClose={handleCloseEditModal}
+        onSubmit={handleUpdateHospital}
+        isLoading={isUpdating}
+        title="Edit Hospital"
+        itemLabel={selectedEditHospital?.name}
+        submitText="Save Changes"
+        cancelText="Cancel"
+        icon={SquarePen}
+      >
+        {/* ==================================================
+            Hospital Name
+        ================================================== */}
+
+        <div className="space-y-1.5">
+          <label
+            htmlFor="hospital-name"
+            className="
+              text-sm
+              font-semibold
+              text-slate-700
+              dark:text-slate-200
+            "
+          >
+            Hospital Name
+          </label>
+
+          <input
+            id="hospital-name"
+            name="name"
+            type="text"
+            value={editForm.name}
+            onChange={handleEditFormChange}
+            disabled={isUpdating}
+            placeholder="Enter hospital name"
+            className="
+              w-full
+              rounded-xl
+              border
+              border-slate-200
+              bg-slate-50
+              px-4
+              py-2.5
+              text-sm
+              text-slate-900
+              outline-none
+              transition
+              placeholder:text-slate-400
+              focus:border-[#0084d1]
+              focus:ring-1
+              focus:ring-[#0084d1]
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-slate-100
+            "
+          />
+        </div>
+
+        {/* ==================================================
+            Hospital Type
+        ================================================== */}
+
+        <div className="mt-5 space-y-1.5">
+          <label
+            htmlFor="hospital-type"
+            className="
+              text-sm
+              font-semibold
+              text-slate-700
+              dark:text-slate-200
+            "
+          >
+            Hospital Type
+          </label>
+
+          <select
+            id="hospital-type"
+            name="type"
+            value={editForm.type}
+            onChange={handleEditFormChange}
+            disabled={isUpdating}
+            className="
+              w-full
+              cursor-pointer
+              rounded-xl
+              border
+              border-slate-200
+              bg-slate-50
+              px-4
+              py-2.5
+              text-sm
+              text-slate-900
+              outline-none
+              transition
+              focus:border-[#0084d1]
+              focus:ring-1
+              focus:ring-[#0084d1]
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-slate-100
+            "
+          >
+            <option value="">Select hospital type</option>
+
+            <option value="Government">Government</option>
+
+            <option value="Private">Private</option>
+          </select>
+        </div>
+
+        {/* ==================================================
+            Hospital City
+        ================================================== */}
+
+        <div className="mt-5 space-y-1.5">
+          <label
+            htmlFor="hospital-city"
+            className="
+              text-sm
+              font-semibold
+              text-slate-700
+              dark:text-slate-200
+            "
+          >
+            Hospital City
+          </label>
+
+          <input
+            id="hospital-city"
+            name="city"
+            type="text"
+            value={editForm.city}
+            onChange={handleEditFormChange}
+            disabled={isUpdating}
+            placeholder="Enter hospital city"
+            className="
+              w-full
+              rounded-xl
+              border
+              border-slate-200
+              bg-slate-50
+              px-4
+              py-2.5
+              text-sm
+              text-slate-900
+              outline-none
+              transition
+              placeholder:text-slate-400
+              focus:border-[#0084d1]
+              focus:ring-1
+              focus:ring-[#0084d1]
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-slate-100
+            "
+          />
+        </div>
+      </EditModal>
     </Card>
   );
 };
@@ -300,11 +593,21 @@ const HospitalsPage = () => {
 
 const LoadingState = ({ message = "Loading hospitals..." }) => {
   return (
-    <div className="flex min-h-75 flex-col items-center justify-center py-20">
+    <div
+      className="
+        flex
+        min-h-75
+        flex-col
+        items-center
+        justify-center
+        py-20
+      "
+    >
       <div
         className="
           mb-4
-          h-10 w-10
+          h-10
+          w-10
           animate-spin
           rounded-full
           border-4
@@ -328,7 +631,8 @@ const EmptyState = ({ hasSearch, onReset }) => {
       className="
         mx-4
         rounded-2xl
-        border border-slate-200
+        border
+        border-slate-200
         bg-transparent
         p-12
         text-center
@@ -337,7 +641,8 @@ const EmptyState = ({ hasSearch, onReset }) => {
       <ShieldAlert
         className="
           mx-auto
-          h-12 w-12
+          h-12
+          w-12
           text-slate-400
         "
       />
@@ -358,9 +663,11 @@ const EmptyState = ({ hasSearch, onReset }) => {
           onClick={onReset}
           className="
             mt-5
+            cursor-pointer
             rounded-xl
             bg-sky-600
-            px-4 py-2
+            px-4
+            py-2
             text-sm
             font-bold
             text-white
@@ -385,7 +692,8 @@ const ErrorState = () => {
       className="
         mx-4
         rounded-2xl
-        border border-red-200
+        border
+        border-red-200
         bg-red-50
         p-12
         text-center
@@ -394,7 +702,8 @@ const ErrorState = () => {
       <ShieldAlert
         className="
           mx-auto
-          h-12 w-12
+          h-12
+          w-12
           text-red-400
         "
       />

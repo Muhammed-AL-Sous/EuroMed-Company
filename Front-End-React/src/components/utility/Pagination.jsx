@@ -31,15 +31,15 @@ export default function Pagination({ meta, onPageChange, disabled = false }) {
         {from != null && to != null ? (
           <>
             Showing{" "}
-            <span className="font-semibold text-slate-800">
-              {from}–{to}
+            <span className="font-semibold text-slate-700">
+              {from} – {to}
             </span>{" "}
-            of <span className="font-semibold text-slate-800">{total}</span>{" "}
-            Products
+            of <span className="font-semibold text-slate-700">{total}</span>{" "}
+            Items
           </>
         ) : (
           <>
-            <span className="font-semibold text-slate-800">{total}</span>{" "}
+            <span className="font-semibold text-slate-700">{total}</span>{" "}
             Products
           </>
         )}
@@ -71,8 +71,8 @@ export default function Pagination({ meta, onPageChange, disabled = false }) {
         {/* Current Page */}
 
         <span className="min-w-28 px-3 text-center text-sm font-medium tabular-nums text-slate-700">
-          Page <span className="font-bold text-slate-900">{current}</span> of{" "}
-          <span className="font-bold text-slate-900">{last}</span>
+          Page <span className="font-bold text-slate-700">{current}</span> of{" "}
+          <span className="font-bold text-slate-700">{last}</span>
         </span>
 
         {/* Next */}

@@ -1,6 +1,6 @@
 import { SquarePen, Trash } from "lucide-react";
 
-const HospitalsTable = ({ hospitals = [], onDelete }) => {
+const HospitalsTable = ({ hospitals = [], onDelete, onEdit }) => {
   return (
     <div className="overflow-x-auto rounded-2xl p-4">
       <table className="min-w-full border-collapse text-center">
@@ -117,6 +117,7 @@ const HospitalsTable = ({ hospitals = [], onDelete }) => {
                   {/* Edit */}
                   <button
                     type="button"
+                    onClick={() => onEdit?.(hospital)}
                     aria-label={`Edit ${hospital.name}`}
                     className="
                       cursor-pointer
