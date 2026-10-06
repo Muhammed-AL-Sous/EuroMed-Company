@@ -54,7 +54,7 @@ const EditModal = ({
           className="
             fixed
             inset-0
-            z-60
+            z-9000
             flex
             items-center
             justify-center
@@ -97,7 +97,7 @@ const EditModal = ({
             }}
             className="
               relative
-              z-61
+              z-9001
               w-full
               max-w-lg
               overflow-hidden

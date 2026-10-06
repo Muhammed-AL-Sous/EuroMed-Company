@@ -15,6 +15,7 @@ import HospitalsTable from "../components/common/HospitalsTable";
 import Pagination from "../../../components/utility/Pagination";
 import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
 import EditModal from "../../../components/utility/EditModal";
+import { notifySonner } from "./../../../lib/notifySonner";
 
 const HospitalsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -180,7 +181,19 @@ const HospitalsPage = () => {
       city: editForm.city.trim(),
     };
 
-    if (!payload.name || !payload.type || !payload.city) {
+    if (!payload.name) {
+      notifySonner("The Name Field is Required", "error");
+      return;
+    }
+
+    if (!payload.type) {
+      notifySonner("The Type Field is Required", "error");
+      return;
+    }
+
+    if (!payload.city) {
+      notifySonner("The City Field is Required", "error");
+      console.log('city')
       return;
     }
 
@@ -525,7 +538,7 @@ const HospitalsPage = () => {
               dark:text-slate-100
             "
           >
-            <option value="">Select hospital type</option>
+            {/* <option value="">Select hospital type</option> */}
 
             <option value="Government">Government</option>
 

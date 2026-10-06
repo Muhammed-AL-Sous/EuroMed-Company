@@ -19,6 +19,8 @@ import DashboardNavbar from "./DashboardNavbar";
 
 import { motion, AnimatePresence } from "motion/react";
 
+import { Toaster } from "sonner";
+
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
