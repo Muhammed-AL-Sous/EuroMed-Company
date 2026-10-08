@@ -32,7 +32,7 @@ const CreateHospitalPage = () => {
 
       setCreateForm({
         name: "",
-        type: "",
+        type: "Government",
         city: "",
       });
 
@@ -67,7 +67,7 @@ const CreateHospitalPage = () => {
                       </Form.Label>
                       <Form.Control asChild>
                         <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[15px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
+                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[15px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
                           required
                           id="hospital-name"
                           name="name"
@@ -100,7 +100,6 @@ const CreateHospitalPage = () => {
                       <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
                         Hospital Type
                       </Form.Label>
-
                       <select
                         id="hospital-type"
                         name="type"
@@ -112,7 +111,6 @@ const CreateHospitalPage = () => {
                         <option value="Government">Government</option>
                         <option value="Private">Private</option>
                       </select>
-
                       <Form.Message
                         className="text-xs text-red-700 font-bold mt-2"
                         match="valueMissing"
@@ -167,21 +165,15 @@ const CreateHospitalPage = () => {
                 {/* =============== Submit Button =============== */}
                 {isCreating ? (
                   <div
-                    className="
-          h-10
-          w-10
-          animate-spin
-          rounded-full
-          border-4
-          border-sky-600
-          border-t-transparent
-   mt-2.5 cursor-pointer box-border mx-auto 
-   flex items-center justify-center
-    bg-white px-3.75 font-medium leading-none "
+                    className="h-10 w-10 animate-spin rounded-full border-4 border-sky-600 mt-2.5 cursor-pointer box-border mx-auto
+                    flex items-center justify-center bg-white px-3.75 font-medium leading-none"
                   />
                 ) : (
                   <Form.Submit asChild>
-                    <button className="mt-2.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700 ">
+                    <button
+                      disabled={isCreating}
+                      className="mt-2.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700 "
+                    >
                       Create a Hospital
                     </button>
                   </Form.Submit>
@@ -191,8 +183,6 @@ const CreateHospitalPage = () => {
           </Flex>
         </Card>
       </Box>
-
-      {/* ============= Footer ============= */}
     </div>
   );
 };
