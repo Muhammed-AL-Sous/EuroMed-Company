@@ -198,7 +198,7 @@ const DeleteConfirmModal = ({
                 {message && <p className="font-semibold">{message}</p>}
 
                 {itemLabel && (
-                  <div className="mt-3 rounded-lg bg-[#016dac] w-fit mx-auto text-center px-3 py-2 font-semibold text-white">
+                  <div className="mt-3 rounded-lg text-center border border-[#016dac] bg-[#016dac]/20 px-3 py-2 font-semibold text-white">
                     {itemLabel}
                   </div>
                 )}

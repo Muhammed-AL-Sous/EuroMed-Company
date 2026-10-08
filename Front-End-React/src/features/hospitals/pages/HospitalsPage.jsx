@@ -130,12 +130,12 @@ const HospitalsPage = () => {
 
       setSelectedDeleteHospital(null);
 
-      notifySonner("Hospital deleted successfully");
+      notifySonner("Hospital Deleted Successfully");
     } catch (error) {
-      console.error("Failed to delete hospital:", error);
+      console.error("Failed to Delete Hospital:", error);
 
       notifySonner(
-        error?.data?.message || "Failed to delete hospital",
+        error?.data?.message || "Failed to Delete Hospital",
         "error",
       );
     }

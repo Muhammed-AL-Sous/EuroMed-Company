@@ -58,7 +58,7 @@ const CreateHospitalPage = () => {
 
             <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
               <Form.Root className="w-full" onSubmit={handleSubmitHospital}>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* =========== Hospital Name =========== */}
                   <Form.Field className="mb-2.5 grid" name="name">
                     <div className="flex flex-col">
@@ -165,14 +165,15 @@ const CreateHospitalPage = () => {
                 {/* =============== Submit Button =============== */}
                 {isCreating ? (
                   <div
-                    className="h-10 w-10 animate-spin rounded-full border-4 border-sky-600 mt-2.5 cursor-pointer box-border mx-auto
-                    flex items-center justify-center bg-white px-3.75 font-medium leading-none"
+                    role="status"
+                    aria-label="Creating hospital"
+                    className="mx-auto mt-2.5 h-10 w-10 animate-spin rounded-full border-4 border-sky-200 border-t-sky-600"
                   />
                 ) : (
                   <Form.Submit asChild>
                     <button
                       disabled={isCreating}
-                      className="mt-2.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700 "
+                      className="mt-2.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700"
                     >
                       Create a Hospital
                     </button>
