@@ -36,7 +36,47 @@ export const ProductsApiSlice = baseApi.injectEndpoints({
               },
             ],
     }),
+
+    addProduct: builder.mutation({
+      query: (productData) => ({
+        url: "/products",
+        method: "POST",
+        body: productData,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Products", id: "PRODUCTS" },
+      ],
+    }),
+
+    updateProduct: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/products/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+
+      invalidatesTags: (result, error, arg) => [
+        { type: "Products", id: arg.id },
+        { type: "Products", id: "PRODUCTS" },
+      ],
+    }),
+
+    deleteProduct: builder.mutation({
+      query: (productId) => ({
+        url: `/products/${productId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Products", id: arg.id },
+        { type: "Products", id: "PRODUCTS" },
+      ],
+    }),
   }),
 });
 
-export const { useGetProductsQuery } = ProductsApiSlice;
+export const {
+  useGetProductsQuery,
+  useAddProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+} = ProductsApiSlice;

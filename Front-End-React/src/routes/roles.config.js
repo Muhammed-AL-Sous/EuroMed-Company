@@ -44,8 +44,8 @@ const CreateOperationPage = lazy(
 );
 
 // ============== Products ============== //
-const ProductsPage = lazy(
-  () => import("../features/products/pages/ProductsPage.jsx"),
+const ProductsDashboardPage = lazy(
+  () => import("../features/products/pages/ProductsDashboardPage.jsx"),
 );
 
 const CreateProductPage = lazy(
@@ -294,7 +294,7 @@ export const ROLES_CONFIG = {
 
       {
         path: "products",
-        element: ProductsPage,
+        element: ProductsDashboardPage,
         action: {
           label: "Create Product",
           to: "/admin/products/create",
