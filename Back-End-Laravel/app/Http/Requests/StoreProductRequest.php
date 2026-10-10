@@ -61,6 +61,21 @@ class StoreProductRequest extends FormRequest
                 'nullable',
                 'url',
             ],
+
+            'medical_usage' => [
+                'nullable',
+                'string',
+            ],
+
+            'specifications' => [
+                'nullable',
+                'array',
+            ],
+
+            'available_sizes' => [
+                'nullable',
+                'array',
+            ],
         ];
     }
 }
