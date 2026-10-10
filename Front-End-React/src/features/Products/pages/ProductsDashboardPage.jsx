@@ -17,6 +17,7 @@ import {
 
 import { useGetSubCategoriesQuery } from "../../subCategories/SubCategoriesApiSlice";
 import { useGetManufacturersQuery } from "../../manufacturers/ManufacturersApiSlice";
+import { useGetCategoriesQuery } from "../../categories/CategoriesApiSlice";
 
 // ==================================================
 // Hooks
@@ -76,8 +77,9 @@ const ProductsDashboardPage = () => {
   const [searchInput, setSearchInput] = useState(initialSearch);
 
   const search = searchParams.get("search") || "";
-  const subCategoryId = searchParams.get("subcategory_id") || "";
   const manufacturerId = searchParams.get("manufacturer_id") || "";
+  const subCategoryId = searchParams.get("subcategory_id") || "";
+  const categoryId = searchParams.get("category_id") || "";
 
   const [page, setPage] = useState(1);
 
@@ -97,6 +99,12 @@ const ProductsDashboardPage = () => {
   const { data: subCategories = [] } = useGetSubCategoriesQuery();
 
   // ==================================================
+  // categories
+  // ==================================================
+
+  const { data: categories = [] } = useGetCategoriesQuery();
+
+  // ==================================================
   // Manufacturers
   // ==================================================
 
@@ -113,14 +121,15 @@ const ProductsDashboardPage = () => {
     isError,
   } = useGetProductsQuery({
     search: normalizedSearch,
-    subcategory_id: subCategoryId,
     manufacturer_id: manufacturerId,
+    subcategory_id: subCategoryId,
+    category_id: categoryId,
     page,
   });
 
   const products = productsResponse?.products ?? [];
   const meta = productsResponse?.meta ?? null;
-
+  
   // ==================================================
   // Delete State
   // ==================================================
@@ -138,6 +147,7 @@ const ProductsDashboardPage = () => {
     name: "",
     description: "",
     manufacturer_id: "",
+    subcategory_id: "",
     category_id: "",
   });
 
@@ -284,7 +294,7 @@ const ProductsDashboardPage = () => {
 
       notifySonner("Product Deleted Successfully");
     } catch (error) {
-      console.error("Failed to delete product:", error);
+      console.error("Failed to Delete Product :", error);
 
       notifySonner(error?.data?.message || "Failed to Delete Product", "error");
     }
@@ -302,8 +312,16 @@ const ProductsDashboardPage = () => {
       code: product.code ?? "",
       name: product.name ?? "",
       description: product.description ?? "",
-      manufacturer_id: product.manufacturer_id ?? "",
-      category_id: product.category_id ?? "",
+
+      manufacturer_id: String(
+        product.manufacturer_id ?? product.manufacturer?.id ?? "",
+      ),
+
+      subcategory_id: String(
+        product.subcategory_id ?? product.subcategory?.id ?? "",
+      ),
+
+      category_id: String(product.category_id ?? product.category?.id ?? ""),
     });
   };
 
@@ -320,6 +338,7 @@ const ProductsDashboardPage = () => {
       name: "",
       description: "",
       manufacturer_id: "",
+      subcategory_id: "",
       category_id: "",
     });
   };
@@ -352,6 +371,7 @@ const ProductsDashboardPage = () => {
       name: editForm.name.trim(),
       description: editForm.description.trim(),
       manufacturer_id: editForm.manufacturer_id,
+      subcategory_id: editForm.subcategory_id,
       category_id: editForm.category_id,
     };
 
@@ -373,6 +393,10 @@ const ProductsDashboardPage = () => {
       errors.manufacturer_id = "The Manufacturer Field is Required";
     }
 
+    if (!payload.subcategory_id) {
+      errors.subcategory_id = "The SubCategory Field is Required";
+    }
+
     if (!payload.category_id) {
       errors.category_id = "The Category Field is Required";
     }
@@ -386,14 +410,27 @@ const ProductsDashboardPage = () => {
     // Check Changes
     // ==================================================
 
+    const originalManufacturerId =
+      selectedEditProduct.manufacturer_id ??
+      selectedEditProduct.manufacturer?.id ??
+      "";
+
+    const originalSubcategoryId =
+      selectedEditProduct.subcategory_id ??
+      selectedEditProduct.subcategory?.id ??
+      "";
+
+    const originalCategoryId =
+      selectedEditProduct.category_id ?? selectedEditProduct.category?.id ?? "";
+
     const hasChanges =
-      payload.code !== (selectedEditProduct.code ?? "") ||
-      payload.name !== (selectedEditProduct.name ?? "") ||
-      payload.description !== (selectedEditProduct.description ?? "") ||
-      String(payload.manufacturer_id) !==
-        String(selectedEditProduct.manufacturer_id ?? "") ||
-      String(payload.category_id) !==
-        String(selectedEditProduct.category_id ?? "");
+      payload.code !== (selectedEditProduct.code ?? "").trim() ||
+      payload.name !== (selectedEditProduct.name ?? "").trim() ||
+      payload.description !== (selectedEditProduct.description ?? "").trim() ||
+      String(payload.manufacturer_id ?? "") !==
+        String(originalManufacturerId) ||
+      String(payload.subcategory_id ?? "") !== String(originalSubcategoryId) ||
+      String(payload.category_id ?? "") !== String(originalCategoryId);
 
     if (!hasChanges) {
       handleCloseEditModal();
@@ -418,12 +455,13 @@ const ProductsDashboardPage = () => {
         name: "",
         description: "",
         manufacturer_id: "",
+        subcategory_id: "",
         category_id: "",
       });
 
       notifySonner("Product Updated Successfully");
     } catch (error) {
-      console.error("Failed to update product:", error);
+      console.error("Failed to Update Product:", error);
 
       notifySonner(error?.data?.message || "Failed to Update Product", "error");
     }
@@ -459,6 +497,8 @@ const ProductsDashboardPage = () => {
         className="
           flex
           flex-col
+          w-full
+          flex-wrap
           p-4
           md:flex-row
           md:items-center
@@ -468,7 +508,7 @@ const ProductsDashboardPage = () => {
             Search
         ================================================== */}
 
-        <div className="relative min-w-sm">
+        <div className="relative flex-1 md:min-w-md xl:min-w-auto">
           <Search
             className="
               pointer-events-none
@@ -496,7 +536,8 @@ const ProductsDashboardPage = () => {
               py-2.5
               pl-11
               pr-10
-              text-sm
+              text-[11px]
+              sm:text-sm
               text-slate-900
               outline-none
               transition
@@ -533,6 +574,7 @@ const ProductsDashboardPage = () => {
         <div
           className="
           flex
+          flex-wrap
           flex-col
           gap-3
           p-4
@@ -1125,7 +1167,7 @@ const ProductsDashboardPage = () => {
           <select
             id="product-manufacturer"
             name="manufacturer_id"
-            value={editForm.manufacturer_id}
+            value={String(editForm.manufacturer_id)}
             onChange={handleEditFormChange}
             disabled={isUpdating}
             aria-invalid={Boolean(formErrors.manufacturer_id)}
@@ -1154,7 +1196,7 @@ const ProductsDashboardPage = () => {
             <option value="">Select Manufacturer</option>
 
             {manufacturers.map((manufacturer) => (
-              <option key={manufacturer.id} value={manufacturer.id}>
+              <option key={manufacturer.id} value={String(manufacturer.id)}>
                 {manufacturer.name}
               </option>
             ))}
@@ -1175,7 +1217,76 @@ const ProductsDashboardPage = () => {
         </div>
 
         {/* ==================================================
-            Category
+           SubCategory
+        ================================================== */}
+
+        <div className="mt-5 space-y-1.5">
+          <label
+            htmlFor="product-subcategory"
+            className="
+              text-sm
+              font-semibold
+              text-slate-700
+              dark:text-slate-200
+            "
+          >
+            SubCategory
+          </label>
+
+          <select
+            id="product-subcategory"
+            name="subcategory_id"
+            value={String(editForm.subcategory_id)}
+            onChange={handleEditFormChange}
+            disabled={isUpdating}
+            aria-invalid={Boolean(formErrors.subcategory_id)}
+            className={`
+              w-full
+              rounded-xl
+              border
+              bg-slate-50
+              px-4
+              py-2.5
+              text-sm
+              text-slate-900
+              outline-none
+              transition
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+              dark:bg-slate-800
+              dark:text-slate-100
+              ${
+                formErrors.subcategory_id
+                  ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                  : "border-slate-200 focus:border-[#0084d1] focus:ring-1 focus:ring-[#0084d1] dark:border-slate-700"
+              }
+            `}
+          >
+            <option value="">Select SubCategory</option>
+
+            {subCategories.map((subcategory) => (
+              <option key={subcategory.id} value={String(subcategory.id)}>
+                {subcategory.name}
+              </option>
+            ))}
+          </select>
+
+          {formErrors.subcategory_id && (
+            <p
+              role="alert"
+              className="
+                text-xs
+                font-medium
+                text-red-600
+              "
+            >
+              {formErrors.subcategory_id}
+            </p>
+          )}
+        </div>
+
+        {/* ==================================================
+           Category
         ================================================== */}
 
         <div className="mt-5 space-y-1.5">
@@ -1194,7 +1305,7 @@ const ProductsDashboardPage = () => {
           <select
             id="product-category"
             name="category_id"
-            value={editForm.category_id}
+            value={String(editForm.category_id)}
             onChange={handleEditFormChange}
             disabled={isUpdating}
             aria-invalid={Boolean(formErrors.category_id)}
@@ -1222,9 +1333,9 @@ const ProductsDashboardPage = () => {
           >
             <option value="">Select Category</option>
 
-            {subCategories.map((subcategory) => (
-              <option key={subcategory.id} value={subcategory.id}>
-                {subcategory.name}
+            {categories.map((category) => (
+              <option key={category.id} value={String(category.id)}>
+                {category.name}
               </option>
             ))}
           </select>

@@ -60,11 +60,9 @@ class UpdateProductRequest extends FormRequest
                 'min:0',
             ],
 
-            'image' => [
+            'image_url' => [
                 'nullable',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'max:5120',
+                'url',
             ],
         ];
     }

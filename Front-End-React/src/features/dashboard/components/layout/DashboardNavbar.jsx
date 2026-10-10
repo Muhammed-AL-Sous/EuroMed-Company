@@ -51,13 +51,13 @@ const DashboardNavbar = ({ user, toggleSidebar }) => {
 
         {!isCreatePage && (
           <div>
-            <h1 className="text-2xl font-black text-slate-700">
-              <div className="flex items-center gap-2">
+            <h1 className="text-md md:text-2xl font-black text-slate-700">
+              <div className="flex items-center flex-col sm:flex-row gap-2">
                 {CurrentIcon && <CurrentIcon size={30} strokeWidth={2.5} />}
                 <span>{action?.header}</span>
               </div>
             </h1>
-            <p className="mt-0.5 text-xs font-medium text-slate-500">
+            <p className="mt-0.5 text-[11px] text-center md:text-left md:text-xs font-medium text-slate-500">
               Erbil Headquarters: Central Operations and Process Tracking
             </p>
           </div>
@@ -67,7 +67,7 @@ const DashboardNavbar = ({ user, toggleSidebar }) => {
       {!isCreatePage && action?.to && action?.icon && (
         <Link
           to={action.to}
-          className="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-5 py-2.5 text-[14px] font-bold text-white shadow-md transition-colors hover:bg-sky-600"
+          className="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-5 py-2.5 text-[14px] font-bold text-white shadow-md w-fit transition-colors hover:bg-sky-600"
         >
           <action.icon size={18} />
           {action.label}

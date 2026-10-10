@@ -12,7 +12,7 @@ const HospitalsTable = ({ hospitals = [], onDelete, onEdit }) => {
     <div className="w-full overflow-hidden rounded-2xl border border-slate-300">
       {/* الحاوية الداخلية: هي المسؤولة عن السكرول الأفقي */}
       <div className="w-full overflow-x-auto">
-        <table className="w-full min-w-[560px] border-separate border-spacing-0 text-center">
+        <table className="w-full min-w-140 border-separate border-spacing-0 text-center">
           {/* Header */}
           <thead>
             <tr>
@@ -28,7 +28,7 @@ const HospitalsTable = ({ hospitals = [], onDelete, onEdit }) => {
             {hospitals.length === 0 && (
               <tr>
                 <td colSpan={4} className="px-4 py-6 text-sm text-slate-500">
-                  No hospitals found.
+                  No Hospitals Found.
                 </td>
               </tr>
             )}

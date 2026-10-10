@@ -4,13 +4,20 @@ import { normalizeProductsListResponse } from "./ProductsQueryUtils";
 export const ProductsApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: ({ subcategory_id, search, manufacturer_id, page = 1 }) => ({
+      query: ({
+        subcategory_id,
+        search,
+        manufacturer_id,
+        page = 1,
+        category_id,
+      }) => ({
         url: "/products",
         params: {
           subcategory_id: subcategory_id || undefined,
           search: search || undefined,
           manufacturer_id: manufacturer_id || undefined,
           page,
+          category_id: category_id || undefined,
         },
       }),
 
