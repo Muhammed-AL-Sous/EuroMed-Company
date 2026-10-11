@@ -359,11 +359,6 @@ const ProductsPage = () => {
                       <p className="text-slate-600 text-xs line-clamp-2 leading-relaxed">
                         {product.description || "No description available."}
                       </p>
-
-                      <div className="pt-2 text-xs text-slate-500 border-t border-slate-100 mt-auto">
-                        <strong className="text-slate-700">Usage : </strong>
-                        {product.medical_usage || "Not specified"}
-                      </div>
                     </div>
                   </div>
 
@@ -444,63 +439,8 @@ const ProductsPage = () => {
                       {selectedProduct.description ||
                         "No description available."}
                     </p>
-                    {/* Medical Indication */}
-                    <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4">
-                      <h4 className="text-sm font-bold tracking-wider text-slate-700">
-                        Medical Indication
-                      </h4>
-                      <p className="text-xs text-slate-600">
-                        {selectedProduct.medical_usage || "Not specified."}
-                      </p>
-                    </div>
-                    {/* Technical Specifications */}
-                    {selectedProduct.specifications &&
-                      Object.keys(selectedProduct.specifications).length >
-                        0 && (
-                        <div>
-                          <h4 className="mb-3 px-1 text-sm font-bold tracking-wider text-slate-700">
-                            Technical Specifications
-                          </h4>
-                          <div className="grid grid-cols-1 gap-3 px-1 text-xs sm:grid-cols-2">
-                            {Object.entries(selectedProduct.specifications).map(
-                              ([key, value]) => (
-                                <div
-                                  key={key}
-                                  className="bg-white p-2.5 rounded-lg border border-slate-200"
-                                >
-                                  <span className="block font-bold mb-1 text-slate-500">
-                                    {key}
-                                  </span>
-                                  <span className="font-semibold  text-slate-900">
-                                    {String(value)}
-                                  </span>
-                                </div>
-                              ),
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    {/* Available Sizes */}
-                    {Array.isArray(selectedProduct.available_sizes) &&
-                      selectedProduct.available_sizes.length > 0 && (
-                        <div>
-                          <h4 className="text-sm font-bold tracking-wider text-slate-700 mb-2">
-                            Available Sizes in Stock
-                          </h4>
-                          <div className="flex flex-wrap gap-2 px-1">
-                            {selectedProduct.available_sizes.map(
-                              (size, index) => (
-                                <span
-                                  key={`${size}-${index}`}
-                                  className="rounded-lg border border-sky-200 bg-sky-50 px-2 py-1.5 font-mono text-xs font-bold text-sky-800"
-                                >
-                                  Size: {size}
-                                </span>
-                              ),
-                            )}
-                          </div>
-                        </div>
-                      )}
+
+                    {/* Product Image */}
                     {selectedProduct.image_url && (
                       <div className="w-72 mx-auto border border-gray-100 shadow-2xl shadow-gray-300 rounded-2xl">
                         <img

@@ -19,6 +19,9 @@ import { useGetManufacturersQuery } from "../../manufacturers/ManufacturersApiSl
 import { useGetCategoriesQuery } from "../../categories/CategoriesApiSlice";
 import { useGetSubCategoriesQuery } from "../../subCategories/SubCategoriesApiSlice";
 
+// Utility Component
+import ProductImageUpload from "../components/utility/ProductImageUpload";
+
 const CreateProductPage = () => {
   const [createForm, setCreateForm] = useState({
     code: "",
@@ -27,21 +30,13 @@ const CreateProductPage = () => {
     subcategory_id: "",
     category_id: "",
     image_url: "",
-    medical_usage: "",
-    specifications: [
-      {
-        Material: "",
-        Fixation: "",
-        Sizes: "",
-        Flexion_Range: "",
-      },
-    ],
-    available_sizes: [],
   });
 
   const [errors, setErrors] = useState({});
 
   const [addProduct, { isLoading: isCreating }] = useAddProductMutation();
+
+  const [productImage, setProductImage] = useState(null);
 
   // ==================================================
   // Subcategories
@@ -98,9 +93,27 @@ const CreateProductPage = () => {
     if (!isValid) {
       return;
     }
+    const formData = new FormData();
+    formData.append("code", createForm.code.trim());
+    formData.append("name", createForm.name.trim());
+    formData.append(
+      "manufacturer_id",
+      String(Number(createForm.manufacturer_id)),
+    );
+    formData.append(
+      "subcategory_id",
+      String(Number(createForm.subcategory_id)),
+    );
+    formData.append("category_id", String(Number(createForm.category_id)));
+
+    if (productImage) {
+      formData.append("image", productImage);
+    }
 
     try {
-      await addProduct(createForm).unwrap();
+      await addProduct(formData).unwrap();
+
+      setProductImage(null);
 
       setCreateForm({
         code: "",
@@ -109,16 +122,6 @@ const CreateProductPage = () => {
         subcategory_id: "",
         category_id: "",
         image_url: "",
-        medical_usage: "",
-        specifications: [
-          {
-            Material: "",
-            Fixation: "",
-            Sizes: "",
-            Flexion_Range: "",
-          },
-        ],
-        available_sizes: [],
       });
 
       setErrors({});
@@ -150,6 +153,8 @@ const CreateProductPage = () => {
             <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
               <Form.Root className="w-full" onSubmit={handleSubmitProduct}>
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <ProductImageUpload onChange={setProductImage} />
+
                   {/* =========== Product Code =========== */}
                   <Form.Field className="mb-2.5 grid" name="code">
                     <div className="flex flex-col">

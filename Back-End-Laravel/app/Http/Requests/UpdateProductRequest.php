@@ -60,24 +60,11 @@ class UpdateProductRequest extends FormRequest
                 'min:0',
             ],
 
-            'image_url' => [
+            'image' => [
                 'nullable',
-                'url',
-            ],
-
-            'medical_usage' => [
-                'nullable',
-                'string',
-            ],
-
-            'specifications' => [
-                'nullable',
-                'array',
-            ],
-
-            'available_sizes' => [
-                'nullable',
-                'array',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:5120',
             ],
         ];
     }

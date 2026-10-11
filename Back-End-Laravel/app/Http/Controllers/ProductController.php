@@ -46,12 +46,31 @@ class ProductController extends Controller
         );
     }
 
+
     public function store(StoreProductRequest $request): JsonResponse
     {
-        $product = Product::create($request->validated());
+        $validated = $request->validated();
 
-        return self::created($product->load(['manufacturer', 'category', 'subCategory']));
+        // Remove the uploaded file from the product attributes.
+        unset($validated['image']);
+
+        // Store the image and save its relative path in the database.
+        if ($request->hasFile('image')) {
+            $validated['image_url'] = $request->file('image')
+                ->store('products', 'public');
+        }
+
+        $product = Product::create($validated);
+
+        return self::created(
+            $product->load([
+                'manufacturer',
+                'category',
+                'subCategory',
+            ])
+        );
     }
+
 
     public function show(Product $product): JsonResponse
     {
