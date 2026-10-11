@@ -20,6 +20,7 @@ const ProductsTable = ({ products = [], onDelete, onEdit }) => {
               <th className={`${headerCell} border-r`}>Name</th>
               <th className={`${headerCell} border-r`}>Category</th>
               <th className={`${headerCell} border-r`}>Manufacturer</th>
+              <th className={`${headerCell} border-r`}>Image</th>
               <th className={headerCell}>Tools</th>
             </tr>
           </thead>
@@ -62,6 +63,19 @@ const ProductsTable = ({ products = [], onDelete, onEdit }) => {
                     className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
                   >
                     {product.manufacturer.name}
+                  </td>
+
+                  <td
+                    className={`${bodyCell} ${lastRow} border-r p-2 group-hover:bg-sky-50 transition-colors duration-200`}
+                  >
+                    <div className="flex items-center justify-center w-full h-full">
+                      <img
+                        src={product.image_url}
+                        alt="Product image"
+                        className="w-15 h-10 object-contain"
+                        loading="lazy"
+                      />
+                    </div>
                   </td>
 
                   <td

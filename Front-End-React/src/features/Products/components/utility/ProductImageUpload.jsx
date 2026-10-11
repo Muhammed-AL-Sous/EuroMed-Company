@@ -24,6 +24,8 @@ export default function ProductImageUpload({
   initialImageUrl = "",
   onChange,
   onRemove,
+  title,
+  subTitle,
   disabled = false,
 }) {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -142,11 +144,13 @@ export default function ProductImageUpload({
           {/* Header */}
           <Box>
             <Text as="div" size="3" weight="medium">
-              Product Image
+              {/* Product Image */}
+              {title}
             </Text>
 
             <Text as="p" size="2" color="gray" mt="1">
-              Upload an image for your product.
+              {/* Upload an image for your product. */}
+              {subTitle}
             </Text>
           </Box>
 
@@ -189,7 +193,7 @@ export default function ProductImageUpload({
               </div>
 
               {/* Image Information */}
-              <div className="border-t border-slate-200 bg-white px-3 py-2">
+              {/* <div className="border-t border-slate-200 bg-white px-3 py-2">
                 <Flex align="center" gap="2">
                   <FileImage size={16} className="shrink-0 text-blue-600" />
 
@@ -197,7 +201,7 @@ export default function ProductImageUpload({
                     {selectedFile ? selectedFile.name : "Current product image"}
                   </Text>
                 </Flex>
-              </div>
+              </div> */}
 
               {isDragActive && (
                 <div className="absolute inset-0 flex items-center justify-center bg-blue-50/90">
@@ -246,7 +250,7 @@ export default function ProductImageUpload({
                 type="button"
                 onClick={open}
                 disabled={disabled}
-                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#0084d1] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#016dac] disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-4 cursor-pointer inline-flex items-center gap-2 rounded-lg bg-[#0084d1] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#016dac] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Upload size={16} />
                 Choose Image

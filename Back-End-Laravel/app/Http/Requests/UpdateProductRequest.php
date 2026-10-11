@@ -66,6 +66,8 @@ class UpdateProductRequest extends FormRequest
                 'mimes:jpg,jpeg,png,webp',
                 'max:5120',
             ],
+
+            'remove_image' => ['sometimes', 'boolean'],
         ];
     }
 }

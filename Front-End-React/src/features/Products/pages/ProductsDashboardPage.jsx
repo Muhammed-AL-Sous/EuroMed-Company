@@ -18,7 +18,7 @@ import {
 import { useGetSubCategoriesQuery } from "../../subCategories/SubCategoriesApiSlice";
 import { useGetManufacturersQuery } from "../../manufacturers/ManufacturersApiSlice";
 import { useGetCategoriesQuery } from "../../categories/CategoriesApiSlice";
-
+import ProductImageUpload from "../components/utility/ProductImageUpload";
 // ==================================================
 // Hooks
 // ==================================================
@@ -67,6 +67,8 @@ import {
 
 const ProductsDashboardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [removeExistingImage, setRemoveExistingImage] = useState(false);
 
   // ==================================================
   // URL Filters
@@ -129,7 +131,7 @@ const ProductsDashboardPage = () => {
 
   const products = productsResponse?.products ?? [];
   const meta = productsResponse?.meta ?? null;
-  
+
   // ==================================================
   // Delete State
   // ==================================================
@@ -308,6 +310,9 @@ const ProductsDashboardPage = () => {
     setSelectedEditProduct(product);
     setFormErrors({});
 
+    setSelectedImage(null);
+    setRemoveExistingImage(false);
+
     setEditForm({
       code: product.code ?? "",
       name: product.name ?? "",
@@ -332,6 +337,8 @@ const ProductsDashboardPage = () => {
 
     setSelectedEditProduct(null);
     setFormErrors({});
+    setSelectedImage(null);
+    setRemoveExistingImage(false);
 
     setEditForm({
       code: "",
@@ -430,7 +437,9 @@ const ProductsDashboardPage = () => {
       String(payload.manufacturer_id ?? "") !==
         String(originalManufacturerId) ||
       String(payload.subcategory_id ?? "") !== String(originalSubcategoryId) ||
-      String(payload.category_id ?? "") !== String(originalCategoryId);
+      String(payload.category_id ?? "") !== String(originalCategoryId) ||
+      Boolean(selectedImage) ||
+      removeExistingImage;
 
     if (!hasChanges) {
       handleCloseEditModal();
@@ -442,13 +451,38 @@ const ProductsDashboardPage = () => {
     // ==================================================
 
     try {
+      const formData = new FormData();
+
+      formData.append("code", payload.code);
+      formData.append("name", payload.name);
+      formData.append("description", payload.description);
+      formData.append("manufacturer_id", payload.manufacturer_id);
+      formData.append("subcategory_id", payload.subcategory_id);
+      formData.append("category_id", payload.category_id);
+
+      // صورة جديدة، إن وُجدت
+      if (selectedImage) {
+        formData.append("image", selectedImage);
+      }
+
+      // حذف الصورة الحالية فقط إذا طلب المستخدم ذلك
+      formData.append(
+        "remove_image",
+        removeExistingImage && !selectedImage ? "1" : "0",
+      );
+
+      // Laravel method spoofing لتحديث multipart/form-data
+      formData.append("_method", "PUT");
+
       await updateProduct({
         id: selectedEditProduct.id,
-        data: payload,
+        data: formData,
       }).unwrap();
 
       setSelectedEditProduct(null);
       setFormErrors({});
+      setSelectedImage(null);
+      setRemoveExistingImage(false);
 
       setEditForm({
         code: "",
@@ -1106,8 +1140,7 @@ const ProductsDashboardPage = () => {
             className="
               text-sm
               font-semibold
-              text-slate-700
-              dark:text-slate-200
+              text-slate-200
             "
           >
             Description
@@ -1144,6 +1177,31 @@ const ProductsDashboardPage = () => {
               dark:bg-slate-800
               dark:text-slate-100
             "
+          />
+        </div>
+
+        {/* ==================================================
+            Product Image
+        ================================================== */}
+        <div className="">
+          <label className="text-sm font-semibold text-slate-200">
+            Product Image
+          </label>
+
+          <ProductImageUpload
+            key={selectedEditProduct?.id}
+            initialImageUrl={selectedEditProduct?.image_url ?? ""}
+            disabled={isUpdating}
+            onChange={(file) => {
+              setSelectedImage(file);
+
+              if (file) {
+                setRemoveExistingImage(false);
+              }
+            }}
+            onRemove={() => {
+              setRemoveExistingImage(true);
+            }}
           />
         </div>
 

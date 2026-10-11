@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -77,11 +78,53 @@ class ProductController extends Controller
         return self::success($product->load(['manufacturer', 'category', 'subCategory']));
     }
 
-    public function update(UpdateProductRequest $request, Product $product): JsonResponse
-    {
-        $product->update($request->validated());
+    public function update(
+        UpdateProductRequest $request,
+        Product $product
+    ): JsonResponse {
+        $validated = $request->validated();
 
-        return self::updated($product->load(['manufacturer', 'category', 'subCategory']));
+        // الاحتفاظ بالمسار الأصلي من قاعدة البيانات
+        $oldImagePath = $product->getRawOriginal('image_url');
+
+        // هذه الحقول ليست أعمدة نريد تحديثها مباشرة
+        unset($validated['image'], $validated['remove_image']);
+
+        $newImagePath = null;
+        $hasNewImage = $request->hasFile('image');
+        $shouldRemoveImage = $request->boolean('remove_image');
+
+        // عند رفع صورة جديدة، حفظها في مجلد products
+        if ($hasNewImage) {
+            $newImagePath = $request->file('image')->store(
+                'products',
+                'public'
+            );
+
+            $validated['image_url'] = $newImagePath;
+        } elseif ($shouldRemoveImage) {
+            // حذف الصورة من سجل المنتج عند طلب الإزالة
+            $validated['image_url'] = null;
+        }
+
+        // تحديث بيانات المنتج
+        $product->update($validated);
+
+        // حذف الصورة القديمة بعد نجاح تحديث سجل المنتج
+        if (
+            $oldImagePath &&
+            ($hasNewImage || $shouldRemoveImage)
+        ) {
+            Storage::disk('public')->delete($oldImagePath);
+        }
+
+        return self::updated(
+            $product->fresh()->load([
+                'manufacturer',
+                'category',
+                'subCategory',
+            ])
+        );
     }
 
     public function destroy(Product $product): JsonResponse

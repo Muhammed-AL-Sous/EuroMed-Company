@@ -152,9 +152,12 @@ const CreateProductPage = () => {
 
             <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
               <Form.Root className="w-full" onSubmit={handleSubmitProduct}>
+                <ProductImageUpload
+                  onChange={setProductImage}
+                  title="Product Image"
+                  subTitle="Upload an image for your product."
+                />
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <ProductImageUpload onChange={setProductImage} />
-
                   {/* =========== Product Code =========== */}
                   <Form.Field className="mb-2.5 grid" name="code">
                     <div className="flex flex-col">
