@@ -36,10 +36,21 @@ class CategoryController extends Controller
         return self::updated($category);
     }
 
-    public function destroy(Category $category): JsonResponse
+
+    public function destroy(Category $category)
     {
+        if ($category->products()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'لا يمكن حذف المجموعة لأنها مرتبطة بمنتجات.'
+            ], 409);
+        }
+
         $category->delete();
 
-        return self::deleted('Category Deleted Successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'تم حذف المجموعة بنجاح.'
+        ]);
     }
 }

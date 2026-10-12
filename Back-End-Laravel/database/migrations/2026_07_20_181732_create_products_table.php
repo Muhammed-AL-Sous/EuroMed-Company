@@ -16,18 +16,25 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name')->unique();
             $table->text('description')->nullable();
-            $table->foreignId('manufacturer_id')->constrained()->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
-            $table->foreignId('subcategory_id')->constrained('subcategories')->onDelete('cascade');
+
+            $table->foreignId('manufacturer_id')
+                ->constrained()
+                ->restrictOnDelete();
+
+            $table->foreignId('category_id')
+                ->constrained('categories')
+                ->restrictOnDelete();
+
+            $table->foreignId('subcategory_id')
+                ->constrained('subcategories')
+                ->restrictOnDelete();
+
             $table->decimal('price', 10, 2)->nullable();
             $table->string('image_url')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('products');

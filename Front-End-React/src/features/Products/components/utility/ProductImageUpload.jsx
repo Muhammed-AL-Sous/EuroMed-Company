@@ -250,9 +250,12 @@ export default function ProductImageUpload({
                 type="button"
                 onClick={open}
                 disabled={disabled}
-                className="mt-4 cursor-pointer inline-flex items-center gap-2 rounded-lg bg-[#0084d1] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#016dac] disabled:cursor-not-allowed disabled:opacity-50"
+                className="group mt-4 cursor-pointer transition inline-flex items-center gap-2 rounded-lg bg-[#0084d1] px-4 py-2.5 text-sm font-medium text-white duration-200 hover:bg-[#016dac] disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <Upload size={16} />
+                <Upload
+                  size={16}
+                  className="group-hover:animate-bounce transition"
+                />
                 Choose Image
               </button>
 

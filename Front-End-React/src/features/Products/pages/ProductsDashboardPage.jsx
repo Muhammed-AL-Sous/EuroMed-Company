@@ -1391,11 +1391,12 @@ const ProductsDashboardPage = () => {
           >
             <option value="">Select Category</option>
 
-            {categories.map((category) => (
-              <option key={category.id} value={String(category.id)}>
-                {category.name}
-              </option>
-            ))}
+            {Array.isArray(categories) &&
+              categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
           </select>
 
           {formErrors.category_id && (

@@ -15,12 +15,27 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_number')->unique()->nullable();
             $table->date('operation_date');
-            $table->foreignId('doctor_id')->constrained('doctors', 'id')->cascadeOnDelete();
-            $table->foreignId('hospital_id')->constrained('hospitals', 'id')->cascadeOnDelete();
-            $table->foreignId('operation_type_id')->constrained('operation_types', 'id')->cascadeOnDelete();
+
+            $table->foreignId('doctor_id')
+                ->constrained('doctors')
+                ->restrictOnDelete();
+
+            $table->foreignId('hospital_id')
+                ->constrained('hospitals')
+                ->restrictOnDelete();
+
+            $table->foreignId('operation_type_id')
+                ->constrained('operation_types')
+                ->restrictOnDelete();
+
             $table->string('patient_access_code')->unique();
+
             $table->enum('side', ['Left', 'Right', 'Bilateral'])->nullable();
-            $table->foreignId('patient_id')->constrained('patients', 'id')->cascadeOnDelete();
+
+            $table->foreignId('patient_id')
+                ->constrained('patients')
+                ->restrictOnDelete();
+
             $table->text('description')->nullable();
             $table->timestamps();
         });
