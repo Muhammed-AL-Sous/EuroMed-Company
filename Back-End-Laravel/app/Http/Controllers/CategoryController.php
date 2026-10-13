@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -26,7 +27,9 @@ class CategoryController extends Controller
             ->latest()
             ->paginate($request->integer('per_page', 10));
 
-        return self::success($categories);
+        return self::success(
+            CategoryResource::collection($categories)
+        );
     }
 
     public function store(StoreCategoryRequest $request): JsonResponse

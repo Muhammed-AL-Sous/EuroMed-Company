@@ -4,17 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSubCategoryRequest;
 use App\Http\Requests\UpdateSubCategoryRequest;
+use App\Http\Resources\SubCategoryResource;
 use App\Models\SubCategory;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SubCategoryController extends Controller
 {
     use ApiResponse;
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return self::success(SubCategory::all());
+        $subcategories = SubCategory::query()
+            ->when(
+                $request->filled('search'),
+                function ($query) use ($request) {
+                    $search = $request->search;
+                    $query->where('name', 'like', "%{$search}%");
+                }
+            )
+            ->latest()
+            ->paginate($request->integer('per_page', 10));
+
+        return self::success(
+            SubCategoryResource::collection($subcategories)
+        );
     }
 
     public function store(StoreSubCategoryRequest $request): JsonResponse

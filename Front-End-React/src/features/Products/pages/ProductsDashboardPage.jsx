@@ -705,36 +705,21 @@ const ProductsDashboardPage = () => {
 
                   {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                  {subCategories.map((subcategory) => (
-                    <Select.Item
-                      key={subcategory.id}
-                      value={String(subcategory.id)}
-                      className="
-                  relative
-                  flex
-                  cursor-pointer
-                  select-none
-                  items-center
-                  rounded-lg
-                  py-2.5
-                  pl-3
-                  pr-9
-                  text-sm
-                text-slate-700
-                  outline-none
-                data-highlighted:bg-sky-50
-                data-highlighted:text-sky-700
-                data-[state=checked]:bg-sky-50
-                  data-[state=checked]:font-medium
-                "
-                    >
-                      <Select.ItemText>{subcategory.name}</Select.ItemText>
+                  {(Array.isArray(subCategories) ? subCategories : []).map(
+                    (subcategory) => (
+                      <Select.Item
+                        key={subcategory.id}
+                        value={String(subcategory.id)}
+                        className="relative flex cursor-pointer select-none items-center rounded-lg py-2.5 pl-3 pr-9 text-sm text-slate-700 outline-none data-highlighted:bg-sky-50 data-highlighted:text-sky-700 data-[state=checked]:bg-sky-50 data-[state=checked]:font-medium"
+                      >
+                        <Select.ItemText>{subcategory.name}</Select.ItemText>
 
-                      <Select.ItemIndicator className="absolute right-3">
-                        <Check size={16} className="text-sky-600" />
-                      </Select.ItemIndicator>
-                    </Select.Item>
-                  ))}
+                        <Select.ItemIndicator className="absolute right-3">
+                          <Check size={16} className="text-sky-600" />
+                        </Select.ItemIndicator>
+                      </Select.Item>
+                    ),
+                  )}
                 </Select.Viewport>
               </Select.Content>
             </Select.Portal>
@@ -1322,11 +1307,12 @@ const ProductsDashboardPage = () => {
           >
             <option value="">Select SubCategory</option>
 
-            {subCategories.map((subcategory) => (
-              <option key={subcategory.id} value={String(subcategory.id)}>
-                {subcategory.name}
-              </option>
-            ))}
+            {Array.isArray(subCategories) &&
+              subCategories.map((subcategory) => (
+                <option key={subcategory.id} value={String(subcategory.id)}>
+                  {subcategory.name}
+                </option>
+              ))}
           </select>
 
           {formErrors.subcategory_id && (
