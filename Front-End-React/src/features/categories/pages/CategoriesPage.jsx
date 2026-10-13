@@ -131,9 +131,7 @@ const CategoriesPage = () => {
   };
 
   const handleDeleteCategory = async () => {
-    if (!selectedDeleteCategory) {
-      return;
-    }
+    if (!selectedDeleteCategory || isDeleting) return;
 
     try {
       await deleteCategory(selectedDeleteCategory.id).unwrap();
@@ -218,12 +216,12 @@ const CategoriesPage = () => {
     // No real changes
     const hasChanges =
       payload.name !== (selectedEditCategory.name ?? "") ||
-      payload.description !== (selectedEditCategory.description ?? "") ||
-      payload.type !== (selectedEditCategory.type ?? "");
+      payload.description !== (selectedEditCategory.description ?? "");
+
     if (!hasChanges) {
       setSelectedEditCategory(null);
       setFormErrors({});
-      setEditForm({ name: "", description: "", type: "" });
+      setEditForm({ name: "", description: "" });
       return;
     }
 
@@ -449,12 +447,12 @@ const CategoriesPage = () => {
       ================================================== */}
 
       <DeleteConfirmModal
-        isOpen={Boolean(selectedDeleteCategory)}
-        onClose={handleCloseDeleteModal}
+        isOpen={!!selectedDeleteCategory}
+        onClose={() => setSelectedDeleteCategory(null)}
         onConfirm={handleDeleteCategory}
         isLoading={isDeleting}
         title="Delete Category"
-        message="Are you sure you want to delete this category?"
+        message="Are You Sure You Want to Delete This Category ?"
         itemLabel={selectedDeleteCategory?.name}
         confirmText="Delete"
         cancelText="Cancel"

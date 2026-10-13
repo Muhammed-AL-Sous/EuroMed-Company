@@ -4,7 +4,13 @@ import { normalizeCategoriesListResponse } from "./CategoriesQueryUtils";
 export const CategoriesApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCategories: builder.query({
-      query: () => "/categories",
+      query: ({ search = "", page = 1 } = {}) => ({
+        url: "/categories",
+        params: {
+          search: search || undefined,
+          page,
+        },
+      }),
 
       transformResponse: (response) =>
         normalizeCategoriesListResponse(response),
@@ -13,21 +19,22 @@ export const CategoriesApiSlice = baseApi.injectEndpoints({
         result?.length
           ? [
               ...result.map(({ id }) => ({
-                type: "categories",
+                type: "Categories",
                 id,
               })),
               {
-                type: "categories",
+                type: "Categories",
                 id: "category_id",
               },
             ]
           : [
               {
-                type: "categories",
+                type: "Categories",
                 id: "category_id",
               },
             ],
     }),
+
     addCategory: builder.mutation({
       query: (categoryData) => ({
         url: "/categories",
@@ -35,7 +42,7 @@ export const CategoriesApiSlice = baseApi.injectEndpoints({
         body: categoryData,
       }),
       invalidatesTags: (result, error, arg) => [
-        { type: "categories", id: "category_id" },
+        { type: "Categories", id: "category_id" },
       ],
     }),
 
@@ -47,8 +54,8 @@ export const CategoriesApiSlice = baseApi.injectEndpoints({
       }),
 
       invalidatesTags: (result, error, arg) => [
-        { type: "categories", id: arg.id },
-        { type: "categories", id: "category_id" },
+        { type: "Categories", id: arg.id },
+        { type: "Categories", id: "category_id" },
       ],
     }),
 
@@ -57,9 +64,10 @@ export const CategoriesApiSlice = baseApi.injectEndpoints({
         url: `/categories/${categoryId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "categories", id: arg.id },
-        { type: "categories", id: "category_id" },
+
+      invalidatesTags: (result, error, categoryId) => [
+        { type: "Categories", id: categoryId },
+        { type: "Categories", id: "category_id" },
       ],
     }),
   }),

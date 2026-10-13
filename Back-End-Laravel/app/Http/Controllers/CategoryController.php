@@ -7,14 +7,26 @@ use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     use ApiResponse;
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return self::success(Category::all());
+        $categories = Category::query()
+            ->when(
+                $request->filled('search'),
+                function ($query) use ($request) {
+                    $search = $request->search;
+                    $query->where('name', 'like', "%{$search}%");
+                }
+            )
+            ->latest()
+            ->paginate($request->integer('per_page', 10));
+
+        return self::success($categories);
     }
 
     public function store(StoreCategoryRequest $request): JsonResponse
@@ -42,7 +54,7 @@ class CategoryController extends Controller
         if ($category->products()->exists()) {
             return response()->json([
                 'success' => false,
-                'message' => 'لا يمكن حذف المجموعة لأنها مرتبطة بمنتجات.'
+                'message' => "The Category Can't be Deleted Because it is Linked to Products."
             ], 409);
         }
 
@@ -50,7 +62,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'تم حذف المجموعة بنجاح.'
+            'message' => "The Category has been Deleted Successfully."
         ]);
     }
 }
