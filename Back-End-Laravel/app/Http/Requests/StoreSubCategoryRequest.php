@@ -16,6 +16,7 @@ class StoreSubCategoryRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255', 'unique:subcategories,name'],
             'description' => ['nullable', 'string'],
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
     }
 }

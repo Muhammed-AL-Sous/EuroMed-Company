@@ -483,7 +483,10 @@ const CreateProductPage = () => {
 
                               {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                              {subCategories.map((subcategory) => (
+                              {(Array.isArray(subCategories)
+                                ? subCategories
+                                : []
+                              ).map((subcategory) => (
                                 <Select.Item
                                   key={subcategory.id}
                                   value={String(subcategory.id)}
@@ -633,7 +636,10 @@ const CreateProductPage = () => {
 
                               {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                              {categories.map((category) => (
+                              {(Array.isArray(categories)
+                                ? categories
+                                : []
+                              ).map((category) => (
                                 <Select.Item
                                   key={category.id}
                                   value={String(category.id)}

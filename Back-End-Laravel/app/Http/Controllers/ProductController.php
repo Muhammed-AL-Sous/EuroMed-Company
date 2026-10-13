@@ -34,9 +34,18 @@ class ProductController extends Controller
             ->when(
                 $request->filled('search'),
                 function ($query) use ($request) {
-                    $search = $request->search;
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhere('code', 'like', "%{$search}%");
+                    $terms = preg_split('/\s+/', trim($request['search'])) ?: [];
+                    $terms = array_values(array_filter($terms, fn($t) => $t !== ''));
+
+                    $query->where(function ($qq) use ($terms) {
+                        foreach ($terms as $term) {
+                            $like = '%' . $term . '%';
+                            $qq->where(function ($q3) use ($like) {
+                                $q3->where('name', 'like', $like)
+                                    ->orWhere('code', 'like', $like);
+                            });
+                        }
+                    });
                 }
             )
             ->latest()

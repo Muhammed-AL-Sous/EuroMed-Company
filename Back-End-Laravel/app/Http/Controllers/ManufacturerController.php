@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreManufacturerRequest;
 use App\Http\Requests\UpdateManufacturerRequest;
+use App\Http\Resources\ManufacturerResource;
 use App\Models\Manufacturer;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +15,9 @@ class ManufacturerController extends Controller
 
     public function index(): JsonResponse
     {
-        return self::success(Manufacturer::all());
+        return self::success(
+            ManufacturerResource::collection(Manufacturer::all())
+        );
     }
 
     public function store(StoreManufacturerRequest $request): JsonResponse

@@ -40,11 +40,14 @@ const ProductsPage = () => {
 
   const { data: subCategories = [] } = useGetSubCategoriesQuery();
 
+  const subcategoriesResponse = subCategories?.subcategories ?? [];
   // --------------------------------------------------
   // Manufacturers
   // --------------------------------------------------
 
   const { data: manufacturers = [] } = useGetManufacturersQuery();
+
+  const manufacturersResponse = manufacturers?.manufacturers ?? [];
 
   // --------------------------------------------------
   // Products
@@ -202,11 +205,12 @@ const ProductsPage = () => {
               >
                 <option value="">All Subcategories</option>
 
-                {subCategories.map((subCategory) => (
-                  <option key={subCategory.id} value={subCategory.id}>
-                    {subCategory.name}
-                  </option>
-                ))}
+                {Array.isArray(subcategoriesResponse) &&
+                  subcategoriesResponse.map((subcategory) => (
+                    <option key={subcategory.id} value={String(subcategory.id)}>
+                      {subcategory.name}
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -220,11 +224,12 @@ const ProductsPage = () => {
               >
                 <option value="">All Manufacturers</option>
 
-                {manufacturers.map((manufacturer) => (
-                  <option key={manufacturer.id} value={manufacturer.id}>
-                    {manufacturer.name}
-                  </option>
-                ))}
+                {Array.isArray(manufacturersResponse) &&
+                  manufacturersResponse.map((manufacturer) => (
+                    <option key={manufacturer.id} value={manufacturer.id}>
+                      {manufacturer.name}
+                    </option>
+                  ))}
               </select>
             </div>
           </div>

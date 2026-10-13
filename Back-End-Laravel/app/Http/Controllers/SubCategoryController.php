@@ -20,10 +20,20 @@ class SubCategoryController extends Controller
             ->when(
                 $request->filled('search'),
                 function ($query) use ($request) {
-                    $search = $request->search;
-                    $query->where('name', 'like', "%{$search}%");
+                    $terms = preg_split('/\s+/', trim($request['search'])) ?: [];
+                    $terms = array_values(array_filter($terms, fn($t) => $t !== ''));
+
+                    $query->where(function ($qq) use ($terms) {
+                        foreach ($terms as $term) {
+                            $like = '%' . $term . '%';
+                            $qq->where(function ($q3) use ($like) {
+                                $q3->where('name', 'like', $like);
+                            });
+                        }
+                    });
                 }
             )
+            ->withCount('products')
             ->latest()
             ->paginate($request->integer('per_page', 10));
 
@@ -34,7 +44,15 @@ class SubCategoryController extends Controller
 
     public function store(StoreSubCategoryRequest $request): JsonResponse
     {
-        $subCategory = SubCategory::create($request->validated());
+        $validated = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request
+                ->file('image')
+                ->store('subcategories', 'public');
+        }
+
+        $subCategory = SubCategory::create($validated);
 
         return self::created($subCategory);
     }
@@ -51,10 +69,20 @@ class SubCategoryController extends Controller
         return self::updated($subcategory);
     }
 
-    public function destroy(SubCategory $subcategory): JsonResponse
+    public function destroy(SubCategory $subcategory)
     {
+        if ($subcategory->products()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => "The SubCategory Can't be Deleted Because it is Linked to Products."
+            ], 409);
+        }
+
         $subcategory->delete();
 
-        return self::deleted('SubCategory Deleted Successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => "The SubCategory has been Deleted Successfully."
+        ]);
     }
 }

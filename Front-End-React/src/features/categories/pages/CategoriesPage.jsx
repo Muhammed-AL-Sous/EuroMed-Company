@@ -122,13 +122,6 @@ const CategoriesPage = () => {
     setSelectedDeleteCategory(category);
   };
 
-  const handleCloseDeleteModal = () => {
-    if (isDeleting) {
-      return;
-    }
-
-    setSelectedDeleteCategory(null);
-  };
 
   const handleDeleteCategory = async () => {
     if (!selectedDeleteCategory || isDeleting) return;

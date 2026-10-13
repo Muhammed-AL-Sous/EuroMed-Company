@@ -8,12 +8,14 @@ import { useGetSubCategoriesQuery } from "../features/subCategories/SubCategorie
 import { motion } from "motion/react";
 
 const HomePage = () => {
-  const { data: subCategories = [] } = useGetSubCategoriesQuery();
+  const { data } = useGetSubCategoriesQuery();
+  const subcategories = data?.subcategories ?? [];
+  
   return (
     <div className="space-y-0">
       <HeroSection />
       <CompanyIntro />
-      <ProductSubCategoriesGrid subCategories={subCategories} />
+      <ProductSubCategoriesGrid subCategories={subcategories} />
       <BrandsShowcase />
       <PatientPortalCTA />
 
