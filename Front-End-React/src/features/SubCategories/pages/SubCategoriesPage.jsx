@@ -27,9 +27,12 @@ import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
 
 // Components
 import SubCategoriesTable from "../components/common/SubCategoriesTable";
+import ProductImageUpload from "../../products/components/utility/ProductImageUpload";
 
 const SubCategoriesPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [removeExistingImage, setRemoveExistingImage] = useState(false);
 
   // ==================================================
   // Search State
@@ -150,6 +153,9 @@ const SubCategoriesPage = () => {
     setSelectedEditSubCategory(subcategory);
     setFormErrors({});
 
+    setSelectedImage(null);
+    setRemoveExistingImage(false);
+
     setEditForm({
       name: subcategory.name ?? "",
       description: subcategory.description || "",
@@ -163,6 +169,8 @@ const SubCategoriesPage = () => {
 
     setSelectedEditSubCategory(null);
     setFormErrors({});
+    setSelectedImage(null);
+    setRemoveExistingImage(false);
 
     setEditForm({
       name: "",
@@ -185,9 +193,7 @@ const SubCategoriesPage = () => {
   };
 
   const handleUpdateSubCategory = async () => {
-    if (!selectedEditSubCategory) {
-      return;
-    }
+    if (!selectedEditSubCategory || isUpdating) return;
 
     const payload = {
       name: editForm.name.trim(),
@@ -197,41 +203,82 @@ const SubCategoriesPage = () => {
     // Validation
     const errors = {};
 
-    if (!payload.name) errors.name = "The Name Field is Required";
-    if (!payload.description)
+    if (!payload.name) {
+      errors.name = "The Name Field is Required";
+    }
+
+    if (!payload.description) {
       errors.description = "The Description Field is Required";
+    }
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
 
-    // No real changes
+    // Check for changes
     const hasChanges =
       payload.name !== (selectedEditSubCategory.name ?? "") ||
-      payload.description !== (selectedEditSubCategory.description ?? "");
+      payload.description !== (selectedEditSubCategory.description ?? "") ||
+      Boolean(selectedImage) ||
+      removeExistingImage;
 
     if (!hasChanges) {
-      setSelectedEditSubCategory(null);
-      setFormErrors({});
-      setEditForm({ name: "", description: "" });
+      handleCloseEditModal();
       return;
     }
 
-    // Update
     try {
+      const formData = new FormData();
+
+      formData.append("name", payload.name);
+      formData.append("description", payload.description);
+
+      // Upload a new image if selected
+      if (selectedImage) {
+        formData.append("image", selectedImage);
+      }
+
+      // Remove existing image if requested
+      formData.append(
+        "remove_image",
+        removeExistingImage && !selectedImage ? "1" : "0",
+      );
+
+      // Laravel method spoofing
+      formData.append("_method", "PUT");
+
       await updateSubCategory({
         id: selectedEditSubCategory.id,
-        data: payload,
+        data: formData,
       }).unwrap();
 
       setSelectedEditSubCategory(null);
       setFormErrors({});
-      setEditForm({ name: "", description: "", type: "" });
+      setSelectedImage(null);
+      setRemoveExistingImage(false);
+
+      setEditForm({
+        name: "",
+        description: "",
+      });
 
       notifySonner("SubCategory Updated Successfully");
     } catch (error) {
       console.error("Failed to Update SubCategory:", error);
+
+      // Laravel validation errors
+      if (error?.status === 422 && error?.data?.errors) {
+        const validationErrors = {};
+
+        Object.entries(error.data.errors).forEach(([field, messages]) => {
+          validationErrors[field] = Array.isArray(messages)
+            ? messages[0]
+            : messages;
+        });
+
+        setFormErrors(validationErrors);
+      }
 
       notifySonner(
         error?.data?.message || "Failed to Update SubCategory",
@@ -571,6 +618,32 @@ const SubCategoriesPage = () => {
               {formErrors.description}
             </p>
           )}
+        </div>
+
+        {/* ==================================================
+                    SubCategory Image
+                ================================================== */}
+        <div className="">
+          <label className="text-sm font-semibold text-slate-200">
+            SubCategory Image
+          </label>
+
+          <ProductImageUpload
+            key={selectedEditSubCategory?.id}
+            initialImageUrl={selectedEditSubCategory?.image_url ?? ""}
+            disabled={isUpdating}
+            onChange={(file) => {
+              setSelectedImage(file);
+
+              if (file) {
+                setRemoveExistingImage(false);
+              }
+            }}
+            onRemove={() => {
+              setSelectedImage(null);
+              setRemoveExistingImage(true);
+            }}
+          />
         </div>
       </EditModal>
     </Card>

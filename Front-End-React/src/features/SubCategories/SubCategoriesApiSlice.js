@@ -36,10 +36,10 @@ export const SubCategoriesApiSlice = baseApi.injectEndpoints({
     }),
 
     addSubCategory: builder.mutation({
-      query: (subcategoryData) => ({
+      query: (formData) => ({
         url: "/subcategories",
         method: "POST",
-        body: subcategoryData,
+        body: formData,
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "SubCategories", id: "subcategory_id" },

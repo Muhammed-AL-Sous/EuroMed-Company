@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { motion } from "motion/react";
 
 const ProductSubCategoriesGrid = ({ subCategories = [] }) => {
+  console.log("subCategories", subCategories);
   return (
     <section className="py-20 bg-slate-50 border-y border-slate-200/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

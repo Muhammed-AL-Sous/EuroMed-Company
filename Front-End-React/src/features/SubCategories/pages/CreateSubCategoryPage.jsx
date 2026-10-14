@@ -6,11 +6,17 @@ import { notifySonner } from "../../../lib/notifySonner";
 import { useState } from "react";
 import { useAddSubCategoryMutation } from "../SubCategoriesApiSlice";
 
+// Utility Component
+import ProductImageUpload from "../../products/components/utility/ProductImageUpload";
+
 const CreateSubCategoryPage = () => {
   const [createForm, setCreateForm] = useState({
     name: "",
     description: "",
   });
+
+  const [subCategoryImage, setSubCategoryImage] = useState(null);
+  const [imageResetKey, setImageResetKey] = useState(0);
 
   const [addSubCategory, { isLoading: isCreating }] =
     useAddSubCategoryMutation();
@@ -27,12 +33,26 @@ const CreateSubCategoryPage = () => {
   const handleSubmitCategory = async (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append("name", createForm.name.trim());
+    formData.append("description", createForm.description.trim());
+
+    if (subCategoryImage) {
+      formData.append("image", subCategoryImage);
+    }
+
     try {
-      await addSubCategory(createForm).unwrap();
+      await addSubCategory(formData).unwrap();
+
+      setSubCategoryImage(null);
+
+      // Reset ProductImageUpload
+      setImageResetKey((prev) => prev + 1);
 
       setCreateForm({
         name: "",
         description: "",
+        image_url: "",
       });
 
       notifySonner("SubCategory Added Successfully");
@@ -63,6 +83,13 @@ const CreateSubCategoryPage = () => {
 
             <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
               <Form.Root className="w-full" onSubmit={handleSubmitCategory}>
+                <ProductImageUpload
+                  key={imageResetKey}
+                  onChange={setSubCategoryImage}
+                  title="SubCategory Image"
+                  subTitle="Upload an image for your SubCategory."
+                />
+
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
                   {/* =========== SubCategory Name =========== */}
                   <Form.Field className="mb-2.5 grid" name="name">

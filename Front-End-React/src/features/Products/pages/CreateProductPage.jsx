@@ -37,7 +37,7 @@ const CreateProductPage = () => {
   const [addProduct, { isLoading: isCreating }] = useAddProductMutation();
 
   const [productImage, setProductImage] = useState(null);
-
+  const [imageResetKey, setImageResetKey] = useState(0);
   // ==================================================
   // Subcategories
   // ==================================================
@@ -120,6 +120,9 @@ const CreateProductPage = () => {
       await addProduct(formData).unwrap();
 
       setProductImage(null);
+      
+      // Reset ProductImageUpload
+      setImageResetKey((prev) => prev + 1);
 
       setCreateForm({
         code: "",
@@ -159,6 +162,7 @@ const CreateProductPage = () => {
             <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
               <Form.Root className="w-full" onSubmit={handleSubmitProduct}>
                 <ProductImageUpload
+                  key={imageResetKey}
                   onChange={setProductImage}
                   title="Product Image"
                   subTitle="Upload an image for your product."
