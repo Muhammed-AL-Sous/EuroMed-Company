@@ -5,10 +5,7 @@ import { useGetManufacturersQuery } from "../../features/manufacturers/Manufactu
 const BrandsShowcase = () => {
   const { data } = useGetManufacturersQuery();
 
-  let initialBrands;
-  if (data) {
-    initialBrands = data;
-  }
+  const Brands = data?.manufacturers || [];
 
   return (
     <section className="py-20 bg-white">
@@ -29,8 +26,8 @@ const BrandsShowcase = () => {
 
         {/* Brands Logo Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {initialBrands && initialBrands.length > 0 ? (
-            initialBrands.map((brand) => (
+          {Brands && Brands.length > 0 ? (
+            Brands.map((brand) => (
               <div
                 key={brand.id}
                 className="group bg-slate-50 hover:bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-sky-300 hover:-translate-y-1 duration-300 transition-all flex flex-col justify-between"
@@ -54,7 +51,7 @@ const BrandsShowcase = () => {
                     to={`/products?brand=${brand.id}`}
                     className="text-xs font-bold text-sky-600 hover:text-sky-700 flex items-center gap-1"
                   >
-                    View Implants ({brand.product_count || 12})
+                    View Implants ({brand.products_count || 0})
                   </Link>
                   {brand.website && (
                     <a

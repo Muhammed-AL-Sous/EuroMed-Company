@@ -17,7 +17,9 @@ class ManufacturerResource extends JsonResource
             'website' => $this->website,
             'is_active' => $this->is_active,
             'description' => $this->description,
-            'product_count' => $this->product_count,
+            'products_count' => $this->whenCounted('products'),
+            'created_at' => $this->created_at?->toISOString(),
+            'updated_at' => $this->updated_at?->toISOString(),
         ];
     }
 }

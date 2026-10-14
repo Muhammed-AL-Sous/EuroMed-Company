@@ -4,7 +4,8 @@ import { useGetManufacturersQuery } from "../features/manufacturers/Manufacturer
 
 const BrandsPage = () => {
   const { data, isLoading } = useGetManufacturersQuery();
-  const brands = data || [];
+
+  const brands = data?.manufacturers || [];
 
   return (
     <div className="py-12 sm:py-16 bg-slate-50 min-h-screen space-y-12">

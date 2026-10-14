@@ -14,7 +14,6 @@ class Manufacturer extends Model
         "description",
         "website",
         "is_active",
-        "product_count"
     ];
 
     public function products(): HasMany

@@ -98,7 +98,9 @@ const ProductsDashboardPage = () => {
   // Subcategories
   // ==================================================
 
-  const { data: subCategories = [] } = useGetSubCategoriesQuery();
+  const { data: subcategories = [] } = useGetSubCategoriesQuery();
+
+  const subCategoriesResponse = subcategories?.subcategories ?? [];
 
   // ==================================================
   // categories
@@ -106,11 +108,14 @@ const ProductsDashboardPage = () => {
 
   const { data: categories = [] } = useGetCategoriesQuery();
 
+  const categoriesResponse = categories?.categories ?? [];
   // ==================================================
   // Manufacturers
   // ==================================================
 
   const { data: manufacturers = [] } = useGetManufacturersQuery();
+
+  const manufacturersResponse = manufacturers?.manufacturers ?? [];
 
   // ==================================================
   // Products
@@ -705,21 +710,22 @@ const ProductsDashboardPage = () => {
 
                   {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                  {(Array.isArray(subCategories) ? subCategories : []).map(
-                    (subcategory) => (
-                      <Select.Item
-                        key={subcategory.id}
-                        value={String(subcategory.id)}
-                        className="relative flex cursor-pointer select-none items-center rounded-lg py-2.5 pl-3 pr-9 text-sm text-slate-700 outline-none data-highlighted:bg-sky-50 data-highlighted:text-sky-700 data-[state=checked]:bg-sky-50 data-[state=checked]:font-medium"
-                      >
-                        <Select.ItemText>{subcategory.name}</Select.ItemText>
+                  {(Array.isArray(subCategoriesResponse)
+                    ? subCategoriesResponse
+                    : []
+                  ).map((subcategory) => (
+                    <Select.Item
+                      key={subcategory.id}
+                      value={String(subcategory.id)}
+                      className="relative flex cursor-pointer select-none items-center rounded-lg py-2.5 pl-3 pr-9 text-sm text-slate-700 outline-none data-highlighted:bg-sky-50 data-highlighted:text-sky-700 data-[state=checked]:bg-sky-50 data-[state=checked]:font-medium"
+                    >
+                      <Select.ItemText>{subcategory.name}</Select.ItemText>
 
-                        <Select.ItemIndicator className="absolute right-3">
-                          <Check size={16} className="text-sky-600" />
-                        </Select.ItemIndicator>
-                      </Select.Item>
-                    ),
-                  )}
+                      <Select.ItemIndicator className="absolute right-3">
+                        <Check size={16} className="text-sky-600" />
+                      </Select.ItemIndicator>
+                    </Select.Item>
+                  ))}
                 </Select.Viewport>
               </Select.Content>
             </Select.Portal>
@@ -815,7 +821,10 @@ const ProductsDashboardPage = () => {
 
                   {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                  {manufacturers.map((manufacturer) => (
+                  {(Array.isArray(manufacturersResponse)
+                    ? manufacturersResponse
+                    : []
+                  ).map((manufacturer) => (
                     <Select.Item
                       key={manufacturer.id}
                       value={String(manufacturer.id)}
@@ -1238,7 +1247,10 @@ const ProductsDashboardPage = () => {
           >
             <option value="">Select Manufacturer</option>
 
-            {manufacturers.map((manufacturer) => (
+            {(Array.isArray(manufacturersResponse)
+              ? manufacturersResponse
+              : []
+            ).map((manufacturer) => (
               <option key={manufacturer.id} value={String(manufacturer.id)}>
                 {manufacturer.name}
               </option>
@@ -1307,12 +1319,14 @@ const ProductsDashboardPage = () => {
           >
             <option value="">Select SubCategory</option>
 
-            {Array.isArray(subCategories) &&
-              subCategories.map((subcategory) => (
-                <option key={subcategory.id} value={String(subcategory.id)}>
-                  {subcategory.name}
-                </option>
-              ))}
+            {(Array.isArray(subCategoriesResponse)
+              ? subCategoriesResponse
+              : []
+            ).map((subcategory) => (
+              <option key={subcategory.id} value={String(subcategory.id)}>
+                {subcategory.name}
+              </option>
+            ))}
           </select>
 
           {formErrors.subcategory_id && (
@@ -1377,12 +1391,13 @@ const ProductsDashboardPage = () => {
           >
             <option value="">Select Category</option>
 
-            {Array.isArray(categories) &&
-              categories.map((category) => (
+            {(Array.isArray(categoriesResponse) ? categoriesResponse : []).map(
+              (category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
-              ))}
+              ),
+            )}
           </select>
 
           {formErrors.category_id && (

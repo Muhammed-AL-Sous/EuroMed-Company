@@ -6,10 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     */
     public function up(): void
     {
         Schema::create('manufacturers', function (Blueprint $table) {
@@ -20,14 +16,10 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('website')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->unsignedInteger('product_count')->default(0);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('manufacturers');

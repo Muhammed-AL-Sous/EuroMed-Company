@@ -119,7 +119,7 @@ const ProductSubCategoriesGrid = ({ subCategories = [] }) => {
                           rounded-md
                         "
                         >
-                          {subCategory.product_count ?? 0} Products
+                          {subCategory.products_count ?? 0} Products
                         </span>
                       </div>
 

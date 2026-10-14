@@ -42,7 +42,9 @@ const CreateProductPage = () => {
   // Subcategories
   // ==================================================
 
-  const { data: subCategories = [] } = useGetSubCategoriesQuery();
+  const { data: subcategories = [] } = useGetSubCategoriesQuery();
+
+  const subCategoriesResponse = subcategories?.subcategories ?? [];
 
   // ==================================================
   // categories
@@ -50,11 +52,15 @@ const CreateProductPage = () => {
 
   const { data: categories = [] } = useGetCategoriesQuery();
 
+  const categoriesResponse = categories?.categories ?? [];
+
   // ==================================================
   // Manufacturers
   // ==================================================
 
   const { data: manufacturers = [] } = useGetManufacturersQuery();
+
+  const manufacturersResponse = manufacturers?.manufacturers ?? [];
 
   const validateSelectFields = () => {
     const newErrors = {};
@@ -333,7 +339,10 @@ const CreateProductPage = () => {
 
                               {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                              {manufacturers.map((manufacturer) => (
+                              {(Array.isArray(manufacturersResponse)
+                                ? manufacturersResponse
+                                : []
+                              ).map((manufacturer) => (
                                 <Select.Item
                                   key={manufacturer.id}
                                   value={String(manufacturer.id)}
@@ -483,8 +492,8 @@ const CreateProductPage = () => {
 
                               {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                              {(Array.isArray(subCategories)
-                                ? subCategories
+                              {(Array.isArray(subCategoriesResponse)
+                                ? subCategoriesResponse
                                 : []
                               ).map((subcategory) => (
                                 <Select.Item
@@ -636,8 +645,8 @@ const CreateProductPage = () => {
 
                               {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                              {(Array.isArray(categories)
-                                ? categories
+                              {(Array.isArray(categoriesResponse)
+                                ? categoriesResponse
                                 : []
                               ).map((category) => (
                                 <Select.Item
