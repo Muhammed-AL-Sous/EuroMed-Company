@@ -15,7 +15,11 @@ class StoreManufacturerRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'country' => ['nullable', 'string', 'max:255'],
+            'origin' => ['nullable', 'string', 'max:255'],
+            'logo_text' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'website' => ['nullable', 'string', 'max:255'],
+            'is_active' => ['nullable', 'boolean'],
         ];
     }
 }

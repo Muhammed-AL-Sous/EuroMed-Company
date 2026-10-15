@@ -15,7 +15,11 @@ class UpdateManufacturerRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'country' => ['nullable', 'string', 'max:255'],
+            'origin' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'logo_text' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'description' => ['sometimes', 'nullable', 'string'],
+            'website' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'is_active' => ['sometimes', 'nullable', 'boolean'],
         ];
     }
 }
