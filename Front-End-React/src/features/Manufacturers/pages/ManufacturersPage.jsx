@@ -187,7 +187,12 @@ const ManufacturersPage = () => {
 
     setEditForm((currentForm) => ({
       ...currentForm,
-      [name]: name === "is_active" ? value === "true" : value,
+      [name]:
+        name === "is_active"
+          ? value === "true"
+          : name === "origin"
+            ? value.toUpperCase()
+            : value,
     }));
 
     setFormErrors((currentErrors) => ({

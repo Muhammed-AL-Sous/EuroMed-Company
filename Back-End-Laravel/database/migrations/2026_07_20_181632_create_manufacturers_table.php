@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('manufacturers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('origin')->nullable();
             $table->string('logo_text')->nullable();
             $table->text('description')->nullable();

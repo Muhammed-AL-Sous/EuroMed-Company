@@ -18,6 +18,11 @@ import { useAddManufacturerMutation } from "../ManufacturersApiSlice";
 const CreateManufacturerPage = () => {
   const [createForm, setCreateForm] = useState({
     name: "",
+    origin: "",
+    logo_text: "",
+    description: "",
+    website: "",
+    is_active: true,
   });
 
   const [addManufacturer, { isLoading: isCreating }] =
@@ -28,10 +33,14 @@ const CreateManufacturerPage = () => {
 
     setCreateForm((currentForm) => ({
       ...currentForm,
-      [name]: value,
+      [name]:
+        name === "is_active"
+          ? value === "true"
+          : name === "origin"
+            ? value.toUpperCase()
+            : value,
     }));
   };
-
   const handleSubmitManufacturer = async (e) => {
     e.preventDefault();
 
@@ -254,7 +263,7 @@ const CreateManufacturerPage = () => {
                       </Form.Label>
                       <Form.Control asChild>
                         <textarea
-                          className="box-border h-8.75 w-full rounded px-2.5 text-[15px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
+                          className="box-border h-8.75 w-full overflow-hidden rounded p-2.5 text-[15px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
                           id="manufacturer-description"
                           name="description"
                           value={createForm.description}
@@ -292,7 +301,7 @@ const CreateManufacturerPage = () => {
                   <Form.Submit asChild>
                     <button
                       disabled={isCreating}
-                      className="mt-2.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700"
+                      className="mt-4.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700"
                     >
                       Create a Manufacturer
                     </button>
