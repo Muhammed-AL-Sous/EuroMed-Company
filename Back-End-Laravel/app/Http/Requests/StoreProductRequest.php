@@ -26,6 +26,7 @@ class StoreProductRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
+                "unique:products,name",
             ],
 
             'description' => [

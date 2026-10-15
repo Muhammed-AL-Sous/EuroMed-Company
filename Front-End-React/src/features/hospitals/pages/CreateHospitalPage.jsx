@@ -67,7 +67,7 @@ const CreateHospitalPage = () => {
                       </Form.Label>
                       <Form.Control asChild>
                         <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[15px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
+                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
                           required
                           id="hospital-name"
                           name="name"
@@ -106,7 +106,7 @@ const CreateHospitalPage = () => {
                         value={createForm.type}
                         onChange={handleCreateFormChange}
                         disabled={isCreating}
-                        className="box-border h-8.75 w-full rounded px-2.5 text-[15px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
+                        className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
                       >
                         <option value="Government">Government</option>
                         <option value="Private">Private</option>
@@ -134,7 +134,7 @@ const CreateHospitalPage = () => {
                       </Form.Label>
                       <Form.Control asChild>
                         <input
-                          className="box-border h-8.75 w-full rounded px-2.5 text-[15px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
+                          className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
                           id="hospital-city"
                           name="city"
                           type="text"

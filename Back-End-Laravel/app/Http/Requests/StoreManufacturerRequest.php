@@ -14,7 +14,7 @@ class StoreManufacturerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', "unique:manufacturers,name"],
             'origin' => ['nullable', 'string', 'max:255'],
             'logo_text' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],

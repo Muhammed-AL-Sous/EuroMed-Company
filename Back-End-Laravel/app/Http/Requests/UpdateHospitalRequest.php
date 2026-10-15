@@ -15,7 +15,7 @@ class UpdateHospitalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'max:255'],
+            'name' => ['sometimes', 'string', 'max:255', "unique:hospitals,name," . $this->route('hospital')->id],
             'city' => ['sometimes', 'string', 'max:255'],
             'type' => ['sometimes', 'string', 'in:Government,Private'],
         ];

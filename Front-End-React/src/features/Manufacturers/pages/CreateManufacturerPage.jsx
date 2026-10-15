@@ -90,7 +90,7 @@ const CreateManufacturerPage = () => {
                       </Form.Label>
                       <Form.Control asChild>
                         <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[15px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
+                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
                           required
                           id="manufacturer-name"
                           name="name"
@@ -125,7 +125,7 @@ const CreateManufacturerPage = () => {
                       </Form.Label>
                       <Form.Control asChild>
                         <input
-                          className="box-border h-8.75 w-full rounded px-2.5 text-[15px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
+                          className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
                           id="manufacturer-origin"
                           name="origin"
                           type="text"
@@ -160,7 +160,7 @@ const CreateManufacturerPage = () => {
                       </Form.Label>
                       <Form.Control asChild>
                         <input
-                          className="box-border h-8.75 w-full rounded px-2.5 text-[15px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
+                          className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
                           id="manufacturer-website"
                           name="website"
                           type="text"
@@ -195,7 +195,7 @@ const CreateManufacturerPage = () => {
                       </Form.Label>
                       <Form.Control asChild>
                         <input
-                          className="box-border h-8.75 w-full rounded px-2.5 text-[15px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
+                          className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
                           id="manufacturer-logo-text"
                           name="logo_text"
                           type="text"
@@ -263,7 +263,7 @@ const CreateManufacturerPage = () => {
                       </Form.Label>
                       <Form.Control asChild>
                         <textarea
-                          className="box-border h-8.75 w-full overflow-hidden rounded p-2.5 text-[15px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
+                          className="box-border h-8.75 w-full overflow-hidden rounded p-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
                           id="manufacturer-description"
                           name="description"
                           value={createForm.description}
