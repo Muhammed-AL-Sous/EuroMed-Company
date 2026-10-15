@@ -20,34 +20,45 @@ class DoctorController extends Controller
 
     public function index(): JsonResponse
     {
-        return self::success(
-            DoctorResource::collection(Doctor::with('user')->get())
+        $doctors = Doctor::with('user')
+            ->latest()
+            ->paginate(15);
+
+        return $this->success(
+            DoctorResource::collection($doctors)
         );
     }
 
-    public function store(StoreDoctorRequest $request): JsonResponse
-    {
-        $doctor = $this->doctorService->create($request->validated());
+    public function store(
+        StoreDoctorRequest $request
+    ): JsonResponse {
+        $doctor = $this->doctorService->create(
+            $request->validated()
+        );
 
-        return self::created(new DoctorResource($doctor->load('user')));
+        return $this->created(
+            new DoctorResource($doctor->load('user'))
+        );
     }
 
     public function show(Doctor $doctor): JsonResponse
     {
-        return self::success(new DoctorResource($doctor->load('user')));
+        return $this->success(
+            new DoctorResource($doctor->load('user'))
+        );
     }
 
-    public function update(UpdateDoctorRequest $request, Doctor $doctor): JsonResponse
-    {
-        $doctor = $this->doctorService->update($doctor, $request->validated());
+    public function update(
+        UpdateDoctorRequest $request,
+        Doctor $doctor
+    ): JsonResponse {
+        $doctor = $this->doctorService->update(
+            $doctor,
+            $request->validated()
+        );
 
-        return self::updated(new DoctorResource($doctor->load('user')));
-    }
-
-    public function destroy(Doctor $doctor): JsonResponse
-    {
-        $doctor->delete();
-
-        return self::deleted('Doctor Deleted Successfully.');
+        return $this->updated(
+            new DoctorResource($doctor->load('user'))
+        );
     }
 }

@@ -8,14 +8,28 @@ class UpdateOperationItemRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user() !== null;
+        return $this->user()?->hasAnyRole([
+            'admin',
+            'data_entry',
+        ]) ?? false;
     }
 
     public function rules(): array
     {
         return [
-            'product_id' => ['sometimes', 'required', 'exists:products,id'],
-            'quantity' => ['sometimes', 'required', 'integer', 'min:1'],
+            'product_id' => [
+                'sometimes',
+                'required',
+                'integer',
+                'exists:products,id',
+            ],
+
+            'quantity' => [
+                'sometimes',
+                'required',
+                'integer',
+                'min:1',
+            ],
         ];
     }
 }

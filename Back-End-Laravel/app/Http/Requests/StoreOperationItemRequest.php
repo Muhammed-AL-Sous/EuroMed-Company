@@ -8,14 +8,26 @@ class StoreOperationItemRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user() !== null;
+        return $this->user()?->hasAnyRole([
+            'admin',
+            'data_entry',
+        ]) ?? false;
     }
 
     public function rules(): array
     {
         return [
-            'product_id' => ['required', 'exists:products,id'],
-            'quantity' => ['required', 'integer', 'min:1'],
+            'product_id' => [
+                'required',
+                'integer',
+                'exists:products,id',
+            ],
+
+            'quantity' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
         ];
     }
 }

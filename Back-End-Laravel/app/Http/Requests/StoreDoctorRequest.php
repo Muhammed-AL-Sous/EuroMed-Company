@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\HasTranslatableRules;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreDoctorRequest extends FormRequest
 {
@@ -11,15 +12,21 @@ class StoreDoctorRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return $this->user() !== null;
+        return $this->user()?->hasRole('admin') ?? false;
     }
 
     public function rules(): array
     {
         return array_merge(
             [
-                'user_id' => ['nullable', 'exists:users,id', 'unique:doctors,user_id'],
+                'user_id' => [
+                    'required',
+                    'integer',
+                    Rule::exists('users', 'id'),
+                    Rule::unique('doctors', 'user_id'),
+                ],
             ],
+
             $this->translatableFieldRules('name'),
             $this->translatableFieldRules('specialization'),
         );

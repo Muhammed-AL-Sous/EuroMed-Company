@@ -3,14 +3,23 @@
 namespace App\Services;
 
 use App\Models\Operation\Operation;
-use App\Models\Operation\OperationItem;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class OperationService
 {
+    private const RELATIONS = [
+        'doctor',
+        'hospital',
+        'patient',
+        'operationType',
+        'items.product',
+    ];
+
     public function create(array $data): Operation
     {
         return DB::transaction(function () use ($data) {
+
             $operation = Operation::create([
                 'doctor_id' => $data['doctor_id'],
                 'patient_id' => $data['patient_id'],
@@ -22,17 +31,24 @@ class OperationService
                 'description' => $data['description'] ?? null,
             ]);
 
-            $this->syncItems($operation, $data['items']);
+            foreach ($data['items'] as $item) {
+                $operation->items()->create([
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                ]);
+            }
 
-            return $operation->load('items.product');
+            return $operation->load(self::RELATIONS);
         });
     }
 
-    public function update(Operation $operation, array $data): Operation
-    {
+    public function update(
+        Operation $operation,
+        array $data
+    ): Operation {
         return DB::transaction(function () use ($operation, $data) {
-            $operation->update(collect($data)->only([
-                'doctor_id',
+
+            $allowed = collect($data)->only([
                 'patient_id',
                 'hospital_id',
                 'operation_type_id',
@@ -40,21 +56,39 @@ class OperationService
                 'side',
                 'patient_access_code',
                 'description',
-            ])->all());
+            ])->all();
 
-            if (isset($data['items'])) {
-                $operation->items()->delete();
-                $this->syncItems($operation, $data['items']);
+            if ($allowed !== []) {
+                $operation->update($allowed);
             }
 
-            return $operation->fresh()->load([
-                'items.product',
-                'doctor',
-                'hospital',
-                'patient',
-                'operationType',
-            ]);
+            return $operation->refresh()->load(
+                self::RELATIONS
+            );
         });
+    }
+
+    public function doctorOperations(
+        int $doctorId,
+        array $filters
+    ): LengthAwarePaginator {
+        return Operation::query()
+            ->where('doctor_id', $doctorId)
+            ->when(
+                $filters['hospital_id'] ?? null,
+                fn($query, $hospitalId) =>
+                $query->where('hospital_id', $hospitalId)
+            )
+            ->when(
+                $filters['date'] ?? null,
+                fn($query, $date) =>
+                $query->whereDate('operation_date', $date)
+            )
+            ->with(self::RELATIONS)
+            ->latest('operation_date')
+            ->paginate(
+                min(100, max(1, (int) ($filters['per_page'] ?? 15)))
+            );
     }
 
     public function findPatientOperation(array $data): Operation
@@ -62,41 +96,7 @@ class OperationService
         return Operation::query()
             ->where('patient_access_code', $data['code'])
             ->whereDate('operation_date', $data['date'])
-            ->with([
-                'patient',
-                'doctor',
-                'hospital',
-                'items.product',
-                'operationType',
-            ])
+            ->with(self::RELATIONS)
             ->firstOrFail();
-    }
-
-    public function doctorOperations(int $doctorId, array $filters)
-    {
-        return Operation::query()
-            ->where('doctor_id', $doctorId)
-            ->when(
-                $filters['hospital_id'] ?? null,
-                fn($q, $hospital) => $q->where('hospital_id', $hospital)
-            )
-            ->when(
-                $filters['date'] ?? null,
-                fn($q, $date) => $q->whereDate('operation_date', $date)
-            )
-            ->with(['hospital', 'patient', 'operationType', 'items.product'])
-            ->latest('operation_date')
-            ->paginate($filters['per_page'] ?? 15);
-    }
-
-    private function syncItems(Operation $operation, array $items): void
-    {
-        foreach ($items as $item) {
-            OperationItem::create([
-                'operation_id' => $operation->id,
-                'product_id' => $item['product_id'],
-                'quantity' => $item['quantity'],
-            ]);
-        }
     }
 }

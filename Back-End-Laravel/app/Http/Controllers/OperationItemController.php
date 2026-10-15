@@ -8,6 +8,8 @@ use App\Models\Operation\Operation;
 use App\Models\Operation\OperationItem;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class OperationItemController extends Controller
 {
@@ -15,32 +17,78 @@ class OperationItemController extends Controller
 
     public function index(Operation $operation): JsonResponse
     {
-        return self::success($operation->items()->with('product')->get());
+        return $this->success(
+            $operation->items()
+                ->with('product')
+                ->get()
+        );
     }
 
-    public function store(StoreOperationItemRequest $request, Operation $operation): JsonResponse
-    {
-        $item = $operation->items()->create($request->validated());
+    public function store(
+        StoreOperationItemRequest $request,
+        Operation $operation
+    ): JsonResponse {
+        $data = $request->validated();
 
-        return self::created($item->load('product'));
+        $item = DB::transaction(function () use ($operation, $data) {
+
+            $exists = $operation->items()
+                ->where('product_id', $data['product_id'])
+                ->exists();
+
+            if ($exists) {
+                throw ValidationException::withMessages([
+                    'product_id' =>
+                    'Product Already Exists In This Operation.',
+                ]);
+            }
+
+            return $operation->items()->create($data);
+        });
+
+        return $this->created(
+            $item->load('product')
+        );
     }
 
     public function show(OperationItem $item): JsonResponse
     {
-        return self::success($item->load(['product', 'operation']));
+        return $this->success(
+            $item->load(['product', 'operation'])
+        );
     }
 
-    public function update(UpdateOperationItemRequest $request, OperationItem $item): JsonResponse
-    {
-        $item->update($request->validated());
+    public function update(
+        UpdateOperationItemRequest $request,
+        OperationItem $item
+    ): JsonResponse {
+        $data = $request->validated();
 
-        return self::updated($item->load('product'));
-    }
+        $item = DB::transaction(function () use ($item, $data) {
 
-    public function destroy(OperationItem $item): JsonResponse
-    {
-        $item->delete();
+            if (isset($data['product_id'])) {
 
-        return self::deleted('Operation item deleted successfully.');
+                $exists = OperationItem::query()
+                    ->where('operation_id', $item->operation_id)
+                    ->where('product_id', $data['product_id'])
+                    ->whereKeyNot($item->id)
+                    ->exists();
+
+                if ($exists) {
+                    throw ValidationException::withMessages([
+                        'product_id' =>
+                        'Product Already Exists In This Operation.',
+                    ]);
+                }
+            }
+
+            $item->update($data);
+
+            return $item->refresh();
+        });
+
+        return $this->updated(
+            $item->load('product')
+        );
     }
 }

@@ -6,28 +6,43 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\DoctorService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
     use ApiResponse;
 
+    public function __construct(
+        protected DoctorService $doctorService
+    ) {}
+
     public function index(): JsonResponse
     {
-        $users = User::with('roles')->latest()->paginate(15);
+        $users = User::with(['roles', 'doctor'])
+            ->latest()
+            ->paginate(15);
 
-        return $this->success(UserResource::collection($users));
+        return $this->success(
+            UserResource::collection($users)
+        );
     }
 
     public function manageUsers(): JsonResponse
     {
+        $users = User::with(['roles', 'doctor'])
+            ->latest()
+            ->paginate(15);
+
         return $this->success(
-            UserResource::collection(User::with('roles')->latest()->paginate(15)),
-            'Users retrieved successfully.'
+            UserResource::collection($users),
+            'Users Retrieved Successfully.'
         );
     }
 
@@ -35,74 +50,154 @@ class UserController extends Controller
     {
         $validated = $request->validated();
 
-        $validated['password'] = Hash::make($validated['password']);
+        $user = DB::transaction(function () use ($validated) {
 
-        $validated['is_active'] = true;
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'expires_at' => $validated['expires_at'] ?? null,
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]);
 
-        $validated['email_verified_at'] = now();
+            $user->assignRole($validated['role']);
 
-        $user = User::create($validated);
+            if (
+                $validated['role'] === 'doctor' &&
+                isset($validated['doctor'])
+            ) {
+                $this->doctorService->createForUser(
+                    $user,
+                    $validated['doctor']
+                );
+            }
 
-        $user->assignRole($validated['role']);
+            return $user;
+        });
 
-        return $this->created(new UserResource($user->load('roles')));
+        return $this->created(
+            new UserResource(
+                $user->load(['roles', 'doctor'])
+            )
+        );
     }
 
     public function show(User $user): JsonResponse
     {
-        return $this->success(new UserResource($user->load('roles')));
+        return $this->success(
+            new UserResource(
+                $user->load(['roles', 'doctor'])
+            )
+        );
     }
 
     public function showCurrentUser(): JsonResponse
     {
         $user = Auth::user();
 
-        return $this->success(new UserResource($user->load('roles')));
+        return $this->success(
+            new UserResource(
+                $user->load(['roles', 'doctor'])
+            )
+        );
     }
 
-
-    public function update(UpdateUserRequest $request, User $user): JsonResponse
-    {
+    public function update(
+        UpdateUserRequest $request,
+        User $user
+    ): JsonResponse {
         $validated = $request->validated();
 
-        if (array_key_exists('role', $validated)) {
-            $user->syncRoles([$validated['role']]);
-            unset($validated['role']);
-        }
-        // if (array_key_exists('role', $validated))
-        // يتحقق: هل الطلب أرسل حقل role؟
-        // يستخدم array_key_exists وليس isset لأن role قد يكون موجوداً في المصفوفة حتى لو قيمته null.
-        // إذا لم يُرسل role في الطلب، يُتخطى هذا القسم ولا يُغيّر دور المستخدم.
-        // 2. $user->syncRoles([$validated['role']])
+        DB::transaction(function () use ($user, $validated, $request) {
 
-        // من حزمة Spatie Laravel Permission.
-        // syncRoles = مزامنة الأدوار: يحذف الأدوار القديمة ويضع الدور الجديد فقط.
-        // القيمة داخل مصفوفة [...] لأن المستخدم قد يملك أكثر من دور نظرياً، لكن هنا نمرّر دوراً واحداً فقط.
-        // مثال: إذا كان المستخدم doctor وأرسلت admin، يصبح admin فقط.
-        // 3. unset($validated['role'])
+            // Prevent Changing Role For Existing Doctor
+            if (
+                isset($validated['role']) &&
+                $validated['role'] !== 'doctor' &&
+                $user->doctor()->exists()
+            ) {
+                throw ValidationException::withMessages([
+                    'role' =>
+                        'Cannot Change Role While Doctor Profile Exists.',
+                ]);
+            }
 
-        // يحذف role من $validated قبل $user->update($validated).
-        // لماذا؟ لأن role ليس عموداً في جدول users؛ يُخزَّن في جداول Spatie (roles و model_has_roles).
-        // إذا بقي في $validated، Laravel يحاول تحديث عمود غير موجود في users فيحدث خطأ.
+            // Prevent Changing Own Role
+            if (
+                isset($validated['role']) &&
+                $user->id === $request->user()->id &&
+                ! $user->hasRole($validated['role'])
+            ) {
+                throw ValidationException::withMessages([
+                    'role' => 'You Cannot Change Your Own Role.',
+                ]);
+            }
 
-        if (isset($validated['password']) && $validated['password'] !== null && $validated['password'] !== '') {
-            $validated['password'] = Hash::make($validated['password']);
-        } else {
-            unset($validated['password']);
-        }
+            // Update Role
+            if (array_key_exists('role', $validated)) {
+                $user->syncRoles([$validated['role']]);
+            }
 
-        if ($validated !== []) {
-            $user->update($validated);
-        }
+            // Extract Doctor Profile
+            $doctorData = $validated['doctor'] ?? null;
 
-        return $this->updated(new UserResource($user->load('roles')));
+            unset(
+                $validated['role'],
+                $validated['doctor'],
+                $validated['password_confirmation']
+            );
+
+            // Handle Password
+            if (! empty($validated['password'])) {
+                $validated['password'] =
+                    Hash::make($validated['password']);
+            } else {
+                unset($validated['password']);
+            }
+
+            // Update User
+            if ($validated !== []) {
+                $user->update($validated);
+            }
+
+            // Create Or Update Doctor Profile
+            if ($doctorData !== null) {
+
+                if (! $user->hasRole('doctor')) {
+                    throw ValidationException::withMessages([
+                        'doctor' => 'User Must Have Doctor Role.',
+                    ]);
+                }
+
+                $this->doctorService->saveForUser(
+                    $user,
+                    $doctorData
+                );
+            }
+        });
+
+        return $this->updated(
+            new UserResource(
+                $user->refresh()->load(['roles', 'doctor'])
+            )
+        );
     }
 
-
-    public function destroy(Request $request, User $user): JsonResponse
-    {
+    public function destroy(
+        Request $request,
+        User $user
+    ): JsonResponse {
         if ($request->user()->id === $user->id) {
-            return $this->forbidden("You Can't Delete Your Own Account.");
+            return $this->forbidden(
+                "You Can't Delete Your Own Account."
+            );
+        }
+
+        if ($user->doctor()->exists()) {
+            return $this->forbidden(
+                'Cannot Delete User With Doctor Profile.'
+            );
         }
 
         $user->delete();

@@ -22,40 +22,54 @@ class DoctorProfileController extends Controller
     {
         $doctor = $request->user()->doctor;
 
-        return self::success([
+        return $this->success([
             'has_profile' => $doctor !== null,
-            'profile' => $doctor ? new DoctorResource($doctor) : null,
+            'profile' => $doctor
+                ? new DoctorResource($doctor)
+                : null,
         ]);
     }
 
-    public function store(StoreDoctorProfileRequest $request): JsonResponse
-    {
-        if ($request->user()->doctor) {
-            return self::error('Doctor Profile Already Exists. Use Update Instead.', 409);
+    public function store(
+        StoreDoctorProfileRequest $request
+    ): JsonResponse {
+        $user = $request->user();
+
+        if ($user->doctor()->exists()) {
+            return $this->error(
+                'Doctor Profile Already Exists. Use Update Instead.',
+                409
+            );
         }
 
         $doctor = $this->doctorService->createForUser(
-            $request->user(),
+            $user,
             $request->validated()
         );
 
-        return self::created([
+        return $this->created([
             'has_profile' => true,
             'profile' => new DoctorResource($doctor),
         ], 'Doctor Profile Created Successfully.');
     }
 
-    public function update(UpdateDoctorProfileRequest $request): JsonResponse
-    {
+    public function update(
+        UpdateDoctorProfileRequest $request
+    ): JsonResponse {
         $doctor = $request->user()->doctor;
 
         if (! $doctor) {
-            return self::notFound('Doctor Profile Not Found. Please Create Your Profile First.');
+            return $this->notFound(
+                'Doctor Profile Not Found. Please Create Your Profile First.'
+            );
         }
 
-        $doctor = $this->doctorService->update($doctor, $request->validated());
+        $doctor = $this->doctorService->update(
+            $doctor,
+            $request->validated()
+        );
 
-        return self::updated([
+        return $this->updated([
             'has_profile' => true,
             'profile' => new DoctorResource($doctor),
         ], 'Doctor Profile Updated Successfully.');

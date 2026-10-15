@@ -21,112 +21,146 @@ class OperationController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        abort_unless(
+            $request->user()?->hasAnyRole(['admin', 'data_entry']),
+            403
+        );
+
+        $filters = $request->validate([
+            'hospital_id' => ['sometimes', 'integer', 'exists:hospitals,id'],
+            'doctor_id' => ['sometimes', 'integer', 'exists:doctors,id'],
+            'date' => ['sometimes', 'date'],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
+        ]);
+
         $operations = Operation::query()
-            ->with(['doctor', 'hospital', 'patient', 'operationType', 'items.product'])
+            ->with([
+                'doctor',
+                'hospital',
+                'patient',
+                'operationType',
+                'items.product',
+            ])
             ->when(
-                $request->query('hospital_id'),
-                fn($q, $hospitalId) => $q->where('hospital_id', $hospitalId)
+                $filters['hospital_id'] ?? null,
+                fn($query, $id) =>
+                $query->where('hospital_id', $id)
             )
             ->when(
-                $request->query('doctor_id'),
-                fn($q, $doctorId) => $q->where('doctor_id', $doctorId)
+                $filters['doctor_id'] ?? null,
+                fn($query, $id) =>
+                $query->where('doctor_id', $id)
             )
             ->when(
-                $request->query('date'),
-                fn($q, $date) => $q->whereDate('operation_date', $date)
+                $filters['date'] ?? null,
+                fn($query, $date) =>
+                $query->whereDate('operation_date', $date)
             )
-            ->latest('operation_date');
+            ->latest('operation_date')
+            ->paginate($filters['limit'] ?? 15);
 
-        // Search
-        if ($request->filled('search')) {
-            $searchTerm = $request->query('search');
-
-            $operations->where(function ($query) use ($searchTerm) {
-                $query->whereHas('doctor', function ($q) use ($searchTerm) {
-                    $q->where('name', 'like', "%{$searchTerm}%");
-                })
-                    ->orWhereHas('hospital', function ($q) use ($searchTerm) {
-                        $q->where('name', 'like', "%{$searchTerm}%");
-                    })
-                    ->orWhereHas('patient', function ($q) use ($searchTerm) {
-                        $q->where('name', 'like', "%{$searchTerm}%");
-                    })
-                    ->orWhereHas('operationType', function ($q) use ($searchTerm) {
-                        $q->where('name', 'like', "%{$searchTerm}%");
-                    });
-            });
-        }
-
-        // Pagination
-        $limit = (int) $request->query('limit', 10);
-        $operations = $operations->paginate($limit)->appends($request->query());
-
-        return self::success($operations);
+        return $this->success($operations);
     }
 
     public function doctorIndex(Request $request): JsonResponse
     {
-        $operations = $this->operationService->doctorOperations($request->user()->doctor->id, [
-            'hospital_id' => $request->query('hospital_id'),
-            'date' => $request->query('date'),
-            'per_page' => $request->integer('per_page', 15),
+        abort_unless($request->user()?->hasRole('doctor'), 403);
+
+        $doctor = $request->user()->doctor;
+
+        if (! $doctor) {
+            return $this->notFound('Doctor Profile Not Found.');
+        }
+
+        $filters = $request->validate([
+            'hospital_id' => ['sometimes', 'integer', 'exists:hospitals,id'],
+            'date' => ['sometimes', 'date'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
         ]);
 
-        return self::success($operations);
+        $operations = $this->operationService->doctorOperations(
+            $doctor->id,
+            $filters
+        );
+
+        return $this->success($operations);
     }
 
-    public function store(StoreOperationRequest $request): JsonResponse
-    {
-        if ($request->user()?->hasRole('doctor')) {
+    public function store(
+        StoreOperationRequest $request
+    ): JsonResponse {
+        $data = $request->validated();
+
+        if ($request->user()->hasRole('doctor')) {
             $doctor = $request->user()->doctor;
 
-            if (! $doctor || (int) $request->input('doctor_id') !== $doctor->id) {
-                return self::forbidden('You can only create operations for your own profile.');
+            if (! $doctor) {
+                return $this->forbidden(
+                    'Doctor Profile Required.'
+                );
             }
+
+            $data['doctor_id'] = $doctor->id;
         }
 
-        $operation = $this->operationService->create($request->validated());
+        $operation = $this->operationService->create($data);
 
-        return self::created($operation);
+        return $this->created($operation);
     }
 
-    public function show(Request $request, Operation $operation): JsonResponse
-    {
-        if ($request->user()?->hasRole('doctor')) {
-            $doctor = $request->user()->doctor;
+    public function show(
+        Request $request,
+        Operation $operation
+    ): JsonResponse {
+        $user = $request->user();
 
-            if (! $doctor || $operation->doctor_id !== $doctor->id) {
-                return self::forbidden('You are not authorized to view this operation.');
+        if ($user->hasRole('doctor')) {
+            $doctor = $user->doctor;
+
+            if (
+                ! $doctor ||
+                (int) $operation->doctor_id !== (int) $doctor->id
+            ) {
+                return $this->notFound(
+                    'Operation Not Found.'
+                );
             }
+        } else {
+            abort_unless(
+                $user->hasAnyRole(['admin', 'data_entry']),
+                403
+            );
         }
 
-        return self::success($operation->load([
-            'doctor',
-            'hospital',
-            'patient',
-            'operationType',
-            'items.product',
-        ]));
+        return $this->success(
+            $operation->load([
+                'doctor',
+                'hospital',
+                'patient',
+                'operationType',
+                'items.product',
+            ])
+        );
     }
 
-    public function update(UpdateOperationRequest $request, Operation $operation): JsonResponse
-    {
-        $operation = $this->operationService->update($operation, $request->validated());
+    public function update(
+        UpdateOperationRequest $request,
+        Operation $operation
+    ): JsonResponse {
+        $operation = $this->operationService->update(
+            $operation,
+            $request->validated()
+        );
 
-        return self::updated($operation);
+        return $this->updated($operation);
     }
 
-    public function destroy(Operation $operation): JsonResponse
-    {
-        $operation->delete();
+    public function findPatientOperation(
+        FindPatientOperationRequest $request
+    ): JsonResponse {
+        $operation = $this->operationService
+            ->findPatientOperation($request->validated());
 
-        return self::deleted('Operation Deleted Successfully.');
-    }
-
-    public function findPatientOperation(FindPatientOperationRequest $request): JsonResponse
-    {
-        $operation = $this->operationService->findPatientOperation($request->validated());
-
-        return self::success($operation);
+        return $this->success($operation);
     }
 }
