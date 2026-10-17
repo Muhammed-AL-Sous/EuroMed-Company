@@ -114,9 +114,6 @@ const CreateUserPage = lazy(
 );
 
 // ============== Settings ============== //
-const EditAccountUserPage = lazy(
-  () => import("../features/users/pages/EditAccountUserPage.jsx"),
-);
 
 export const ROLES_CONFIG = {
   admin: {
@@ -260,12 +257,7 @@ export const ROLES_CONFIG = {
       {
         label: "Settings",
         icon: Settings,
-        children: [
-          {
-            to: "/admin/settings/edit-account",
-            label: "Edit Account",
-          },
-        ],
+        to: "/admin/settings",
       },
     ],
 
@@ -410,11 +402,6 @@ export const ROLES_CONFIG = {
       {
         path: "users/create",
         element: CreateUserPage,
-      },
-
-      {
-        path: "settings/edit-account",
-        element: EditAccountUserPage,
       },
     ],
 

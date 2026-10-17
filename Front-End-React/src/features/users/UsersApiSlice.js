@@ -42,5 +42,36 @@ export const UsersApiSlice = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Users"],
     }),
+
+    updateUser: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/users/${id}`,
+        method: "POST",
+        body: data,
+      }),
+
+      invalidatesTags: (result, error, arg) => [
+        { type: "Users", id: arg.id },
+        { type: "Users", id: "user_id" },
+      ],
+    }),
+
+    deleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `/users/${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Users", id: arg.id },
+        { type: "Users", id: "user_id" },
+      ],
+    }),
   }),
 });
+
+export const {
+  useGetUsersQuery,
+  useCreateUserMutation,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} = UsersApiSlice;

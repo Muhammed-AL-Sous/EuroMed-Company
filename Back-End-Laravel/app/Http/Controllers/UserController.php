@@ -8,12 +8,12 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\DoctorService;
 use App\Traits\ApiResponse;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -23,11 +23,51 @@ class UserController extends Controller
         protected DoctorService $doctorService
     ) {}
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $users = User::with(['roles', 'doctor'])
+        $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
+        ]);
+
+        $users = User::query()
+            ->with(['roles', 'doctor'])
+            ->when(
+                $request->filled('search'),
+                function ($query) use ($request) {
+
+                    $terms = preg_split('/\s+/', trim($request['search'])) ?: [];
+                    $terms = array_values(array_filter($terms, fn($t) => $t !== ''));
+
+                    $query->where(function ($qq) use ($terms) {
+
+                        foreach ($terms as $term) {
+
+                            $like = "%{$term}%";
+
+                            $qq->where(function ($q3) use ($like) {
+
+                                $q3
+                                    // Search by user name
+                                    ->where('name', 'LIKE', $like)
+
+                                    // Search by email
+                                    ->orWhere('email', 'LIKE', $like)
+
+                                    // Search by doctor profile
+                                    ->orWhereHas('doctor', function ($doctorQuery) use ($like) {
+                                        $doctorQuery->whereRaw(
+                                            'doctors.name COLLATE utf8mb4_unicode_ci LIKE ?',
+                                            [$like]
+                                        );
+                                    });
+                            });
+                        }
+                    });
+                }
+            )
             ->latest()
-            ->paginate(15);
+            ->paginate($request->integer('per_page', 10));
 
         return $this->success(
             UserResource::collection($users)
@@ -119,7 +159,7 @@ class UserController extends Controller
             ) {
                 throw ValidationException::withMessages([
                     'role' =>
-                        'Cannot Change Role While Doctor Profile Exists.',
+                    'Cannot Change Role While Doctor Profile Exists.',
                 ]);
             }
 

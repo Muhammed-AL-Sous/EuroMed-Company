@@ -6,12 +6,9 @@ use App\Models\Operation\Operation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Translatable\HasTranslations;
 
 class Doctor extends Model
 {
-    use HasTranslations;
-
     protected $fillable = [
         'user_id',
         'name',
@@ -19,7 +16,6 @@ class Doctor extends Model
         'profile_completed_at',
     ];
 
-    public array $translatable = ['name', 'specialization'];
 
     protected function casts(): array
     {

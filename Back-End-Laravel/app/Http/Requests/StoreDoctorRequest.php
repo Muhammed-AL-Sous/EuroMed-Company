@@ -25,10 +25,17 @@ class StoreDoctorRequest extends FormRequest
                     Rule::exists('users', 'id'),
                     Rule::unique('doctors', 'user_id'),
                 ],
+                'name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
+                'specialization' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
             ],
-
-            $this->translatableFieldRules('name'),
-            $this->translatableFieldRules('specialization'),
         );
     }
 }
