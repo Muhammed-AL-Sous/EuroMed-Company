@@ -9,15 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class DoctorService
 {
+    // عندما يريد الأدمن إنشاء ملف طبيب لمستخدم موجود مسبقاً في قاعدة البيانات
     public function create(array $data): Doctor
     {
         $user = User::findOrFail($data['user_id']);
-
-        if (! $user->hasRole('doctor')) {
-            throw ValidationException::withMessages([
-                'user_id' => 'User Must Have Doctor Role.',
-            ]);
-        }
 
         return $this->createForUser($user, [
             'name' => $data['name'],
@@ -25,6 +20,7 @@ class DoctorService
         ]);
     }
 
+    // إنشاء حساب مستخدم جديد وإنشاء ملفه الطبي ضمن العملية نفسها.
     public function createForUser(User $user, array $data): Doctor
     {
         if (! $user->hasRole('doctor')) {

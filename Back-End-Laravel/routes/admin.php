@@ -1,13 +1,7 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DoctorController;
-use App\Http\Controllers\HospitalController;
-use App\Http\Controllers\ManufacturerController;
-use App\Http\Controllers\OperationTypeController;
 use App\Http\Controllers\PatientController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OperationController;
@@ -23,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Manage Users Permission
     Route::middleware('permission:manage users')->group(function () {
+
         Route::get(
             'users/manage-users',
             [UserController::class, 'manageUsers']
@@ -32,27 +27,35 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin Only
     Route::middleware('role:admin')->group(function () {
 
-        Route::apiResource('users', UserController::class);
+        // Users
+        Route::apiResource(
+            'users',
+            UserController::class
+        );
 
+        // Doctors
         Route::apiResource(
             'doctors',
             DoctorController::class
-        )->only(['store', 'update']);
+        )->only([
+            'index',
+            'store',
+            'show',
+            'update',
+        ]);
     });
 
-    // Shared Read Routes
-    Route::apiResource(
-        'patients',
-        PatientController::class
-    )->only(['index', 'show']);
-
     // Admin And Data Entry
+    Route::middleware('role:admin|data_entry')->group(function () {
 
-
-    Route::middleware([
-        'auth:sanctum',
-        'role:admin|data_entry',
-    ])->group(function () {
+        // Patients
+        Route::apiResource(
+            'patients',
+            PatientController::class
+        )->only([
+            'index',
+            'show',
+        ]);
 
         // Operations
         Route::get(
