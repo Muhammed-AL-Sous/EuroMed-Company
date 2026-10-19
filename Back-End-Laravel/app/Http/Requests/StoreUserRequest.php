@@ -48,7 +48,7 @@ class StoreUserRequest extends FormRequest
                     Rule::in([
                         'admin',
                         'doctor',
-                        'data_entry',
+                        'staff',
                     ]),
                 ],
 
@@ -60,25 +60,20 @@ class StoreUserRequest extends FormRequest
                 'doctor' => [
                     'sometimes',
                     'required',
-                    'array:name,specialization',
+                    'array:name',
 
                     Rule::prohibitedIf(
                         fn() => $this->input('role') !== 'doctor'
                     ),
                 ],
+
+                'doctor.name' => [
+                    'required_with:doctor',
+                    'string',
+                    'max:255',
+                ],
             ],
 
-            $this->translatableFieldRules(
-                'doctor.name',
-                false,
-                'doctor'
-            ),
-
-            $this->translatableFieldRules(
-                'doctor.specialization',
-                false,
-                'doctor'
-            ),
         );
     }
 }

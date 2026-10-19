@@ -16,7 +16,6 @@ class DoctorService
 
         return $this->createForUser($user, [
             'name' => $data['name'],
-            'specialization' => $data['specialization'],
         ]);
     }
 
@@ -37,7 +36,6 @@ class DoctorService
 
         return $user->doctor()->create([
             'name' => $data['name'],
-            'specialization' => $data['specialization'],
             'profile_completed_at' => now(),
         ]);
     }
@@ -70,21 +68,7 @@ class DoctorService
 
         // Validate Complete Data Before Creating
         $validated = Validator::make($data, [
-            'name' => [
-                'required',
-                'array:ar,en',
-            ],
-
-            'name.ar' => ['required', 'string', 'max:255'],
-            'name.en' => ['required', 'string', 'max:255'],
-
-            'specialization' => [
-                'required',
-                'array:ar,en',
-            ],
-
-            'specialization.ar' => ['required', 'string', 'max:255'],
-            'specialization.en' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255']
         ])->validate();
 
         return $this->createForUser($user, $validated);

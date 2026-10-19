@@ -16,10 +16,9 @@ const UsersTable = ({ users = [], onDelete, onEdit }) => {
           {/* Header */}
           <thead>
             <tr>
+              <th className={`${headerCell} border-r`}>Dr.Name</th>
               <th className={`${headerCell} border-r`}>Name</th>
               <th className={`${headerCell} border-r`}>Email</th>
-              <th className={`${headerCell} border-r`}>Dr.Name</th>
-              <th className={`${headerCell} border-r`}>Specialization</th>
               <th className={headerCell}>Tools</th>
             </tr>
           </thead>
@@ -43,6 +42,12 @@ const UsersTable = ({ users = [], onDelete, onEdit }) => {
                   <td
                     className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
                   >
+                    {user.doctor_profile?.profile?.name || "-"}
+                  </td>
+
+                  <td
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                  >
                     {user.name}
                   </td>
 
@@ -50,18 +55,6 @@ const UsersTable = ({ users = [], onDelete, onEdit }) => {
                     className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
                   >
                     {user.email}
-                  </td>
-
-                  <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
-                  >
-                    {user.doctor_profile?.profile?.name?.en || "-"}
-                  </td>
-
-                  <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
-                  >
-                    {user.doctor_profile?.profile?.specialization?.en || "-"}
                   </td>
 
                   <td

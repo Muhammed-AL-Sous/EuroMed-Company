@@ -30,11 +30,6 @@ class StoreDoctorRequest extends FormRequest
                     'string',
                     'max:255',
                 ],
-                'specialization' => [
-                    'required',
-                    'string',
-                    'max:255',
-                ],
             ],
         );
     }

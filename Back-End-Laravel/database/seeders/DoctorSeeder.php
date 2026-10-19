@@ -12,16 +12,13 @@ class DoctorSeeder extends Seeder
     {
         $doctors = [
             [
-                'name' => 'Dr.Ahmed.Rawanduzy',
-                'specialization' => 'Treatment and surgery of bone fractures, osteoarthritis, sports injuries and knee injuries Replacement of pelvic and knee joints'
+                'name' => 'Dr.Ahmed Rawanduzy',
             ],
             [
                 'name' => 'Dr.Amanj Gurdy',
-                'specialization' => 'Treatment and surgery of bone fractures, osteoarthritis, sports injuries and knee injuries Replacement of pelvic and knee joints',
             ],
             [
-                'name' => 'Dr.Brwa Delshad Jaff',
-                'specialization' => 'Treatment and surgery of bone fractures, osteoarthritis, sports injuries and knee injuries Replacement of pelvic and knee joints',
+                'name' => 'Dr.Brwa Jaff',
             ]
         ];
 

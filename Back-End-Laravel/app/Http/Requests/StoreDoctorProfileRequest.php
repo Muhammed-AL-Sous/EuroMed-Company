@@ -2,13 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Concerns\HasTranslatableRules;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreDoctorProfileRequest extends FormRequest
 {
-    use HasTranslatableRules;
-
     public function authorize(): bool
     {
         return $this->user()?->hasRole('doctor') ?? false;
@@ -16,9 +13,12 @@ class StoreDoctorProfileRequest extends FormRequest
 
     public function rules(): array
     {
-        return array_merge(
-            $this->translatableFieldRules('name'),
-            $this->translatableFieldRules('specialization'),
-        );
+        return [
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+        ];
     }
 }

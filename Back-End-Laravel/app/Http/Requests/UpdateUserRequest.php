@@ -18,13 +18,11 @@ class UpdateUserRequest extends FormRequest
 
     public function rules(): array
     {
-        $user = $this->route('user');
-
         /** @var \App\Models\User $user */
         $user = $this->route('user');
 
         $effectiveRole = $this->input('role')
-            ?? $user->roles()->value('name');
+            ?? ($user->hasRole('doctor') ? 'doctor' : null);
 
         return array_merge(
             [
@@ -60,7 +58,7 @@ class UpdateUserRequest extends FormRequest
                     Rule::in([
                         'admin',
                         'doctor',
-                        'data_entry',
+                        'staff',
                     ]),
                 ],
 
@@ -78,23 +76,19 @@ class UpdateUserRequest extends FormRequest
                 'doctor' => [
                     'sometimes',
                     'required',
-                    'array:name,specialization',
+                    'array:name',
 
                     Rule::prohibitedIf(
                         fn() => $effectiveRole !== 'doctor'
                     ),
                 ],
+
+                'doctor.name' => [
+                    'required_with:doctor',
+                    'string',
+                    'max:255',
+                ],
             ],
-
-            $this->translatableFieldRules(
-                'doctor.name',
-                false
-            ),
-
-            $this->translatableFieldRules(
-                'doctor.specialization',
-                false
-            ),
         );
     }
 }

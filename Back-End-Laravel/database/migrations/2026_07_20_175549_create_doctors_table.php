@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->unique()->constrained()->nullOnDelete();
             $table->string('name');
-            $table->string('specialization');
             $table->timestamp('profile_completed_at')->nullable();
             $table->timestamps();
         });

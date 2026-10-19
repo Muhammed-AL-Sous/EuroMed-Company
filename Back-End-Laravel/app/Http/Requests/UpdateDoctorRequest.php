@@ -22,12 +22,6 @@ class UpdateDoctorRequest extends FormRequest
                     'string',
                     'max:255',
                 ],
-
-                'specialization' => [
-                    'sometimes',
-                    'string',
-                    'max:255',
-                ],
             ]
         );
     }
