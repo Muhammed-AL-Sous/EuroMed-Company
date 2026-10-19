@@ -3,9 +3,14 @@ import { normalizeUsersListResponse } from "./UsersQueryUtils";
 
 export const UsersApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ==================================================
+    // Get Users
+    // ==================================================
+
     getUsers: builder.query({
       query: ({ search = "", page = 1 } = {}) => ({
         url: "/users",
+        method: "GET",
         params: {
           search: search || undefined,
           page,
@@ -14,25 +19,24 @@ export const UsersApiSlice = baseApi.injectEndpoints({
 
       transformResponse: (response) => normalizeUsersListResponse(response),
 
-      providesTags: (result) =>
-        result?.length
-          ? [
-              ...result.map(({ id }) => ({
-                type: "Users",
-                id,
-              })),
-              {
-                type: "Users",
-                id: "user_id",
-              },
-            ]
-          : [
-              {
-                type: "Users",
-                id: "user_id",
-              },
-            ],
+      providesTags: (result) => [
+        ...(Array.isArray(result?.users)
+          ? result.users.map(({ id }) => ({
+              type: "Users",
+              id,
+            }))
+          : []),
+
+        {
+          type: "Users",
+          id: "LIST",
+        },
+      ],
     }),
+
+    // ==================================================
+    // Create User
+    // ==================================================
 
     createUser: builder.mutation({
       query: (data) => ({
@@ -40,30 +44,57 @@ export const UsersApiSlice = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Users"],
+
+      invalidatesTags: [
+        {
+          type: "Users",
+          id: "LIST",
+        },
+      ],
     }),
+
+    // ==================================================
+    // Update User
+    // ==================================================
 
     updateUser: builder.mutation({
       query: ({ id, data }) => ({
         url: `/users/${id}`,
-        method: "POST",
+        method: "PATCH",
         body: data,
       }),
 
-      invalidatesTags: (result, error, arg) => [
-        { type: "Users", id: arg.id },
-        { type: "Users", id: "user_id" },
+      invalidatesTags: (result, error, { id }) => [
+        {
+          type: "Users",
+          id,
+        },
+        {
+          type: "Users",
+          id: "LIST",
+        },
       ],
     }),
+
+    // ==================================================
+    // Delete User
+    // ==================================================
 
     deleteUser: builder.mutation({
       query: (userId) => ({
         url: `/users/${userId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Users", id: arg.id },
-        { type: "Users", id: "user_id" },
+
+      invalidatesTags: (result, error, userId) => [
+        {
+          type: "Users",
+          id: userId,
+        },
+        {
+          type: "Users",
+          id: "LIST",
+        },
       ],
     }),
   }),
