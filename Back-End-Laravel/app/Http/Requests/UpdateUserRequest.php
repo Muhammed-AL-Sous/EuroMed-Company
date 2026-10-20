@@ -22,7 +22,7 @@ class UpdateUserRequest extends FormRequest
         $user = $this->route('user');
 
         $effectiveRole = $this->input('role')
-            ?? ($user->hasRole('doctor') ? 'doctor' : null);
+            ?? $user->roles()->value('name');
 
         return array_merge(
             [

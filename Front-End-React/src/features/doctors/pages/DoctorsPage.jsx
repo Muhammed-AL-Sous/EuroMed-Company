@@ -18,7 +18,7 @@ import {
 import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 
 // Utilities
-import DoctorsTable from "../components/common/DoctorsTable";
+import DoctorsTable from "./../components/common/DoctorsTable";
 import Pagination from "../../../components/utility/Pagination";
 import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
 import EditModal from "../../../components/utility/EditModal";
@@ -66,7 +66,7 @@ const DoctorsPage = () => {
     page,
   });
 
-  const Doctors = data?.Doctors ?? [];
+  const Doctors = data?.doctors ?? [];
   const meta = data?.meta ?? null;
 
   // ==================================================

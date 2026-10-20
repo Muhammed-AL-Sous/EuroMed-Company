@@ -46,6 +46,10 @@ class UserResource extends JsonResource
                 'role_name' => $role?->name,
             ],
 
+            'has_doctor_profile' => $this->resource->relationLoaded('doctor')
+                ? $doctor !== null
+                : $this->resource->doctor()->exists(),
+
             'doctor_profile' => $this->when(
                 $role?->name === 'doctor' &&
                     $this->relationLoaded('doctor'),
