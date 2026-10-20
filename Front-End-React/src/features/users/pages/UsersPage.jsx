@@ -655,8 +655,8 @@ const UsersPage = () => {
           />
 
           {/* ==================================================
-    User Role - Read Only
-================================================== */}
+            User Role - Read Only
+          ================================================== */}
 
           <div className="space-y-1.5">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-200">
@@ -708,7 +708,7 @@ const UsersPage = () => {
 
           <div className="relative">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-              Password
+              New Password
             </label>
             <div className="relative">
               <input
@@ -757,11 +757,11 @@ const UsersPage = () => {
             </div>
           </div>
 
-          {/* Confirm Password */}
+          {/* Confirm New Password */}
 
           <div className="relative">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-              Confirm Password
+              Confirm New Password
             </label>
             <div className="relative">
               <input

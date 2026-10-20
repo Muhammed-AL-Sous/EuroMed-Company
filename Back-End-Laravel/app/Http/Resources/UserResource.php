@@ -33,10 +33,12 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
 
+            'email_verified_at' => now(),
+            'is_active' => $this->is_active,
+
             'created_at' => $this->created_at
                 ?->format('Y-m-d H:i:s'),
 
-            'is_active' => $this->is_active,
             'retry_after' => $retryAfter,
 
             'role' => [
@@ -46,9 +48,9 @@ class UserResource extends JsonResource
 
             'doctor_profile' => $this->when(
                 $role?->name === 'doctor' &&
-                $this->relationLoaded('doctor'),
+                    $this->relationLoaded('doctor'),
 
-                fn () => [
+                fn() => [
                     'has_profile' => $doctor !== null,
 
                     'profile' => $doctor

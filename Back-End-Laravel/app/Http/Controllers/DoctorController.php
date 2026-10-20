@@ -20,7 +20,8 @@ class DoctorController extends Controller
 
     public function index(): JsonResponse
     {
-        $doctors = Doctor::with('user')
+        $doctors = Doctor::query()
+            ->with(['user.roles'])
             ->latest()
             ->paginate(15);
 
@@ -44,7 +45,7 @@ class DoctorController extends Controller
     public function show(Doctor $doctor): JsonResponse
     {
         return $this->success(
-            new DoctorResource($doctor->load('user'))
+            new DoctorResource($doctor->load('user.roles'))
         );
     }
 
