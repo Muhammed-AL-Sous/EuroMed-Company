@@ -6,7 +6,6 @@ const DoctorsTable = ({ Doctors = [], onDelete, onEdit }) => {
 
   const bodyCell =
     "border-b border-slate-300 px-2 py-3 sm:px-4 text-sm font-medium text-slate-700";
-  console.log(Doctors);
   return (
     // الحاوية الخارجية: للحواف المدوّرة والإطار فقط
     <div className="w-full overflow-hidden rounded-2xl border border-slate-300">

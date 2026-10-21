@@ -29,6 +29,7 @@ const CreateDoctorProfilePage = () => {
   const [updateUser, { isLoading: isCreating }] = useUpdateUserMutation();
 
   const users = Array.isArray(data?.users) ? data.users : [];
+
   const getUserRole = (user) => {
     if (typeof user.role === "string") {
       return user.role;
@@ -43,7 +44,7 @@ const CreateDoctorProfilePage = () => {
     const role = getUserRole(user);
 
     return (
-      (role === "staff" || role === "doctor") &&
+      (role === "staff" || role === "admin" || role === "doctor") &&
       user.has_doctor_profile === false
     );
   });

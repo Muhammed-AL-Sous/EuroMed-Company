@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDoctorProfileRequest;
 use App\Http\Requests\UpdateDoctorProfileRequest;
 use App\Http\Resources\DoctorResource;
+use App\Models\Doctor;
 use App\Services\DoctorService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -73,5 +74,22 @@ class DoctorProfileController extends Controller
             'has_profile' => true,
             'profile' => new DoctorResource($doctor),
         ], 'Doctor Profile Updated Successfully.');
+    }
+
+    public function destroy(Doctor $doctor)
+    {
+        if ($doctor->operations()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => "The Doctor Can't be Deleted Because it is Linked to Operations."
+            ], 409);
+        }
+
+        $doctor->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => "The Doctor has been Deleted Successfully."
+        ]);
     }
 }

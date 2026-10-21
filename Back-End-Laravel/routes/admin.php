@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'store',
             'show',
             'update',
+            'destroy'
         ]);
     });
 

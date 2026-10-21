@@ -9,6 +9,7 @@ use App\Models\Doctor;
 use App\Services\DoctorService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class DoctorController extends Controller
 {
@@ -61,5 +62,23 @@ class DoctorController extends Controller
         return $this->updated(
             new DoctorResource($doctor->load('user'))
         );
+    }
+
+    public function destroy(Doctor $doctor): JsonResponse
+    {
+        try {
+            $this->doctorService->delete($doctor);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Doctor Deleted Successfully.',
+            ], 200);
+        } catch (ConflictHttpException $exception) {
+
+            return response()->json([
+                'status' => false,
+                'message' => $exception->getMessage(),
+            ], 409);
+        }
     }
 }

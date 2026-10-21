@@ -6,6 +6,8 @@ use App\Models\Doctor;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\QueryException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class DoctorService
 {
@@ -72,5 +74,36 @@ class DoctorService
         ])->validate();
 
         return $this->createForUser($user, $validated);
+    }
+
+
+    public function delete(Doctor $doctor): void
+    {
+        // Check if doctor has related operations
+        if ($doctor->operations()->exists()) {
+            throw new ConflictHttpException(
+                'Cannot Delete Doctor Because They Have Related Operations.'
+            );
+        }
+
+        try {
+            // Delete doctor
+            $doctor->delete();
+        } catch (QueryException $exception) {
+
+            // Foreign key constraint violation
+            if (in_array(
+                (string) $exception->getCode(),
+                ['23000', '23503'],
+                true
+            )) {
+                throw new ConflictHttpException(
+                    'Cannot Delete Doctor Because Related Records Exist.',
+                    $exception
+                );
+            }
+
+            throw $exception;
+        }
     }
 }
