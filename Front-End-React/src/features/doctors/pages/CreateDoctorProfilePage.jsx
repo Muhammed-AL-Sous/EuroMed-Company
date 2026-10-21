@@ -141,7 +141,7 @@ const CreateDoctorProfilePage = () => {
       {/* ============= Header ============= */}
       <div className="flex gap-4 items-center text-sky-600">
         <Church size={55} />
-        <Text className="font-bold text-2xl">Create a New Doctor</Text>
+        <Text className="font-bold text-2xl">Create a New Doctor Profile</Text>
       </div>
       {/* ============= Section ============= */}
       <Box className="mx-auto border-none outline-none" maxWidth="900px">
@@ -346,8 +346,8 @@ const CreateDoctorProfilePage = () => {
                       ) ?? {},
                     ) === "staff" && (
                       <Text size="2" color="amber" className="mt-2">
-                        This user's role will be changed from Staff to Doctor
-                        when the profile is created.
+                        This User's Role Will Be Changed From Staff Or Admin To
+                        Doctor When The Profile Is Created.
                       </Text>
                     )}
                 </div>
@@ -365,7 +365,7 @@ const CreateDoctorProfilePage = () => {
                       disabled={isCreating}
                       className="mt-4.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700"
                     >
-                      Create a Doctor
+                      Create a Profile
                     </button>
                   </Form.Submit>
                 )}

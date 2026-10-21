@@ -53,10 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource(
             'patients',
             PatientController::class
-        )->only([
-            'index',
-            'show',
-        ]);
+        );
 
         // Operations
         Route::get(
