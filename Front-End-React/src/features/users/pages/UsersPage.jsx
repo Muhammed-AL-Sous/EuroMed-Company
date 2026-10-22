@@ -668,8 +668,8 @@ const UsersPage = () => {
                 ? "Doctor"
                 : editForm.role === "admin"
                   ? "Admin"
-                  : editForm.role === "data_entry"
-                    ? "Data Entry"
+                  : editForm.role === "staff"
+                    ? "Staff"
                     : "No Role Assigned"}
             </div>
           </div>

@@ -47,7 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Admin And Data Entry
-    Route::middleware('role:admin|data_entry')->group(function () {
+    Route::middleware('role:admin|staff')->group(function () {
 
         // Patients
         Route::apiResource(

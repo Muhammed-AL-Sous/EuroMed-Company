@@ -17,7 +17,7 @@ return new class extends Migration
                 ['operation_id', 'product_id'],
                 'operation_items_operation_product_unique'
             );
-            
+
             $table->foreignId('operation_id')
                 ->constrained('operations')
                 ->cascadeOnDelete();
@@ -25,6 +25,8 @@ return new class extends Migration
             $table->foreignId('product_id')
                 ->constrained('products')
                 ->restrictOnDelete();
+
+            $table->softDeletes();
 
             $table->unsignedSmallInteger('quantity');
             $table->timestamps();

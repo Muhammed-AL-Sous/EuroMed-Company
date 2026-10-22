@@ -11,7 +11,7 @@ class StoreOperationRequest extends FormRequest
     {
         return $this->user()?->hasAnyRole([
             'admin',
-            'data_entry',
+            'staff',
             'doctor',
         ]) ?? false;
     }

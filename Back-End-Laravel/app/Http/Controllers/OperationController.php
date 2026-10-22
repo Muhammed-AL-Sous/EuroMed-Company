@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FindPatientOperationRequest;
 use App\Http\Requests\StoreOperationRequest;
 use App\Http\Requests\UpdateOperationRequest;
+use App\Http\Resources\OperationResource;
 use App\Models\Operation\Operation;
 use App\Services\OperationService;
 use App\Traits\ApiResponse;
@@ -19,18 +20,44 @@ class OperationController extends Controller
         protected OperationService $operationService
     ) {}
 
+
     public function index(Request $request): JsonResponse
     {
         abort_unless(
-            $request->user()?->hasAnyRole(['admin', 'data_entry']),
+            $request->user()?->hasAnyRole([
+                'admin',
+                'staff',
+            ]),
             403
         );
 
         $filters = $request->validate([
-            'hospital_id' => ['sometimes', 'integer', 'exists:hospitals,id'],
-            'doctor_id' => ['sometimes', 'integer', 'exists:doctors,id'],
-            'date' => ['sometimes', 'date'],
-            'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'search' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:100',
+            ],
+            'hospital_id' => [
+                'sometimes',
+                'integer',
+                'exists:hospitals,id',
+            ],
+            'doctor_id' => [
+                'sometimes',
+                'integer',
+                'exists:doctors,id',
+            ],
+            'date' => [
+                'sometimes',
+                'date',
+            ],
+            'limit' => [
+                'sometimes',
+                'integer',
+                'min:1',
+                'max:100',
+            ],
         ]);
 
         $operations = Operation::query()
@@ -39,28 +66,52 @@ class OperationController extends Controller
                 'hospital',
                 'patient',
                 'operationType',
-                'items.product',
             ])
+            ->withCount('items')
+
+            // Search by Invoice Number
+            ->when(
+                $filters['search'] ?? null,
+                fn($query, $search) =>
+                $query->where(
+                    'invoice_number',
+                    'like',
+                    '%' . $search . '%'
+                )
+            )
+
+            // Hospital Filter
             ->when(
                 $filters['hospital_id'] ?? null,
                 fn($query, $id) =>
                 $query->where('hospital_id', $id)
             )
+
+            // Doctor Filter
             ->when(
                 $filters['doctor_id'] ?? null,
                 fn($query, $id) =>
                 $query->where('doctor_id', $id)
             )
+
+            // Date Filter
             ->when(
                 $filters['date'] ?? null,
                 fn($query, $date) =>
-                $query->whereDate('operation_date', $date)
+                $query->whereDate(
+                    'operation_date',
+                    $date
+                )
             )
+
             ->latest('operation_date')
             ->paginate($filters['limit'] ?? 15);
 
-        return $this->success($operations);
+        return $this->success(
+            OperationResource::collection($operations)
+        );
     }
+
 
     public function doctorIndex(Request $request): JsonResponse
     {
@@ -105,8 +156,13 @@ class OperationController extends Controller
 
         $operation = $this->operationService->create($data);
 
-        return $this->created($operation);
+        return $this->created(
+            new OperationResource(
+                $operation->loadCount('items')
+            )
+        );
     }
+
 
     public function show(
         Request $request,
@@ -121,9 +177,7 @@ class OperationController extends Controller
                 ! $doctor ||
                 (int) $operation->doctor_id !== (int) $doctor->id
             ) {
-                return $this->notFound(
-                    'Operation Not Found.'
-                );
+                return $this->notFound('Operation Not Found.');
             }
         } else {
             abort_unless(
@@ -132,14 +186,18 @@ class OperationController extends Controller
             );
         }
 
+        $operation->load([
+            'doctor',
+            'patient',
+            'hospital',
+            'operationType',
+            'items.product',
+        ]);
+
+        $operation->loadCount('items');
+
         return $this->success(
-            $operation->load([
-                'doctor',
-                'hospital',
-                'patient',
-                'operationType',
-                'items.product',
-            ])
+            new OperationResource($operation)
         );
     }
 
@@ -152,8 +210,11 @@ class OperationController extends Controller
             $request->validated()
         );
 
-        return $this->updated($operation);
+        return $this->updated(
+            new OperationResource($operation)
+        );
     }
+
 
     public function findPatientOperation(
         FindPatientOperationRequest $request

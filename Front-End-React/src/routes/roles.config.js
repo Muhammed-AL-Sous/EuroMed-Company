@@ -14,6 +14,7 @@ import {
   Box,
   RobotArm,
   Plus,
+  ArrowLeft,
 } from "lucide-react";
 
 // ============== Stats Pages ============== //
@@ -41,6 +42,10 @@ const OperationsPage = lazy(
 
 const CreateOperationPage = lazy(
   () => import("../features/operations/pages/CreateOperationPage.jsx"),
+);
+
+const OperationDetailsPage = lazy(
+  () => import("../features/operations/pages/OperationDetailsPage.jsx"),
 );
 
 // ============== Products ============== //
@@ -282,6 +287,16 @@ export const ROLES_CONFIG = {
       {
         path: "operations/create",
         element: CreateOperationPage,
+      },
+      {
+        path: "operations/:id",
+        element: OperationDetailsPage,
+        action: {
+          label: "Back to Operations",
+          to: "/admin/operations",
+          icon: ArrowLeft,
+          header: "Operation Details",
+        },
       },
 
       {

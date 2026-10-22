@@ -10,7 +10,7 @@ class UpdateOperationItemRequest extends FormRequest
     {
         return $this->user()?->hasAnyRole([
             'admin',
-            'data_entry',
+            'staff',
         ]) ?? false;
     }
 

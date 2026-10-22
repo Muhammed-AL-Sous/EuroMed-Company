@@ -11,7 +11,7 @@ class UpdateOperationRequest extends FormRequest
     {
         return $this->user()?->hasAnyRole([
             'admin',
-            'data_entry',
+            'staff',
         ]) ?? false;
     }
 
@@ -21,8 +21,6 @@ class UpdateOperationRequest extends FormRequest
 
         return [
             'doctor_id' => ['prohibited'],
-
-            'items' => ['prohibited'],
 
             'patient_id' => [
                 'sometimes',
@@ -74,6 +72,26 @@ class UpdateOperationRequest extends FormRequest
                 'nullable',
                 'string',
             ],
+
+            'items' => [
+                'sometimes',
+                'array',
+                'min:1',
+            ],
+
+            'items.*.product_id' => [
+                'required',
+                'integer',
+                'distinct',
+                'exists:products,id',
+            ],
+
+            'items.*.quantity' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
+
         ];
     }
 }
