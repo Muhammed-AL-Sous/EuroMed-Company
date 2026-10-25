@@ -1,10 +1,18 @@
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
-import { Church } from "lucide-react";
+import { Church, GlobeLock, Hospital, Landmark, Save } from "lucide-react";
 
 import { useAddHospitalMutation } from "../HospitalsApiSlice";
 import { notifySonner } from "../../../lib/notifySonner";
 import { useState } from "react";
+
+const INPUT_CLASS =
+  "box-border w-full rounded-xl border-2 border-sky-700 " +
+  "bg-slate-50 px-4 py-2.5 text-sm text-slate-700 " +
+  "outline-none transition-colors " +
+  "placeholder:text-slate-400 " +
+  "focus:border-sky-400 focus:bg-white " +
+  "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateHospitalPage = () => {
   const [createForm, setCreateForm] = useState({
@@ -60,105 +68,111 @@ const CreateHospitalPage = () => {
               <Form.Root className="w-full" onSubmit={handleSubmitHospital}>
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* =========== Hospital Name =========== */}
-                  <Form.Field className="mb-2.5 grid" name="name">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Hospital Name
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                          required
-                          id="hospital-name"
-                          name="name"
-                          type="text"
-                          value={createForm.name}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter hospital name"
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="name"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Hospital size={16} />
+                      Hospital Name
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        required
+                        id="hospital-name"
+                        name="name"
+                        type="text"
+                        value={createForm.name}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter hospital name"
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Hospital Name
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Hospital Name
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Hospital Name
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Hospital Name
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Hospital Type =========== */}
-                  <Form.Field className="mb-2.5 grid" name="type">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Hospital Type
-                      </Form.Label>
-                      <select
-                        id="hospital-type"
-                        name="type"
-                        value={createForm.type}
-                        onChange={handleCreateFormChange}
-                        disabled={isCreating}
-                        className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                      >
-                        <option value="Government">Government</option>
-                        <option value="Private">Private</option>
-                      </select>
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Hospital Name
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Hospital Name
-                      </Form.Message>
-                    </div>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="type"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <GlobeLock size={16} />
+                      Hospital Type
+                    </Form.Label>
+                    <select
+                      id="hospital-type"
+                      name="type"
+                      value={createForm.type}
+                      onChange={handleCreateFormChange}
+                      disabled={isCreating}
+                      className={INPUT_CLASS}
+                    >
+                      <option value="Government">Government</option>
+                      <option value="Private">Private</option>
+                    </select>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Hospital Name
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Hospital Name
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Hospital City =========== */}
-                  <Form.Field className="mb-2.5 grid" name="city">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Hospital City
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
-                          id="hospital-city"
-                          name="city"
-                          type="text"
-                          value={createForm.city}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter Hospital City"
-                          required
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="city"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Landmark size={16} />
+                      Hospital City
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        id="hospital-city"
+                        name="city"
+                        type="text"
+                        value={createForm.city}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Hospital City"
+                        required
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Hospital City
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Hospital City
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Hospital City
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Hospital City
+                    </Form.Message>
                   </Form.Field>
                 </div>
 
@@ -173,8 +187,9 @@ const CreateHospitalPage = () => {
                   <Form.Submit asChild>
                     <button
                       disabled={isCreating}
-                      className="mt-4.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700"
+                      className="flex mx-auto mt-6 cursor-pointer min-h-10 min-w-44 items-center justify-center gap-2 rounded-lg bg-sky-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
+                      <Save size={18} />
                       Create a Hospital
                     </button>
                   </Form.Submit>

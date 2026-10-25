@@ -3,12 +3,28 @@ import { useState } from "react";
 
 // External Library
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
-import { Church } from "lucide-react";
+import {
+  Church,
+  Save,
+  UserRound,
+  Phone,
+  CalendarArrowUp,
+  CalendarDays,
+  Transgender,
+} from "lucide-react";
 import { Form } from "radix-ui";
 import { notifySonner } from "../../../lib/notifySonner";
 
 // Api Slice
 import { useAddPatientMutation } from "../PatientsApiSlice";
+
+const INPUT_CLASS =
+  "box-border w-full rounded-xl border-2 border-sky-700 " +
+  "bg-slate-50 px-4 py-2.5 text-sm text-slate-700 " +
+  "outline-none transition-colors " +
+  "placeholder:text-slate-400 " +
+  "focus:border-sky-400 focus:bg-white " +
+  "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreatePatientPage = () => {
   const [createForm, setCreateForm] = useState({
@@ -71,174 +87,181 @@ const CreatePatientPage = () => {
               <Form.Root className="w-full" onSubmit={handleSubmitPatient}>
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* =========== Patient Name =========== */}
-                  <Form.Field className="mb-2.5 grid" name="name">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Patient Name
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                          required
-                          id="Patient-name"
-                          name="name"
-                          type="text"
-                          value={createForm.name}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter Patient name"
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="name"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <UserRound size={16} />
+                      Patient Name
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        required
+                        id="Patient-name"
+                        name="name"
+                        type="text"
+                        value={createForm.name}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Patient name"
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Patient Name
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Patient Name
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Patient Name
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Patient Name
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Patient Phone =========== */}
-                  <Form.Field className="mb-2.5 grid" name="phone">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Patient Phone
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                          id="Patient-phone"
-                          name="phone"
-                          type="text"
-                          value={createForm.phone}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="009647 ..."
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="phone"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Phone size={16} />
+                      Patient Phone
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        id="Patient-phone"
+                        name="phone"
+                        type="text"
+                        value={createForm.phone}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="009647 ..."
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Patient Phone
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Patient Phone
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Patient Phone
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Patient Phone
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Patient Age =========== */}
-                  <Form.Field className="mb-2.5 grid" name="age">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Patient Age
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                          id="Patient-age"
-                          name="age"
-                          type="number"
-                          value={createForm.age}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter Patient Age"
-                          max={150}
-                          min={5}
-                        />
-                      </Form.Control>
+                  <Form.Field className="grid content-start gap-1.5" name="age">
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <CalendarArrowUp size={16} />
+                      Patient Age
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        id="Patient-age"
+                        name="age"
+                        type="number"
+                        value={createForm.age}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Patient Age"
+                        max={150}
+                        min={5}
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Patient Age
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Patient Age
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Patient Age
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Patient Age
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Patient Date Of Birth =========== */}
-                  <Form.Field className="mb-2.5 grid" name="date_of_birth">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Patient Date Of Birth
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                          id="Patient_date_of_birth"
-                          name="date_of_birth"
-                          type="date"
-                          value={createForm.date_of_birth}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="date_of_birth"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <CalendarDays size={16} />
+                      Patient Date Of Birth
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        id="Patient_date_of_birth"
+                        name="date_of_birth"
+                        type="date"
+                        value={createForm.date_of_birth}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Patient Date Of Birth
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Patient Date Of Birth
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Patient Date Of Birth
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Patient Date Of Birth
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Patient Gender =========== */}
-                  <Form.Field className="mb-2.5 grid" name="gender">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Patient Gender
-                      </Form.Label>
-                      <select
-                        id="Patient-gender"
-                        name="gender"
-                        value={createForm.gender}
-                        onChange={handleCreateFormChange}
-                        disabled={isCreating}
-                        className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                      >
-                        <option value="">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                      </select>
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Patient Gender
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Patient Gender
-                      </Form.Message>
-                    </div>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="gender"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Transgender size={16} />
+                      Patient Gender
+                    </Form.Label>
+                    <select
+                      id="Patient-gender"
+                      name="gender"
+                      value={createForm.gender}
+                      onChange={handleCreateFormChange}
+                      disabled={isCreating}
+                      className={INPUT_CLASS}
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Patient Gender
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Patient Gender
+                    </Form.Message>
                   </Form.Field>
                 </div>
 
@@ -253,8 +276,9 @@ const CreatePatientPage = () => {
                   <Form.Submit asChild>
                     <button
                       disabled={isCreating}
-                      className="mt-4.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700"
+                      className="flex mx-auto mt-6 cursor-pointer min-h-10 min-w-44 items-center justify-center gap-2 rounded-lg bg-sky-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
+                      <Save size={18} />
                       Create a Patient
                     </button>
                   </Form.Submit>

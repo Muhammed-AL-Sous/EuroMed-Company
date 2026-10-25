@@ -31,6 +31,7 @@ import { useGetSubCategoriesQuery } from "../../subCategories/SubCategoriesApiSl
 
 // Utility Component
 import ProductImageUpload from "../components/utility/ProductImageUpload";
+
 const INPUT_CLASS =
   "box-border w-full rounded-xl border-2 border-sky-700 " +
   "bg-slate-50 px-4 py-2.5 text-sm text-slate-700 " +

@@ -4,7 +4,14 @@ import { useState } from "react";
 // External Library
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
-import { Check, ChevronDown, Church } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Church,
+  Save,
+  Stethoscope,
+  UserRoundSearch,
+} from "lucide-react";
 import { notifySonner } from "../../../lib/notifySonner";
 import * as Select from "@radix-ui/react-select";
 
@@ -168,12 +175,13 @@ const CreateDoctorProfilePage = () => {
                     className="grid content-start gap-1.5"
                     name="name"
                   >
-                    <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Stethoscope size={16} />
                       Doctor Name
                     </Form.Label>
                     <Form.Control asChild>
                       <input
-                        className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
+                        className={INPUT_CLASS}
                         required
                         id="Doctor-name"
                         name="name"
@@ -204,31 +212,31 @@ const CreateDoctorProfilePage = () => {
                     className="grid content-start gap-1.5"
                     name="select-user"
                   >
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Select User
-                      </Form.Label>
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <UserRoundSearch size={16} />
+                      Select User
+                    </Form.Label>
 
-                      <Select.Root
-                        value={createForm.user_id || "none"}
-                        disabled={isCreating}
-                        onValueChange={(value) => {
-                          const user_id = value === "none" ? "" : value;
+                    <Select.Root
+                      value={createForm.user_id || "none"}
+                      disabled={isCreating}
+                      onValueChange={(value) => {
+                        const user_id = value === "none" ? "" : value;
 
-                          setCreateForm((prev) => ({
-                            ...prev,
-                            user_id,
-                          }));
+                        setCreateForm((prev) => ({
+                          ...prev,
+                          user_id,
+                        }));
 
-                          setErrors((prev) => ({
-                            ...prev,
-                            user_id: undefined,
-                          }));
-                        }}
-                      >
-                        <Select.Trigger
-                          aria-label="Filter by user"
-                          className="
+                        setErrors((prev) => ({
+                          ...prev,
+                          user_id: undefined,
+                        }));
+                      }}
+                    >
+                      <Select.Trigger
+                        aria-label="Filter by user"
+                        className="
                                           inline-flex
                                           min-w-55
                                           items-center
@@ -237,7 +245,7 @@ const CreateDoctorProfilePage = () => {
                                           gap-3
                                           rounded-xl
                                           px-4
-                                          py-2
+                                          py-2.5
                                           text-sm
                                           text-slate-700
                                           transition-colors
@@ -246,19 +254,19 @@ const CreateDoctorProfilePage = () => {
                                           focus:ring-1
                                           focus:ring-sky-500
                                           data-placeholder:text-slate-500"
-                        >
-                          <Select.Value placeholder="Select User" />
+                      >
+                        <Select.Value placeholder="Select User" />
 
-                          <Select.Icon>
-                            <ChevronDown size={18} className="text-slate-500" />
-                          </Select.Icon>
-                        </Select.Trigger>
+                        <Select.Icon>
+                          <ChevronDown size={18} className="text-slate-500" />
+                        </Select.Icon>
+                      </Select.Trigger>
 
-                        <Select.Portal>
-                          <Select.Content
-                            position="popper"
-                            sideOffset={6}
-                            className="
+                      <Select.Portal>
+                        <Select.Content
+                          position="popper"
+                          sideOffset={6}
+                          className="
                 z-50
                 max-h-64
                 min-w-55
@@ -272,11 +280,11 @@ const CreateDoctorProfilePage = () => {
                 fade-in-0
                 zoom-in-95
               "
-                          >
-                            <Select.Viewport className="p-1.5">
-                              <Select.Item
-                                value="none"
-                                className="
+                        >
+                          <Select.Viewport className="p-1.5">
+                            <Select.Item
+                              value="none"
+                              className="
                     relative
                     flex
                     cursor-pointer
@@ -294,24 +302,24 @@ const CreateDoctorProfilePage = () => {
                   data-[state=checked]:bg-sky-50
                     data-[state=checked]:font-medium
                   "
-                              >
-                                <Select.ItemText>Select a User</Select.ItemText>
+                            >
+                              <Select.ItemText>Select a User</Select.ItemText>
 
-                                <Select.ItemIndicator className="absolute right-3">
-                                  <Check size={16} className="text-sky-600" />
-                                </Select.ItemIndicator>
-                              </Select.Item>
+                              <Select.ItemIndicator className="absolute right-3">
+                                <Check size={16} className="text-sky-600" />
+                              </Select.ItemIndicator>
+                            </Select.Item>
 
-                              {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
+                            {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                              {(Array.isArray(availableUsers)
-                                ? availableUsers
-                                : []
-                              ).map((user) => (
-                                <Select.Item
-                                  key={user.id}
-                                  value={String(user.id)}
-                                  className="
+                            {(Array.isArray(availableUsers)
+                              ? availableUsers
+                              : []
+                            ).map((user) => (
+                              <Select.Item
+                                key={user.id}
+                                value={String(user.id)}
+                                className="
                       relative
                       flex
                       cursor-pointer
@@ -329,25 +337,24 @@ const CreateDoctorProfilePage = () => {
                     data-[state=checked]:bg-sky-50
                       data-[state=checked]:font-medium
                     "
-                                >
-                                  <Select.ItemText>{user.name}</Select.ItemText>
+                              >
+                                <Select.ItemText>{user.name}</Select.ItemText>
 
-                                  <Select.ItemIndicator className="absolute right-3">
-                                    <Check size={16} className="text-sky-600" />
-                                  </Select.ItemIndicator>
-                                </Select.Item>
-                              ))}
-                            </Select.Viewport>
-                          </Select.Content>
-                        </Select.Portal>
-                      </Select.Root>
+                                <Select.ItemIndicator className="absolute right-3">
+                                  <Check size={16} className="text-sky-600" />
+                                </Select.ItemIndicator>
+                              </Select.Item>
+                            ))}
+                          </Select.Viewport>
+                        </Select.Content>
+                      </Select.Portal>
+                    </Select.Root>
 
-                      {errors.user_id && (
-                        <p className="mt-2 text-xs font-bold text-red-700">
-                          {errors.user_id}
-                        </p>
-                      )}
-                    </div>
+                    {errors.user_id && (
+                      <p className="mt-2 text-xs font-bold text-red-700">
+                        {errors.user_id}
+                      </p>
+                    )}
                   </Form.Field>
 
                   {createForm.user_id &&
@@ -375,8 +382,9 @@ const CreateDoctorProfilePage = () => {
                   <Form.Submit asChild>
                     <button
                       disabled={isCreating}
-                      className="mt-4.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700"
+                      className="flex mx-auto mt-6 cursor-pointer min-h-10 min-w-44 items-center justify-center gap-2 rounded-lg bg-sky-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
+                      <Save size={18} />
                       Create a Profile
                     </button>
                   </Form.Submit>

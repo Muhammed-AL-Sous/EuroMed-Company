@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\UserController;
@@ -8,6 +9,12 @@ use App\Http\Controllers\OperationController;
 use App\Http\Controllers\OperationItemController;
 
 Route::middleware('auth:sanctum')->group(function () {
+    // Dashboard
+
+    Route::get(
+        '/dashboard/overview',
+        [DashboardController::class, 'overview']
+    );
 
     // Current User
     Route::get(
