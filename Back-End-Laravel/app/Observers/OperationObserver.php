@@ -3,14 +3,15 @@
 namespace App\Observers;
 
 use App\Models\Operation\Operation;
-use Illuminate\Support\Str;
 
 class OperationObserver
 {
-    public function creating(Operation $operation): void
+    public function created(Operation $operation): void
     {
         if (empty($operation->invoice_number)) {
-            $operation->invoice_number = 'Operation-'.Str::uuid();
+            $operation->invoice_number = 'Operation-' . $operation->id;
+
+            $operation->saveQuietly();
         }
     }
 }

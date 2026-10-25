@@ -8,8 +8,8 @@ import {
   Upload,
   X,
   RefreshCw,
-  FileImage,
   AlertCircle,
+  ImageDown,
 } from "lucide-react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -26,6 +26,7 @@ export default function ProductImageUpload({
   onRemove,
   title,
   subTitle,
+  showIcon = false,
   disabled = false,
 }) {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -148,7 +149,14 @@ export default function ProductImageUpload({
               {title}
             </Text>
 
-            <Text as="p" size="2" color="gray" mt="1">
+            <Text
+              as="p"
+              size="2"
+              color="gray"
+              mt="1"
+              className="flex items-center gap-1"
+            >
+              {showIcon && <ImageDown size={16} />}
               {/* Upload an image for your product. */}
               {subTitle}
             </Text>

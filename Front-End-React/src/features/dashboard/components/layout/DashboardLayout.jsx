@@ -44,6 +44,7 @@ const DashboardLayout = () => {
           <DashboardNavbar
             user={user}
             toggleSidebar={() => setIsSidebarOpen(true)}
+           
           />
 
           <AnimatePresence mode="wait">
@@ -53,7 +54,7 @@ const DashboardLayout = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 15 }}
               transition={{ duration: 0.3, ease: "circOut" }}
-              className="mt-8 w-full space-y-8"
+              className="w-full space-y-8"
             >
               <Outlet />
             </motion.div>

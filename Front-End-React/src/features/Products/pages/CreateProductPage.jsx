@@ -14,13 +14,30 @@ import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import * as Select from "@radix-ui/react-select";
 
 // Icons
-import { Check, ChevronDown, LayersMinus } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Hash,
+  LayersMinus,
+  PackageSearch,
+  RobotArm,
+  Box as BoxIcon,
+  Blocks,
+  Save,
+} from "lucide-react";
 import { useGetManufacturersQuery } from "../../manufacturers/ManufacturersApiSlice";
 import { useGetCategoriesQuery } from "../../categories/CategoriesApiSlice";
 import { useGetSubCategoriesQuery } from "../../subCategories/SubCategoriesApiSlice";
 
 // Utility Component
 import ProductImageUpload from "../components/utility/ProductImageUpload";
+const INPUT_CLASS =
+  "box-border w-full rounded-xl border-2 border-sky-700 " +
+  "bg-slate-50 px-4 py-2.5 text-sm text-slate-700 " +
+  "outline-none transition-colors " +
+  "placeholder:text-slate-400 " +
+  "focus:border-sky-400 focus:bg-white " +
+  "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateProductPage = () => {
   const [createForm, setCreateForm] = useState({
@@ -120,7 +137,7 @@ const CreateProductPage = () => {
       await addProduct(formData).unwrap();
 
       setProductImage(null);
-      
+
       // Reset ProductImageUpload
       setImageResetKey((prev) => prev + 1);
 
@@ -148,35 +165,40 @@ const CreateProductPage = () => {
       {/* ============= Header ============= */}
       <div className="flex gap-4 items-center text-sky-600">
         <LayersMinus size={55} />
-        <Text className="font-bold text-2xl">Create a New Product</Text>
+        <Text className="font-bold text-2xl ">Create a New Product</Text>
       </div>
       {/* ============= Section ============= */}
       <Box className="mx-auto border-none outline-none" maxWidth="900px">
         <Card variant="ghost" className="border-none outline-none">
-          <Flex gap="3" direction="column">
+          <Flex direction="column">
             <img
               className="max-h-100 mx-auto"
               src="/images/create_product.png"
             />
 
-            <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
+            <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5">
               <Form.Root className="w-full" onSubmit={handleSubmitProduct}>
                 <ProductImageUpload
                   key={imageResetKey}
+                  showIcon={true}
                   onChange={setProductImage}
                   title="Product Image"
                   subTitle="Upload an image for your product."
                 />
-                <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+                <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 md:grid-cols-2 lg:grid-cols-3 space-y-3">
                   {/* =========== Product Code =========== */}
-                  <Form.Field className="mb-2.5 grid" name="code">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="code"
+                  >
+                    <div className="flex flex-col gap-1.5">
+                      <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <Hash size={16} />
                         Product Code
                       </Form.Label>
                       <Form.Control asChild>
                         <input
-                          className="box-border rounded-xl px-4 py-2 w-full bg-blackA2 text-sm leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
+                          className={INPUT_CLASS}
                           required
                           id="hospital-code"
                           name="code"
@@ -204,14 +226,18 @@ const CreateProductPage = () => {
                   </Form.Field>
 
                   {/* =========== Product Name =========== */}
-                  <Form.Field className="mb-2.5 grid" name="name">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="name"
+                  >
+                    <div className="flex flex-col gap-1.5">
+                      <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <PackageSearch size={16} />
                         Product Name
                       </Form.Label>
                       <Form.Control asChild>
                         <input
-                          className="box-border rounded-xl px-4 py-2 w-full bg-blackA2 text-sm leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
+                          className={INPUT_CLASS}
                           required
                           id="hospital-name"
                           name="name"
@@ -239,9 +265,13 @@ const CreateProductPage = () => {
                   </Form.Field>
 
                   {/* =========== Product Manufacturer =========== */}
-                  <Form.Field className="mb-2.5 grid" name="manufacturer">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="manufacturer"
+                  >
+                    <div className="flex flex-col gap-1.5">
+                      <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <RobotArm size={16} />
                         Product Manufacturer
                       </Form.Label>
 
@@ -274,7 +304,7 @@ const CreateProductPage = () => {
                                           gap-3
                                           rounded-xl
                                           px-4
-                                          py-2
+                                          py-2.5
                                           text-sm
                                           text-slate-700
                                           transition-colors
@@ -392,9 +422,13 @@ const CreateProductPage = () => {
                   </Form.Field>
 
                   {/* =========== Product SubCategory =========== */}
-                  <Form.Field className="mb-2.5 grid" name="subcategory">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="subcategory"
+                  >
+                    <div className="flex flex-col gap-1.5">
+                      <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <BoxIcon size={16} />
                         Product SubCategory
                       </Form.Label>
 
@@ -427,7 +461,7 @@ const CreateProductPage = () => {
                                           gap-3
                                           rounded-xl
                                           px-4
-                                          py-2
+                                          py-2.5
                                           text-sm
                                           text-slate-700
                                           transition-colors
@@ -545,9 +579,13 @@ const CreateProductPage = () => {
                   </Form.Field>
 
                   {/* =========== Product Category =========== */}
-                  <Form.Field className="mb-2.5 grid" name="category">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="category"
+                  >
+                    <div className="flex flex-col gap-1.5">
+                      <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <Blocks size={16} />
                         Product Category
                       </Form.Label>
 
@@ -580,7 +618,7 @@ const CreateProductPage = () => {
                                           gap-3
                                           rounded-xl
                                           px-4
-                                          py-2
+                                          py-2.5
                                           text-sm
                                           text-slate-700
                                           transition-colors
@@ -709,8 +747,9 @@ const CreateProductPage = () => {
                   <Form.Submit asChild>
                     <button
                       disabled={isCreating}
-                      className="mt-4.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700"
+                      className="flex mx-auto mt-4 cursor-pointer min-h-10 min-w-44 items-center justify-center gap-2 rounded-lg bg-sky-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
+                      <Save size={18} />
                       Create a Product
                     </button>
                   </Form.Submit>

@@ -69,9 +69,7 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
         url: `/operations/${id}`,
         method: "GET",
       }),
-
       transformResponse: (response) => response.data,
-
       providesTags: (result, error, id) => [{ type: "Operations", id }],
     }),
 
@@ -81,9 +79,7 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
         method: "POST",
         body: operationData,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Operations", id: "Operations_Id" },
-      ],
+      invalidatesTags: ["Operations"],
     }),
 
     updateOperation: builder.mutation({
@@ -115,7 +111,7 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
 export const {
   useGetOperationFormOptionsQuery,
   useGetOperationsQuery,
-  useLazyGetOperationQuery,
+  useGetOperationQuery,
   useDeleteOperationMutation,
   useAddOperationMutation,
   useUpdateOperationMutation,

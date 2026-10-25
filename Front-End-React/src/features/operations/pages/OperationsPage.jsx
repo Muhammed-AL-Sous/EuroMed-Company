@@ -9,7 +9,7 @@ import {
   useGetOperationsQuery,
   useDeleteOperationMutation,
   useUpdateOperationMutation,
-  useLazyGetOperationQuery,
+  useGetOperationQuery,
 } from "../OperationsApiSlice";
 
 import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
@@ -142,7 +142,7 @@ const OperationsPage = () => {
   const [editForm, setEditForm] = useState(EMPTY_EDIT_FORM);
 
   const [formErrors, setFormErrors] = useState({});
-  const [getOperation] = useLazyGetOperationQuery();
+  const { data: getOperation } = useGetOperationQuery();
 
   // ==================================================
   // Search State

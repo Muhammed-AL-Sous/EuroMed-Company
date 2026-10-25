@@ -1,6 +1,6 @@
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
-import { Church } from "lucide-react";
+import { Church, FileText } from "lucide-react";
 
 import { notifySonner } from "../../../lib/notifySonner";
 import { useState } from "react";
@@ -8,6 +8,14 @@ import { useAddSubCategoryMutation } from "../SubCategoriesApiSlice";
 
 // Utility Component
 import ProductImageUpload from "../../products/components/utility/ProductImageUpload";
+
+const INPUT_CLASS =
+  "box-border w-full rounded-xl border-2 border-sky-700 " +
+  "bg-slate-50 px-4 py-2.5 text-sm text-slate-700 " +
+  "outline-none transition-colors " +
+  "placeholder:text-slate-400 " +
+  "focus:border-sky-400 focus:bg-white " +
+  "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateSubCategoryPage = () => {
   const [createForm, setCreateForm] = useState({
@@ -85,79 +93,83 @@ const CreateSubCategoryPage = () => {
               <Form.Root className="w-full" onSubmit={handleSubmitCategory}>
                 <ProductImageUpload
                   key={imageResetKey}
+                  showIcon={true}
                   onChange={setSubCategoryImage}
                   title="SubCategory Image"
                   subTitle="Upload an image for your SubCategory."
                 />
 
-                <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 md:grid-cols-2">
                   {/* =========== SubCategory Name =========== */}
-                  <Form.Field className="mb-2.5 grid" name="name">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        SubCategory Name
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                          required
-                          id="subcategory-name"
-                          name="name"
-                          type="text"
-                          value={createForm.name}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter subcategory name"
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="name"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      SubCategory Name
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        required
+                        id="subcategory-name"
+                        name="name"
+                        type="text"
+                        value={createForm.name}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter subcategory name"
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The SubCategory Name
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid SubCategory Name
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The SubCategory Name
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid SubCategory Name
+                    </Form.Message>
                   </Form.Field>
                   {/* =========== SubCategory Description =========== */}
-                  <Form.Field className="mb-2.5 grid" name="description">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        SubCategory Description
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
-                          id="subcategory-description"
-                          name="description"
-                          type="text"
-                          value={createForm.description}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter SubCategory Description"
-                          required
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="description"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <FileText size={16} />
+                      SubCategory Description
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        id="subcategory-description"
+                        name="description"
+                        type="text"
+                        value={createForm.description}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter SubCategory Description"
+                        required
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The SubCategory Description
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid SubCategory Description
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The SubCategory Description
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid SubCategory Description
+                    </Form.Message>
                   </Form.Field>
                 </div>
 

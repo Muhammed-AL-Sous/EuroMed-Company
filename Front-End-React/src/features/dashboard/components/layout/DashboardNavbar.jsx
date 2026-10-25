@@ -33,7 +33,7 @@ const DashboardNavbar = ({ user, toggleSidebar }) => {
   return (
     <div
       className={`
-        flex flex-col gap-4 border-b border-slate-200 pb-4
+        flex flex-col gap-4 border-b border-slate-200 pb-4 mb-4
         sm:flex-row sm:items-center sm:justify-between
         ${isCreatePage ? "lg:hidden" : ""}
       `}
