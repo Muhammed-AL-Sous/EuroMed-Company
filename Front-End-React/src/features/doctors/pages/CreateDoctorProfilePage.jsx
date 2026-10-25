@@ -14,6 +14,14 @@ import {
   useUpdateUserMutation,
 } from "../../users/UsersApiSlice";
 
+const INPUT_CLASS =
+  "box-border w-full rounded-xl border-2 border-sky-700 " +
+  "bg-slate-50 px-4 py-2.5 text-sm text-slate-700 " +
+  "outline-none transition-colors " +
+  "placeholder:text-slate-400 " +
+  "focus:border-sky-400 focus:bg-white " +
+  "disabled:cursor-not-allowed disabled:opacity-60";
+
 const CreateDoctorProfilePage = () => {
   const [createForm, setCreateForm] = useState({
     user_id: "",
@@ -156,42 +164,46 @@ const CreateDoctorProfilePage = () => {
               <Form.Root className="w-full" onSubmit={handleSubmitDoctor}>
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
                   {/* =========== Doctor Name =========== */}
-                  <Form.Field className="mb-2.5 grid" name="name">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Doctor Name
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                          required
-                          id="Doctor-name"
-                          name="name"
-                          type="text"
-                          value={createForm.name}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter Doctor name"
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="name"
+                  >
+                    <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
+                      Doctor Name
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
+                        required
+                        id="Doctor-name"
+                        name="name"
+                        type="text"
+                        value={createForm.name}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Doctor name"
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Doctor Name
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Doctor Name
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Doctor Name
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Doctor Name
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Select User =========== */}
-                  <Form.Field className="mb-2.5 grid" name="select-user">
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="select-user"
+                  >
                     <div className="flex flex-col">
                       <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
                         Select User

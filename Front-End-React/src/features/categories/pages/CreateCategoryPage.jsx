@@ -150,7 +150,7 @@ const CreateCategoryPage = () => {
                   <Form.Submit asChild>
                     <button
                       disabled={isCreating}
-                      className="flex mx-auto mt-4 cursor-pointer min-h-10 min-w-44 items-center justify-center gap-2 rounded-lg bg-sky-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="flex mx-auto mt-6 cursor-pointer min-h-10 min-w-44 items-center justify-center gap-2 rounded-lg bg-sky-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <Save size={18} />
                       Create a Category

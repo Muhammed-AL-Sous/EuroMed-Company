@@ -1,6 +1,6 @@
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
-import { Church, FileText } from "lucide-react";
+import { Church, FileText, Box as BoxIcon, Save } from "lucide-react";
 
 import { notifySonner } from "../../../lib/notifySonner";
 import { useState } from "react";
@@ -106,6 +106,7 @@ const CreateSubCategoryPage = () => {
                     name="name"
                   >
                     <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <BoxIcon size={16} />
                       SubCategory Name
                     </Form.Label>
                     <Form.Control asChild>
@@ -184,8 +185,9 @@ const CreateSubCategoryPage = () => {
                   <Form.Submit asChild>
                     <button
                       disabled={isCreating}
-                      className="mt-4.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700"
+                      className="flex mx-auto mt-6 cursor-pointer min-h-10 min-w-44 items-center justify-center gap-2 rounded-lg bg-sky-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
+                      <Save size={18} />
                       Create a SubCategory
                     </button>
                   </Form.Submit>

@@ -7,13 +7,30 @@ import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 
 // Lucide React Library
-import { Church } from "lucide-react";
+import {
+  Activity,
+  BuildingComplex,
+  BuildingComplexPlus,
+  Church,
+  FileText,
+  GlobeCode,
+  RobotArm,
+  Save,
+} from "lucide-react";
 
 // Notify Sonner
 import { notifySonner } from "../../../lib/notifySonner";
 
 // Api Slice
 import { useAddManufacturerMutation } from "../ManufacturersApiSlice";
+
+const INPUT_CLASS =
+  "box-border w-full rounded-xl border-2 border-sky-700 " +
+  "bg-slate-50 px-4 py-2.5 text-sm text-slate-700 " +
+  "outline-none transition-colors " +
+  "placeholder:text-slate-400 " +
+  "focus:border-sky-400 focus:bg-white " +
+  "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateManufacturerPage = () => {
   const [createForm, setCreateForm] = useState({
@@ -83,210 +100,222 @@ const CreateManufacturerPage = () => {
               <Form.Root className="w-full" onSubmit={handleSubmitManufacturer}>
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* =========== Manufacturer Name =========== */}
-                  <Form.Field className="mb-2.5 grid" name="name">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Manufacturer Name
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded bg-blackA2 px-2.5 text-[14px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                          required
-                          id="manufacturer-name"
-                          name="name"
-                          type="text"
-                          value={createForm.name}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter manufacturer name"
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="name"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <RobotArm size={16} />
+                      Manufacturer Name
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        required
+                        id="manufacturer-name"
+                        name="name"
+                        type="text"
+                        value={createForm.name}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter manufacturer name"
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Manufacturer Name
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Manufacturer Name
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Manufacturer Name
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Manufacturer Name
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Manufacturer Origin =========== */}
-                  <Form.Field className="mb-2.5 grid" name="origin">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Manufacturer Origin
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
-                          id="manufacturer-origin"
-                          name="origin"
-                          type="text"
-                          value={createForm.origin}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter Manufacturer Origin"
-                          required
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="origin"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <BuildingComplexPlus size={16} />
+                      Manufacturer Origin
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        id="manufacturer-origin"
+                        name="origin"
+                        type="text"
+                        value={createForm.origin}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Manufacturer Origin"
+                        required
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Manufacturer Origin
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Manufacturer Origin
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Manufacturer Origin
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Manufacturer Origin
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Manufacturer website =========== */}
-                  <Form.Field className="mb-2.5 grid" name="website">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Manufacturer Website
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
-                          id="manufacturer-website"
-                          name="website"
-                          type="text"
-                          value={createForm.website}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter Manufacturer Website"
-                          required
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="website"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <GlobeCode size={16} />
+                      Manufacturer Website
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        id="manufacturer-website"
+                        name="website"
+                        type="text"
+                        value={createForm.website}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Manufacturer Website"
+                        required
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Manufacturer Website
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Manufacturer Website
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Manufacturer Website
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Manufacturer Website
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Manufacturer logo_text =========== */}
-                  <Form.Field className="mb-2.5 grid" name="logo_text">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Manufacturer Logo Text
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className="box-border h-8.75 w-full rounded px-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
-                          id="manufacturer-logo-text"
-                          name="logo_text"
-                          type="text"
-                          value={createForm.logo_text}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter Manufacturer Logo Text"
-                          required
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="logo_text"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <BuildingComplex size={16} />
+                      Manufacturer Logo Text
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        id="manufacturer-logo-text"
+                        name="logo_text"
+                        type="text"
+                        value={createForm.logo_text}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Manufacturer Logo Text"
+                        required
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Manufacturer Logo Text
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Manufacturer Logo Text
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Manufacturer Logo Text
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Manufacturer Logo Text
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Manufacturer Is Active =========== */}
-                  <Form.Field className="mb-2.5 grid" name="is_active">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Manufacturer Activity Status
-                      </Form.Label>
-                      <select
-                        id="manufacturer-is-active"
-                        name="is_active"
-                        value={createForm.is_active}
-                        onChange={handleCreateFormChange}
-                        disabled={isCreating}
-                        className="box-border h-8.75 w-full rounded px-2.5 text-[15px] leading-none text-slate-700 outline-none border-2 border-sky-700 focus:border-sky-400"
-                      >
-                        <option value="">Select Activity Status</option>
-                        <option value="true">Active</option>
-                        <option value="false">Inactive</option>
-                      </select>
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Manufacturer Activity Status
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Manufacturer Activity Status
-                      </Form.Message>
-                    </div>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="is_active"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Activity size={16} />
+                      Manufacturer Activity Status
+                    </Form.Label>
+                    <select
+                      id="manufacturer-is-active"
+                      name="is_active"
+                      value={createForm.is_active}
+                      onChange={handleCreateFormChange}
+                      disabled={isCreating}
+                      className={INPUT_CLASS}
+                    >
+                      <option value="">Select Activity Status</option>
+                      <option value="true">Active</option>
+                      <option value="false">Inactive</option>
+                    </select>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Manufacturer Activity Status
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Manufacturer Activity Status
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Manufacturer Description =========== */}
-                  <Form.Field className="mb-2.5 grid" name="description">
-                    <div className="flex flex-col">
-                      <Form.Label className="text-[15px] font-medium leading-8.75 text-slate-700">
-                        Manufacturer Description
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <textarea
-                          className="box-border h-8.75 w-full overflow-hidden rounded p-2.5 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
-                          id="manufacturer-description"
-                          name="description"
-                          value={createForm.description}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter Manufacturer Description"
-                          required
-                        />
-                      </Form.Control>
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="description"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <FileText size={16} />
+                      Manufacturer Description
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <textarea
+                        className="box-border w-full overflow-hidden rounded-xl px-4 py-2 text-[14px] leading-none text-slate-700 outline-none selection:text-slate-700 border-2 border-sky-700 focus:border-sky-400"
+                        id="manufacturer-description"
+                        name="description"
+                        value={createForm.description}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Manufacturer Description"
+                        required
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Manufacturer Description
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Manufacturer Description
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Manufacturer Description
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Manufacturer Description
+                    </Form.Message>
                   </Form.Field>
                 </div>
 
@@ -301,8 +330,9 @@ const CreateManufacturerPage = () => {
                   <Form.Submit asChild>
                     <button
                       disabled={isCreating}
-                      className="mt-4.5 cursor-pointer box-border mx-auto flex h-8.75 items-center justify-center rounded bg-white px-3.75 font-medium leading-none text-sky-700 shadow-[0_2px_10px] shadow-blackA4 hover:bg-sky-200 transition-colors focus:shadow-sky-700"
+                      className="flex mx-auto mt-6 cursor-pointer min-h-10 min-w-44 items-center justify-center gap-2 rounded-lg bg-sky-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
+                      <Save size={18} />
                       Create a Manufacturer
                     </button>
                   </Form.Submit>

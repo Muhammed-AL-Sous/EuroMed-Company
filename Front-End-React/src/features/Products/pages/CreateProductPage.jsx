@@ -191,38 +191,36 @@ const CreateProductPage = () => {
                     className="grid content-start gap-1.5"
                     name="code"
                   >
-                    <div className="flex flex-col gap-1.5">
-                      <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                        <Hash size={16} />
-                        Product Code
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className={INPUT_CLASS}
-                          required
-                          id="hospital-code"
-                          name="code"
-                          type="text"
-                          value={createForm.code}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter Product Code"
-                        />
-                      </Form.Control>
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Hash size={16} />
+                      Product Code
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        required
+                        id="hospital-code"
+                        name="code"
+                        type="text"
+                        value={createForm.code}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Product Code"
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Product Code
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Product Code
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Product Code
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Product Code
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Product Name =========== */}
@@ -230,38 +228,36 @@ const CreateProductPage = () => {
                     className="grid content-start gap-1.5"
                     name="name"
                   >
-                    <div className="flex flex-col gap-1.5">
-                      <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                        <PackageSearch size={16} />
-                        Product Name
-                      </Form.Label>
-                      <Form.Control asChild>
-                        <input
-                          className={INPUT_CLASS}
-                          required
-                          id="hospital-name"
-                          name="name"
-                          type="text"
-                          value={createForm.name}
-                          onChange={handleCreateFormChange}
-                          disabled={isCreating}
-                          placeholder="Enter Product Name"
-                        />
-                      </Form.Control>
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <PackageSearch size={16} />
+                      Product Name
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        required
+                        id="hospital-name"
+                        name="name"
+                        type="text"
+                        value={createForm.name}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Product Name"
+                      />
+                    </Form.Control>
 
-                      <Form.Message
-                        className="text-xs text-red-700 font-bold mt-2"
-                        match="valueMissing"
-                      >
-                        Please Enter The Product Name
-                      </Form.Message>
-                      <Form.Message
-                        className="text-[13px] text-red-700 opacity-80"
-                        match="typeMismatch"
-                      >
-                        Please Provide a Valid Product Name
-                      </Form.Message>
-                    </div>
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Product Name
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Product Name
+                    </Form.Message>
                   </Form.Field>
 
                   {/* =========== Product Manufacturer =========== */}
@@ -269,33 +265,32 @@ const CreateProductPage = () => {
                     className="grid content-start gap-1.5"
                     name="manufacturer"
                   >
-                    <div className="flex flex-col gap-1.5">
-                      <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                        <RobotArm size={16} />
-                        Product Manufacturer
-                      </Form.Label>
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <RobotArm size={16} />
+                      Product Manufacturer
+                    </Form.Label>
 
-                      <Select.Root
-                        value={String(createForm.manufacturer_id || "all")}
-                        onValueChange={(value) => {
-                          const manufacturer_id = value === "all" ? "" : value;
+                    <Select.Root
+                      value={String(createForm.manufacturer_id || "all")}
+                      onValueChange={(value) => {
+                        const manufacturer_id = value === "all" ? "" : value;
 
-                          setCreateForm((prev) => ({
+                        setCreateForm((prev) => ({
+                          ...prev,
+                          manufacturer_id,
+                        }));
+
+                        if (manufacturer_id) {
+                          setErrors((prev) => ({
                             ...prev,
-                            manufacturer_id,
+                            manufacturer_id: undefined,
                           }));
-
-                          if (manufacturer_id) {
-                            setErrors((prev) => ({
-                              ...prev,
-                              manufacturer_id: undefined,
-                            }));
-                          }
-                        }}
-                      >
-                        <Select.Trigger
-                          aria-label="Filter by manufacturer"
-                          className="
+                        }
+                      }}
+                    >
+                      <Select.Trigger
+                        aria-label="Filter by manufacturer"
+                        className="
                                           inline-flex
                                           min-w-55
                                           items-center
@@ -313,19 +308,19 @@ const CreateProductPage = () => {
                                           focus:ring-1
                                           focus:ring-sky-500
                                           data-placeholder:text-slate-500"
-                        >
-                          <Select.Value placeholder="All Manufacturers" />
+                      >
+                        <Select.Value placeholder="All Manufacturers" />
 
-                          <Select.Icon>
-                            <ChevronDown size={18} className="text-slate-500" />
-                          </Select.Icon>
-                        </Select.Trigger>
+                        <Select.Icon>
+                          <ChevronDown size={18} className="text-slate-500" />
+                        </Select.Icon>
+                      </Select.Trigger>
 
-                        <Select.Portal>
-                          <Select.Content
-                            position="popper"
-                            sideOffset={6}
-                            className="
+                      <Select.Portal>
+                        <Select.Content
+                          position="popper"
+                          sideOffset={6}
+                          className="
                 z-50
                 max-h-64
                 min-w-55
@@ -339,11 +334,11 @@ const CreateProductPage = () => {
                 fade-in-0
                 zoom-in-95
               "
-                          >
-                            <Select.Viewport className="p-1.5">
-                              <Select.Item
-                                value="all"
-                                className="
+                        >
+                          <Select.Viewport className="p-1.5">
+                            <Select.Item
+                              value="all"
+                              className="
                     relative
                     flex
                     cursor-pointer
@@ -361,26 +356,26 @@ const CreateProductPage = () => {
                   data-[state=checked]:bg-sky-50
                     data-[state=checked]:font-medium
                   "
-                              >
-                                <Select.ItemText>
-                                  All Manufacturers
-                                </Select.ItemText>
+                            >
+                              <Select.ItemText>
+                                All Manufacturers
+                              </Select.ItemText>
 
-                                <Select.ItemIndicator className="absolute right-3">
-                                  <Check size={16} className="text-sky-600" />
-                                </Select.ItemIndicator>
-                              </Select.Item>
+                              <Select.ItemIndicator className="absolute right-3">
+                                <Check size={16} className="text-sky-600" />
+                              </Select.ItemIndicator>
+                            </Select.Item>
 
-                              {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
+                            {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                              {(Array.isArray(manufacturersResponse)
-                                ? manufacturersResponse
-                                : []
-                              ).map((manufacturer) => (
-                                <Select.Item
-                                  key={manufacturer.id}
-                                  value={String(manufacturer.id)}
-                                  className="
+                            {(Array.isArray(manufacturersResponse)
+                              ? manufacturersResponse
+                              : []
+                            ).map((manufacturer) => (
+                              <Select.Item
+                                key={manufacturer.id}
+                                value={String(manufacturer.id)}
+                                className="
                       relative
                       flex
                       cursor-pointer
@@ -398,27 +393,26 @@ const CreateProductPage = () => {
                     data-[state=checked]:bg-sky-50
                       data-[state=checked]:font-medium
                     "
-                                >
-                                  <Select.ItemText>
-                                    {manufacturer.name}
-                                  </Select.ItemText>
+                              >
+                                <Select.ItemText>
+                                  {manufacturer.name}
+                                </Select.ItemText>
 
-                                  <Select.ItemIndicator className="absolute right-3">
-                                    <Check size={16} className="text-sky-600" />
-                                  </Select.ItemIndicator>
-                                </Select.Item>
-                              ))}
-                            </Select.Viewport>
-                          </Select.Content>
-                        </Select.Portal>
-                      </Select.Root>
+                                <Select.ItemIndicator className="absolute right-3">
+                                  <Check size={16} className="text-sky-600" />
+                                </Select.ItemIndicator>
+                              </Select.Item>
+                            ))}
+                          </Select.Viewport>
+                        </Select.Content>
+                      </Select.Portal>
+                    </Select.Root>
 
-                      {errors.manufacturer_id && (
-                        <p className="mt-2 text-xs font-bold text-red-700">
-                          {errors.manufacturer_id}
-                        </p>
-                      )}
-                    </div>
+                    {errors.manufacturer_id && (
+                      <p className="mt-2 text-xs font-bold text-red-700">
+                        {errors.manufacturer_id}
+                      </p>
+                    )}
                   </Form.Field>
 
                   {/* =========== Product SubCategory =========== */}
@@ -426,33 +420,32 @@ const CreateProductPage = () => {
                     className="grid content-start gap-1.5"
                     name="subcategory"
                   >
-                    <div className="flex flex-col gap-1.5">
-                      <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                        <BoxIcon size={16} />
-                        Product SubCategory
-                      </Form.Label>
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <BoxIcon size={16} />
+                      Product SubCategory
+                    </Form.Label>
 
-                      <Select.Root
-                        value={String(createForm.subcategory_id || "all")}
-                        onValueChange={(value) => {
-                          const subcategory_id = value === "all" ? "" : value;
+                    <Select.Root
+                      value={String(createForm.subcategory_id || "all")}
+                      onValueChange={(value) => {
+                        const subcategory_id = value === "all" ? "" : value;
 
-                          setCreateForm((prev) => ({
+                        setCreateForm((prev) => ({
+                          ...prev,
+                          subcategory_id,
+                        }));
+
+                        if (subcategory_id) {
+                          setErrors((prev) => ({
                             ...prev,
-                            subcategory_id,
+                            subcategory_id: undefined,
                           }));
-
-                          if (subcategory_id) {
-                            setErrors((prev) => ({
-                              ...prev,
-                              subcategory_id: undefined,
-                            }));
-                          }
-                        }}
-                      >
-                        <Select.Trigger
-                          aria-label="Filter by subcategory"
-                          className="
+                        }
+                      }}
+                    >
+                      <Select.Trigger
+                        aria-label="Filter by subcategory"
+                        className="
                                           inline-flex
                                           min-w-55
                                           items-center
@@ -470,19 +463,19 @@ const CreateProductPage = () => {
                                           focus:ring-1
                                           focus:ring-sky-500
                                           data-placeholder:text-slate-500"
-                        >
-                          <Select.Value placeholder="All Subcategories" />
+                      >
+                        <Select.Value placeholder="All Subcategories" />
 
-                          <Select.Icon>
-                            <ChevronDown size={18} className="text-slate-500" />
-                          </Select.Icon>
-                        </Select.Trigger>
+                        <Select.Icon>
+                          <ChevronDown size={18} className="text-slate-500" />
+                        </Select.Icon>
+                      </Select.Trigger>
 
-                        <Select.Portal>
-                          <Select.Content
-                            position="popper"
-                            sideOffset={6}
-                            className="
+                      <Select.Portal>
+                        <Select.Content
+                          position="popper"
+                          sideOffset={6}
+                          className="
                 z-50
                 max-h-64
                 min-w-55
@@ -496,11 +489,11 @@ const CreateProductPage = () => {
                 fade-in-0
                 zoom-in-95
               "
-                          >
-                            <Select.Viewport className="p-1.5">
-                              <Select.Item
-                                value="all"
-                                className="
+                        >
+                          <Select.Viewport className="p-1.5">
+                            <Select.Item
+                              value="all"
+                              className="
                     relative
                     flex
                     cursor-pointer
@@ -518,26 +511,26 @@ const CreateProductPage = () => {
                   data-[state=checked]:bg-sky-50
                     data-[state=checked]:font-medium
                   "
-                              >
-                                <Select.ItemText>
-                                  All Subcategories
-                                </Select.ItemText>
+                            >
+                              <Select.ItemText>
+                                All Subcategories
+                              </Select.ItemText>
 
-                                <Select.ItemIndicator className="absolute right-3">
-                                  <Check size={16} className="text-sky-600" />
-                                </Select.ItemIndicator>
-                              </Select.Item>
+                              <Select.ItemIndicator className="absolute right-3">
+                                <Check size={16} className="text-sky-600" />
+                              </Select.ItemIndicator>
+                            </Select.Item>
 
-                              {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
+                            {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                              {(Array.isArray(subCategoriesResponse)
-                                ? subCategoriesResponse
-                                : []
-                              ).map((subcategory) => (
-                                <Select.Item
-                                  key={subcategory.id}
-                                  value={String(subcategory.id)}
-                                  className="
+                            {(Array.isArray(subCategoriesResponse)
+                              ? subCategoriesResponse
+                              : []
+                            ).map((subcategory) => (
+                              <Select.Item
+                                key={subcategory.id}
+                                value={String(subcategory.id)}
+                                className="
                       relative
                       flex
                       cursor-pointer
@@ -555,27 +548,26 @@ const CreateProductPage = () => {
                     data-[state=checked]:bg-sky-50
                       data-[state=checked]:font-medium
                     "
-                                >
-                                  <Select.ItemText>
-                                    {subcategory.name}
-                                  </Select.ItemText>
+                              >
+                                <Select.ItemText>
+                                  {subcategory.name}
+                                </Select.ItemText>
 
-                                  <Select.ItemIndicator className="absolute right-3">
-                                    <Check size={16} className="text-sky-600" />
-                                  </Select.ItemIndicator>
-                                </Select.Item>
-                              ))}
-                            </Select.Viewport>
-                          </Select.Content>
-                        </Select.Portal>
-                      </Select.Root>
+                                <Select.ItemIndicator className="absolute right-3">
+                                  <Check size={16} className="text-sky-600" />
+                                </Select.ItemIndicator>
+                              </Select.Item>
+                            ))}
+                          </Select.Viewport>
+                        </Select.Content>
+                      </Select.Portal>
+                    </Select.Root>
 
-                      {errors.subcategory_id && (
-                        <p className="mt-2 text-xs font-bold text-red-700">
-                          {errors.subcategory_id}
-                        </p>
-                      )}
-                    </div>
+                    {errors.subcategory_id && (
+                      <p className="mt-2 text-xs font-bold text-red-700">
+                        {errors.subcategory_id}
+                      </p>
+                    )}
                   </Form.Field>
 
                   {/* =========== Product Category =========== */}
@@ -583,33 +575,32 @@ const CreateProductPage = () => {
                     className="grid content-start gap-1.5"
                     name="category"
                   >
-                    <div className="flex flex-col gap-1.5">
-                      <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                        <Blocks size={16} />
-                        Product Category
-                      </Form.Label>
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Blocks size={16} />
+                      Product Category
+                    </Form.Label>
 
-                      <Select.Root
-                        value={String(createForm.category_id || "all")}
-                        onValueChange={(value) => {
-                          const category_id = value === "all" ? "" : value;
+                    <Select.Root
+                      value={String(createForm.category_id || "all")}
+                      onValueChange={(value) => {
+                        const category_id = value === "all" ? "" : value;
 
-                          setCreateForm((prev) => ({
+                        setCreateForm((prev) => ({
+                          ...prev,
+                          category_id,
+                        }));
+
+                        if (category_id) {
+                          setErrors((prev) => ({
                             ...prev,
-                            category_id,
+                            category_id: undefined,
                           }));
-
-                          if (category_id) {
-                            setErrors((prev) => ({
-                              ...prev,
-                              category_id: undefined,
-                            }));
-                          }
-                        }}
-                      >
-                        <Select.Trigger
-                          aria-label="Filter by category"
-                          className="
+                        }
+                      }}
+                    >
+                      <Select.Trigger
+                        aria-label="Filter by category"
+                        className="
                                           inline-flex
                                           min-w-55
                                           items-center
@@ -627,19 +618,19 @@ const CreateProductPage = () => {
                                           focus:ring-1
                                           focus:ring-sky-500
                                           data-placeholder:text-slate-500"
-                        >
-                          <Select.Value placeholder="All Categories" />
+                      >
+                        <Select.Value placeholder="All Categories" />
 
-                          <Select.Icon>
-                            <ChevronDown size={18} className="text-slate-500" />
-                          </Select.Icon>
-                        </Select.Trigger>
+                        <Select.Icon>
+                          <ChevronDown size={18} className="text-slate-500" />
+                        </Select.Icon>
+                      </Select.Trigger>
 
-                        <Select.Portal>
-                          <Select.Content
-                            position="popper"
-                            sideOffset={6}
-                            className="
+                      <Select.Portal>
+                        <Select.Content
+                          position="popper"
+                          sideOffset={6}
+                          className="
                 z-50
                 max-h-64
                 min-w-55
@@ -653,11 +644,11 @@ const CreateProductPage = () => {
                 fade-in-0
                 zoom-in-95
               "
-                          >
-                            <Select.Viewport className="p-1.5">
-                              <Select.Item
-                                value="all"
-                                className="
+                        >
+                          <Select.Viewport className="p-1.5">
+                            <Select.Item
+                              value="all"
+                              className="
                     relative
                     flex
                     cursor-pointer
@@ -675,26 +666,24 @@ const CreateProductPage = () => {
                   data-[state=checked]:bg-sky-50
                     data-[state=checked]:font-medium
                   "
-                              >
-                                <Select.ItemText>
-                                  All Categories
-                                </Select.ItemText>
+                            >
+                              <Select.ItemText>All Categories</Select.ItemText>
 
-                                <Select.ItemIndicator className="absolute right-3">
-                                  <Check size={16} className="text-sky-600" />
-                                </Select.ItemIndicator>
-                              </Select.Item>
+                              <Select.ItemIndicator className="absolute right-3">
+                                <Check size={16} className="text-sky-600" />
+                              </Select.ItemIndicator>
+                            </Select.Item>
 
-                              {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
+                            {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                              {(Array.isArray(categoriesResponse)
-                                ? categoriesResponse
-                                : []
-                              ).map((category) => (
-                                <Select.Item
-                                  key={category.id}
-                                  value={String(category.id)}
-                                  className="
+                            {(Array.isArray(categoriesResponse)
+                              ? categoriesResponse
+                              : []
+                            ).map((category) => (
+                              <Select.Item
+                                key={category.id}
+                                value={String(category.id)}
+                                className="
                       relative
                       flex
                       cursor-pointer
@@ -712,27 +701,26 @@ const CreateProductPage = () => {
                     data-[state=checked]:bg-sky-50
                       data-[state=checked]:font-medium
                     "
-                                >
-                                  <Select.ItemText>
-                                    {category.name}
-                                  </Select.ItemText>
+                              >
+                                <Select.ItemText>
+                                  {category.name}
+                                </Select.ItemText>
 
-                                  <Select.ItemIndicator className="absolute right-3">
-                                    <Check size={16} className="text-sky-600" />
-                                  </Select.ItemIndicator>
-                                </Select.Item>
-                              ))}
-                            </Select.Viewport>
-                          </Select.Content>
-                        </Select.Portal>
-                      </Select.Root>
+                                <Select.ItemIndicator className="absolute right-3">
+                                  <Check size={16} className="text-sky-600" />
+                                </Select.ItemIndicator>
+                              </Select.Item>
+                            ))}
+                          </Select.Viewport>
+                        </Select.Content>
+                      </Select.Portal>
+                    </Select.Root>
 
-                      {errors.category_id && (
-                        <p className="mt-2 text-xs font-bold text-red-700">
-                          {errors.category_id}
-                        </p>
-                      )}
-                    </div>
+                    {errors.category_id && (
+                      <p className="mt-2 text-xs font-bold text-red-700">
+                        {errors.category_id}
+                      </p>
+                    )}
                   </Form.Field>
                 </div>
 
@@ -747,7 +735,7 @@ const CreateProductPage = () => {
                   <Form.Submit asChild>
                     <button
                       disabled={isCreating}
-                      className="flex mx-auto mt-4 cursor-pointer min-h-10 min-w-44 items-center justify-center gap-2 rounded-lg bg-sky-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="flex mx-auto mt-6 cursor-pointer min-h-10 min-w-44 items-center justify-center gap-2 rounded-lg bg-sky-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <Save size={18} />
                       Create a Product
