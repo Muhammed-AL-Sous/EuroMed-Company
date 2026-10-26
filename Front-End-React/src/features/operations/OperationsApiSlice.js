@@ -1,8 +1,14 @@
 import { baseApi } from "../../api/apiSlice";
 import { normalizeOperationsListResponse } from "./OperationsQueryUtils";
 
+const getOperationsBaseUrl = (scope = "admin") =>
+  scope === "doctor" ? "/doctor/operations" : "/operations";
+
 export const OperationsApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // ==================================================
+    // Get Operation Form Options
+    // ==================================================
     getOperationFormOptions: builder.query({
       query: ({ type, search = "" }) => {
         const routes = {
@@ -33,55 +39,95 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
       },
     }),
 
+    // ==================================================
+    // Get Operations
+    // ==================================================
     getOperations: builder.query({
-      query: ({ search, page = 1 }) => ({
-        url: "/operations",
+      query: ({ search = "", page = 1, scope = "admin" } = {}) => ({
+        url: getOperationsBaseUrl(scope),
+        method: "GET",
         params: {
           search: search || undefined,
           page,
         },
       }),
+
       transformResponse: (response) =>
         normalizeOperationsListResponse(response),
-      providesTags: (result) =>
-        result?.operations?.length
-          ? [
-              ...result.operations.map(({ id }) => ({
-                type: "Operations",
-                id,
-              })),
 
-              {
-                type: "Operations",
-                id: "Operations_Id",
-              },
-            ]
-          : [
-              {
-                type: "Operations",
-                id: "Operations_Id",
-              },
-            ],
+      providesTags: (result) => [
+        ...(Array.isArray(result?.operations)
+          ? result.operations.map(({ id }) => ({
+              type: "Operations",
+              id,
+            }))
+          : []),
+
+        {
+          type: "Operations",
+          id: "LIST",
+        },
+      ],
     }),
 
+    // ==================================================
+    // Get Single Operation
+    // ==================================================
     getOperation: builder.query({
-      query: (id) => ({
-        url: `/operations/${id}`,
-        method: "GET",
-      }),
+      query: (arg) => {
+        // Supports both old numeric IDs and new scoped arguments.
+        const { id, scope = "admin" } =
+          typeof arg === "object" && arg !== null ? arg : { id: arg };
+
+        return {
+          url: `${getOperationsBaseUrl(scope)}/${id}`,
+          method: "GET",
+        };
+      },
+
       transformResponse: (response) => response.data,
-      providesTags: (result, error, id) => [{ type: "Operations", id }],
+
+      providesTags: (result, error, arg) => {
+        const id = typeof arg === "object" && arg !== null ? arg.id : arg;
+
+        return [{ type: "Operations", id }];
+      },
     }),
 
+    // ==================================================
+    // Create Operation
+    // ==================================================
     addOperation: builder.mutation({
-      query: (operationData) => ({
-        url: "/operations",
-        method: "POST",
-        body: operationData,
-      }),
-      invalidatesTags: ["Operations"],
+      query: (arg) => {
+        // Also supports existing addOperation(operationData) calls.
+        const isScopedPayload =
+          arg !== null &&
+          typeof arg === "object" &&
+          !(arg instanceof FormData) &&
+          Object.hasOwn(arg, "scope") &&
+          Object.hasOwn(arg, "data");
+
+        const scope = isScopedPayload ? arg.scope : "admin";
+        const data = isScopedPayload ? arg.data : arg;
+
+        return {
+          url: getOperationsBaseUrl(scope),
+          method: "POST",
+          body: data,
+        };
+      },
+
+      invalidatesTags: [
+        {
+          type: "Operations",
+          id: "LIST",
+        },
+      ],
     }),
 
+    // ==================================================
+    // Update Operation (Admin Only)
+    // ==================================================
     updateOperation: builder.mutation({
       query: ({ id, data }) => ({
         url: `/operations/${id}`,
@@ -89,20 +135,24 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
         body: data,
       }),
 
-      invalidatesTags: (result, error, arg) => [
-        { type: "Operations", id: arg.id },
-        { type: "Operations", id: "Operations_Id" },
+      invalidatesTags: (result, error, { id }) => [
+        { type: "Operations", id },
+        { type: "Operations", id: "LIST" },
       ],
     }),
 
+    // ==================================================
+    // Delete Operation (Admin Only)
+    // ==================================================
     deleteOperation: builder.mutation({
       query: (operationId) => ({
         url: `/operations/${operationId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Operations", id: arg.id },
-        { type: "Operations", id: "Operations_Id" },
+
+      invalidatesTags: (result, error, operationId) => [
+        { type: "Operations", id: operationId },
+        { type: "Operations", id: "LIST" },
       ],
     }),
   }),

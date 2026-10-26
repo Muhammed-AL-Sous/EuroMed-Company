@@ -438,9 +438,65 @@ export const ROLES_CONFIG = {
 
     doctorComponent: DoctorStats,
 
-    sidebar: [{ icon: BarChart2, label: "Dashboard", to: "/doctor" }],
+    sidebar: [
+      { icon: BarChart2, label: "Dashboard", to: "/doctor" },
+      {
+        path: "operations/create",
+        element: CreateOperationPage,
+      },
+      {
+        path: "operations/:id",
+        element: OperationDetailsPage,
+      },
+      {
+        label: "Operations",
+        icon: ClipboardList,
+        children: [
+          {
+            to: "/doctor/operations",
+            label: "All Operations",
+            icon: ClipboardList,
+          },
+        ],
+      },
+    ],
 
-    routes: [{ path: "", element: DashboardPage }],
+    routes: [
+      {
+        path: "",
+        element: DashboardPage,
+      },
+
+      {
+        path: "operations",
+        element: OperationsPage,
+        action: {
+          label: "Create Operation",
+          to: "/doctor/operations/create",
+          icon: Plus,
+          header: "My Operations",
+        },
+      },
+
+      {
+        path: "operations/create",
+        element: CreateOperationPage,
+        action: {
+          header: "Create Operation",
+        },
+      },
+
+      {
+        path: "operations/:id",
+        element: OperationDetailsPage,
+        action: {
+          label: "Back to Operations",
+          to: "/doctor/operations",
+          icon: ArrowLeft,
+          header: "Operation Details",
+        },
+      },
+    ],
   },
 
   staff: {

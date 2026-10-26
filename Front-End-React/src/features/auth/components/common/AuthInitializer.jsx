@@ -1,11 +1,12 @@
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useLayoutEffect, useMemo } from "react";
+
 import {
   useGetUserDataQuery,
   useGetCsrfCookieMutation,
 } from "../../../auth/authApiSlice";
+
 import {
-  selectCurrentUser,
   selectAuthReady,
   setCredentials,
   logOut,
@@ -14,116 +15,99 @@ import {
 
 export default function AuthInitializer({ children }) {
   const dispatch = useDispatch();
-  const user = useSelector(selectCurrentUser);
 
-  // فحص وجود XSRF-TOKEN
-  const hasXSRFToken = useMemo(() => {
-    return document.cookie
-      .split(";")
-      .some((item) => item.trim().startsWith("XSRF-TOKEN="));
-  }, []);
+  const authReady = useSelector(selectAuthReady);
 
-  const [
-    getCsrfCookie,
-    {
-      isLoading: isCsrfLoading,
-      isSuccess: isCsrfSuccess,
-      isError: isCsrfError,
-      error: csrfError,
-    },
-  ] = useGetCsrfCookieMutation();
+  // ==================================================
+  // Initialize CSRF
+  // ==================================================
+  const [getCsrfCookie] = useGetCsrfCookieMutation();
 
-  // تحديد ما إذا كان CSRF جاهز
-  const csrfReady = useMemo(() => {
-    if (user) return true; // إذا كان هناك مستخدم، فالـ CSRF جاهز
-    if (hasXSRFToken) return true; // إذا كان XSRF token موجود
-    if (isCsrfSuccess || isCsrfError) return true; // إذا انتهى طلب CSRF
-    return false;
-  }, [user, hasXSRFToken, isCsrfSuccess, isCsrfError]);
-
-  // جلب CSRF token عند الحاجة
   useEffect(() => {
-    // لا نحتاج CSRF إذا كان المستخدم مسجل دخول بالفعل
-    if (user) return;
+    const hasToken = document.cookie
+      .split(";")
+      .some((cookie) => cookie.trim().startsWith("XSRF-TOKEN="));
 
-    // لا نحتاج CSRF إذا كان موجود بالفعل
-    if (hasXSRFToken) return;
-
-    // لا نعيد المحاولة إذا تم بالفعل
-    if (isCsrfSuccess || isCsrfError) return;
+    if (hasToken) return;
 
     getCsrfCookie()
       .unwrap()
       .catch((error) => {
-        console.warn("❌ CSRF token fetch failed:", error);
+        console.error("[AuthInitializer] CSRF initialization failed:", error);
       });
-  }, [user, hasXSRFToken, isCsrfSuccess, isCsrfError, getCsrfCookie]);
+  }, [getCsrfCookie]);
 
-  // إعدادات استعلام بيانات المستخدم
-  const skipUserData = !!user || !csrfReady;
-
-  // ✅ استعلام بيانات المستخدم
+  // ==================================================
+  // Verify Current Session
+  // ==================================================
   const {
     data: userData,
     error: userError,
-    isLoading: isUserLoading,
-    isFetching: isUserFetching,
-    isUninitialized: isUserUninitialized,
-  } = useGetUserDataQuery(undefined, {
-    skip: skipUserData,
-    retryOnMountWithNoData: false,
-    refetchOnFocus: false,
-    refetchOnReconnect: false,
-  });
+    isSuccess,
+    isError,
+    refetch,
+  } = useGetUserDataQuery();
 
-  // معالجة استجابة بيانات المستخدم
+  // ==================================================
+  // Sync Authentication State
+  // ==================================================
   useEffect(() => {
-    const userInfo = userData?.data;
-    if (userInfo) {
-      dispatch(setCredentials({ user: userInfo }));
-    }
-  }, [userData, dispatch]);
+    if (isSuccess) {
+      // Supports both transformed and untransformed responses.
+      const payload = userData?.data ?? userData;
+      const userInfo = payload?.user ?? payload;
 
-  // معالجة أخطاء بيانات المستخدم
-  useEffect(() => {
-    if (userError) {
-      if (userError.status === 401 || userError.status === 419) {
-        dispatch(logOut());
+      if (userInfo?.id) {
+        dispatch(setCredentials({ user: userInfo }));
       } else {
-        // خطأ آخر - اعرضه في console فقط
-        console.warn("[AuthInitializer] getUserData failed:", userError);
+        console.error("[AuthInitializer] Unexpected user response:", payload);
+
+        dispatch(logOut());
       }
-    }
-  }, [userError, dispatch]);
 
-  // معالجة أخطاء CSRF
-  useEffect(() => {
-    if (csrfError) {
-      console.warn("[AuthInitializer] CSRF fetch failed:", csrfError);
-    }
-  }, [csrfError]);
-
-  // تحديد حالة التحميل
-  const isUserDataLoading =
-    !user &&
-    !userData &&
-    !userError &&
-    (isUserLoading || isUserFetching || isUserUninitialized);
-
-  const isAuthLoading = !csrfReady || isCsrfLoading || isUserDataLoading;
-
-  // إشعار Redux أن Auth جاهز
-  const authReady = useSelector(selectAuthReady);
-
-  useLayoutEffect(() => {
-    if (!isAuthLoading && !authReady) {
       dispatch(setAuthReady(true));
+      return;
     }
-  }, [isAuthLoading, authReady, dispatch]);
 
-  const authBlocking = isAuthLoading || !authReady;
+    if (!isError) return;
 
-  if (authBlocking) {
+    if (userError?.status === 401 || userError?.status === 419) {
+      dispatch(logOut());
+      dispatch(setAuthReady(true));
+      return;
+    }
+
+    console.error("[AuthInitializer] Authentication check failed:", userError);
+  }, [isSuccess, isError, userData, userError, dispatch]);
+
+  // ==================================================
+  // Initial Loading
+  // ==================================================
+  if (!isSuccess && !isError) {
+    return null;
+  }
+
+  // Do not treat server/network errors as unauthenticated.
+  if (isError && userError?.status !== 401 && userError?.status !== 419) {
+    return (
+      <div
+        role="alert"
+        className="flex min-h-screen flex-col items-center justify-center gap-4 p-6"
+      >
+        <p className="text-sm text-red-700">Unable to verify your session.</p>
+
+        <button
+          type="button"
+          onClick={() => refetch()}
+          className="rounded bg-sky-700 px-4 py-2 text-white"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (!authReady) {
     return null;
   }
 

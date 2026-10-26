@@ -45,16 +45,11 @@ export const authApiSlice = baseApi.injectEndpoints({
         url: "/users/currentUser",
         method: "GET",
       }),
-      // عندك query مثل `getUserData` مع `providesTags: ["User"]` — يعني “هذه النتيجة **تمثل** حالة المستخدم”.
-      providesTags: ["User"],
-      // إعداد خاص للتعامل مع أخطاء 401/419
-      transformErrorResponse: (response) => {
-        return {
-          status: response.status,
-          data: response.data,
-          error: response.data?.message || "خطأ في جلب بيانات المستخدم",
-        };
-      },
+
+      transformResponse: (response) => response.data,
+
+      providesTags: (result) =>
+        result ? [{ type: "User", id: result.id }] : ["User"],
     }),
 
     // ✅ تسجيل الدخول
@@ -130,12 +125,17 @@ export const authApiSlice = baseApi.injectEndpoints({
         url: "/logout",
         method: "POST",
       }),
-      // لا نستخدم invalidatesTags: قد يعيد استدعاء getUserData قبل المسح
+
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
+
+          // Clear authentication state
           dispatch(logOut());
-          // dispatch(baseApi.util.resetApiState());
+
+          // Clear cached data from previous user
+          dispatch(baseApi.util.resetApiState());
+
           document.cookie =
             "fast_check=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
         } catch (error) {

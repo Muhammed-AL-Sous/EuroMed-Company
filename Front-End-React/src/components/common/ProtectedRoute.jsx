@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router";
 import { useSelector } from "react-redux";
+
 import {
   selectCurrentUser,
   selectAuthReady,
@@ -18,7 +19,18 @@ const ProtectedRoute = ({ allowedRoles }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.role.role_name)) {
+  const currentRole = user?.role?.role_name;
+
+  if (allowedRoles?.length && !allowedRoles.includes(currentRole)) {
+    if (import.meta.env.DEV) {
+      console.warn("[ProtectedRoute] Access denied", {
+        pathname: location.pathname,
+        currentRole,
+        allowedRoles,
+        userId: user.id,
+      });
+    }
+
     return <Navigate to="/unauthorized" replace />;
   }
 

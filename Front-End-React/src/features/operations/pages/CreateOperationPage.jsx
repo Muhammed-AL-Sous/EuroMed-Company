@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 // Radix UI
 import { Form } from "radix-ui";
@@ -205,7 +205,7 @@ const FieldError = ({ message }) => {
 
 const CreateOperationPage = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const nextItemKey = useRef(1);
 
   const [createForm, setCreateForm] = useState(createInitialForm);
@@ -376,8 +376,16 @@ const CreateOperationPage = () => {
       })),
     };
 
+    const isDoctor =
+      location.pathname === "/doctor" ||
+      location.pathname.startsWith("/doctor/");
+
+    const scope = isDoctor ? "doctor" : "admin";
     try {
-      const response = await addOperation(payload).unwrap();
+      const response = await addOperation({
+        scope,
+        data: payload,
+      }).unwrap();
 
       notifySonner("Operation Created Successfully");
 
@@ -385,12 +393,14 @@ const CreateOperationPage = () => {
 
       const operationId = createdOperation?.id;
 
+      const basePath = isDoctor ? "/doctor" : "/admin";
+
       if (operationId) {
-        navigate(`/admin/operations/${operationId}`, {
+        navigate(`${basePath}/operations/${operationId}`, {
           replace: true,
         });
       } else {
-        navigate("/admin/operations", {
+        navigate(`${basePath}/operations`, {
           replace: true,
         });
       }

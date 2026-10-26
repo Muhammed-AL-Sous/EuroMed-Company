@@ -27,7 +27,10 @@ class LoginService
             'password' => $request->input('password'),
         ];
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! Auth::guard('web')->attempt(
+            $credentials,
+            $request->boolean('remember')
+        )) {
             RateLimiter::hit($this->throttleKey($request), 60);
 
             return self::unauthorized(__('auth.failed'));
@@ -35,10 +38,10 @@ class LoginService
 
         RateLimiter::clear($this->throttleKey($request));
 
-        $user = Auth::user();
+        $user = Auth::guard('web')->user();
 
         if (! $this->isEmailVerified($user)) {
-            Auth::logout();
+            Auth::guard('web')->logout();
 
             return self::forbidden('Please verify your email before logging in.');
         }

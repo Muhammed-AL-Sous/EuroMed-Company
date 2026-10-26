@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
-
+import { useLocation } from "react-router";
+import { skipToken } from "@reduxjs/toolkit/query";
 import { Search, ShieldAlert, SquarePen, Trash2, X } from "lucide-react";
 import { Card, Text } from "@radix-ui/themes";
 import { notifySonner } from "./../../../lib/notifySonner";
@@ -132,6 +133,12 @@ const getOperationLabel = (operation) => {
 // ==================================================
 
 const OperationsPage = () => {
+  const location = useLocation();
+  const isDoctor =
+    location.pathname === "/doctor" || location.pathname.startsWith("/doctor/");
+
+  const scope = isDoctor ? "doctor" : "admin";
+
   const [searchParams, setSearchParams] = useSearchParams();
   // ==================================================
   // Edit State
@@ -142,7 +149,12 @@ const OperationsPage = () => {
   const [editForm, setEditForm] = useState(EMPTY_EDIT_FORM);
 
   const [formErrors, setFormErrors] = useState({});
-  const { data: getOperation } = useGetOperationQuery();
+
+  const operationId = selectedEditOperation?.id;
+  
+  const { data: getOperation } = useGetOperationQuery(
+    operationId != null ? { id: operationId, scope } : skipToken,
+  );
 
   // ==================================================
   // Search State
@@ -171,6 +183,7 @@ const OperationsPage = () => {
   const { data, isLoading, isFetching, isError } = useGetOperationsQuery({
     search: normalizedSearch,
     page,
+    scope,
   });
 
   const operations = Array.isArray(data?.operations)

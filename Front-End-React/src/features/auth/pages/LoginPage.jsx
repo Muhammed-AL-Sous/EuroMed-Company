@@ -81,8 +81,8 @@ const LoginPage = () => {
       });
 
       navigate(destination, { replace: true });
-      
-      notifySonner("welcome back", "success");
+
+      notifySonner("Welcome Back", "success");
     } catch (err) {
       setErrorMessage(
         err?.data?.message || "Login failed. Please Check Your Credentials.",
