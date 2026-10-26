@@ -874,7 +874,7 @@ const EditField = ({
 
 const LoadingState = ({ message = "Loading Users..." }) => {
   return (
-    <div className="flex min-h-[300px] flex-col items-center justify-center py-20">
+    <div className="flex min-h-10 flex-col items-center justify-center py-20">
       <div className="mb-4 h-10 w-10 animate-spin rounded-full border-4 border-sky-600 border-t-transparent" />
 
       <p className="text-sm font-medium text-slate-500">{message}</p>

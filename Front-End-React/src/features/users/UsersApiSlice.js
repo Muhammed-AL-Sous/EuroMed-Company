@@ -6,7 +6,6 @@ export const UsersApiSlice = baseApi.injectEndpoints({
     // ==================================================
     // Get Users
     // ==================================================
-
     getUsers: builder.query({
       query: ({ search = "", page = 1 } = {}) => ({
         url: "/users",
@@ -22,22 +21,36 @@ export const UsersApiSlice = baseApi.injectEndpoints({
       providesTags: (result) => [
         ...(Array.isArray(result?.users)
           ? result.users.map(({ id }) => ({
-              type: "Users",
+              type: "User",
               id,
             }))
           : []),
 
         {
-          type: "Users",
+          type: "User",
           id: "LIST",
         },
       ],
     }),
 
     // ==================================================
+    // Current User
+    // ==================================================
+    getCurrentUser: builder.query({
+      query: () => ({
+        url: "/users/currentUser",
+        method: "GET",
+      }),
+
+      transformResponse: (response) => response.data,
+
+      providesTags: (result) =>
+        result ? [{ type: "User", id: result.id }] : ["User"],
+    }),
+
+    // ==================================================
     // Create User
     // ==================================================
-
     createUser: builder.mutation({
       query: (data) => ({
         url: "/users",
@@ -45,18 +58,13 @@ export const UsersApiSlice = baseApi.injectEndpoints({
         body: data,
       }),
 
-      invalidatesTags: [
-        {
-          type: "Users",
-          id: "LIST",
-        },
-      ],
+      invalidatesTags: (result, error) =>
+        error ? [] : [{ type: "User", id: "LIST" }],
     }),
 
     // ==================================================
     // Update User
     // ==================================================
-
     updateUser: builder.mutation({
       query: ({ id, data }) => ({
         url: `/users/${id}`,
@@ -64,44 +72,38 @@ export const UsersApiSlice = baseApi.injectEndpoints({
         body: data,
       }),
 
-      invalidatesTags: (result, error, { id }) => [
-        {
-          type: "Users",
-          id,
-        },
-        {
-          type: "Users",
-          id: "LIST",
-        },
-      ],
+      invalidatesTags: (result, error, { id }) =>
+        error
+          ? []
+          : [
+              { type: "User", id },
+              { type: "User", id: "LIST" },
+            ],
     }),
 
     // ==================================================
     // Delete User
     // ==================================================
-
     deleteUser: builder.mutation({
       query: (userId) => ({
         url: `/users/${userId}`,
         method: "DELETE",
       }),
 
-      invalidatesTags: (result, error, userId) => [
-        {
-          type: "Users",
-          id: userId,
-        },
-        {
-          type: "Users",
-          id: "LIST",
-        },
-      ],
+      invalidatesTags: (result, error, userId) =>
+        error
+          ? []
+          : [
+              { type: "User", id: userId },
+              { type: "User", id: "LIST" },
+            ],
     }),
   }),
 });
 
 export const {
   useGetUsersQuery,
+  useGetCurrentUserQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
