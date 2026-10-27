@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useLocation, useParams } from "react-router";
 
 // Icons
 import {
@@ -147,6 +147,11 @@ const ErrorState = ({ error, onRetry }) => {
       : status === 404
         ? "The requested operation was not found."
         : "Unable to load operation details. Please try again.";
+  const location = useLocation();
+  const isDoctor =
+    location.pathname === "/doctor" || location.pathname.startsWith("/doctor/");
+
+  const scope = isDoctor ? "doctor" : "admin";
 
   return (
     <div className="flex min-h-96 items-center justify-center">
@@ -161,7 +166,7 @@ const ErrorState = ({ error, onRetry }) => {
 
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link
-            to="/admin/operations"
+            to={`/${scope}/operations`}
             className="inline-flex items-center gap-2 rounded-lg bg-sky-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-sky-800"
           >
             <ArrowLeft size={16} />
@@ -378,6 +383,8 @@ const OperationMaterialsTable = ({ items }) => {
 // Main Component
 const OperationDetailsPage = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const scope = location.pathname.startsWith("/doctor/") ? "doctor" : "admin";
 
   const {
     data: response,
@@ -386,10 +393,10 @@ const OperationDetailsPage = () => {
     isError,
     error,
     refetch,
-  } = useGetOperationQuery(id, {
-    skip: !id,
+  } = useGetOperationQuery({
+    id,
+    scope,
   });
-  console.log(response);
   // Supports wrapped and directly transformed responses.
   const operation = response?.data ?? response;
 
@@ -426,7 +433,7 @@ const OperationDetailsPage = () => {
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <Link
-            to="/admin/operations"
+            to={`/${scope}/operations`}
             className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-sky-700 transition-colors hover:text-sky-900"
           >
             <ArrowLeft size={17} />

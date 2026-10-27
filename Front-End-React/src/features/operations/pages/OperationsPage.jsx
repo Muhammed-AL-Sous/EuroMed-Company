@@ -151,7 +151,7 @@ const OperationsPage = () => {
   const [formErrors, setFormErrors] = useState({});
 
   const operationId = selectedEditOperation?.id;
-  
+
   const { data: getOperation } = useGetOperationQuery(
     operationId != null ? { id: operationId, scope } : skipToken,
   );
@@ -529,6 +529,7 @@ const OperationsPage = () => {
       ) : (
         <>
           <OperationsTable
+            scope={scope}
             operations={operations}
             onDelete={handleOpenDeleteModal}
             onEdit={handleOpenEditModal}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // React Redux
 import { useSelector } from "react-redux";
@@ -46,7 +46,10 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
 
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
-  const links = Array.isArray(sidebarLinks) ? sidebarLinks : [];
+  const links = useMemo(
+    () => (Array.isArray(sidebarLinks) ? sidebarLinks : []),
+    [sidebarLinks],
+  );
 
   // ==================================================
   // Close Sidebar With ESC
@@ -96,7 +99,7 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
         });
       }
     });
-  }, [sidebarLinks, user?.role?.role_name]);
+  }, [sidebarLinks, user?.role?.role_name, links]);
 
   // ==================================================
   // Active Route Helpers
@@ -314,7 +317,7 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
                                 end
                                 onClick={handleNavigation}
                                 className={({ isActive }) => `
-                                    flex items-center
+                                    flex items-center gap-2
                                     rounded-lg
                                     px-3 py-2
                                     text-xs font-bold
@@ -327,6 +330,12 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
                                     }
                                   `}
                               >
+                                {child.icon && (
+                                  <SidebarIcon
+                                    icon={child.icon}
+                                    className="h-4 w-4 shrink-0"
+                                  />
+                                )}
                                 {child.label}
                               </NavLink>
                             ))}

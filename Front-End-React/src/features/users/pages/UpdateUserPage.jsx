@@ -208,9 +208,9 @@ const UpdateUserPage = () => {
       <Box className="mx-auto border-none outline-none" maxWidth="900px">
         <Card variant="ghost" className="border-none outline-none">
           <Flex gap="3" direction="column">
-            <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
+            <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5">
               <Form.Root className="w-full" onSubmit={handleUpdateUser}>
-                <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 space-y-4">
                   {/* =========== User Name =========== */}
                   <Form.Field
                     className="grid content-start gap-1.5"

@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
 import {
   Activity,
@@ -44,6 +44,11 @@ function StatCard({ title, value, icon: Icon }) {
 }
 
 export default function DashboardPage() {
+  const location = useLocation();
+  const scope =
+    location.pathname === "/doctor" || location.pathname.startsWith("/doctor/")
+      ? "doctor"
+      : "admin";
   const { data, isLoading, isError, isFetching, refetch } =
     useGetDashboardOverviewQuery(undefined, {
       refetchOnMountOrArgChange: true,
@@ -164,7 +169,7 @@ export default function DashboardPage() {
           </div>
 
           <Link
-            to="/admin/operations"
+            to={`/${scope}/operations`}
             className="text-sm font-medium text-sky-700 hover:underline"
           >
             View All
@@ -222,7 +227,7 @@ export default function DashboardPage() {
 
                     <td className="px-5 py-4">
                       <Link
-                        to={`/admin/operations/${operation.id}`}
+                        to={`/${scope}/operations/${operation.id}`}
                         className="font-medium text-sky-700 hover:underline"
                       >
                         Details

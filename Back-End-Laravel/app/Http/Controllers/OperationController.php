@@ -134,7 +134,7 @@ class OperationController extends Controller
             $filters
         );
 
-        return $this->success($operations);
+        return $this->success(OperationResource::collection($operations));
     }
 
     public function store(
@@ -181,7 +181,7 @@ class OperationController extends Controller
             }
         } else {
             abort_unless(
-                $user->hasAnyRole(['admin', 'data_entry']),
+                $user->hasAnyRole(['admin', 'staff']),
                 403
             );
         }

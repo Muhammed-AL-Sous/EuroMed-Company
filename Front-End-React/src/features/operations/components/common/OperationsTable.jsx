@@ -44,21 +44,6 @@ const getRelationName = (relation, id, label) => {
   return id != null ? `${label} #${id}` : "—";
 };
 
-// Format date: YYYY-MM-DD => DD/MM/YYYY
-const formatDate = (date) => {
-  if (!date) return "—";
-
-  const dateString = String(date);
-
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-    return dateString;
-  }
-
-  const [year, month, day] = dateString.split("-");
-
-  return `${day}/${month}/${year}`;
-};
-
 // ==================================================
 // Operation Table
 // ==================================================
@@ -69,6 +54,7 @@ const OperationTable = ({
   onEdit,
   canEdit = true,
   canDelete = true,
+  scope,
 }) => {
   return (
     // External Container
@@ -159,7 +145,7 @@ const OperationTable = ({
                       dateTime={operation.operation_date ?? undefined}
                       dir="ltr"
                     >
-                      {formatDate(operation.operation_date)}
+                      {operation.operation_date}
                     </time>
                   </td>
 
@@ -233,7 +219,7 @@ const OperationTable = ({
                     <div className="flex items-center justify-center gap-2">
                       {/* View Operation */}
                       <Link
-                        to={`/admin/operations/${operation.id}`}
+                        to={`/${scope}/operations/${operation.id}`}
                         aria-label={`View ${operationLabel}`}
                         title="View Operation Details"
                         className="
@@ -253,13 +239,15 @@ const OperationTable = ({
                       </Link>
 
                       {/* Edit Operation */}
-                      {canEdit && typeof onEdit === "function" && (
-                        <button
-                          type="button"
-                          onClick={() => onEdit(operation)}
-                          aria-label={`Edit ${operationLabel}`}
-                          title="Edit Operation"
-                          className="
+                      {scope === "admin"
+                        ? canEdit &&
+                          typeof onEdit === "function" && (
+                            <button
+                              type="button"
+                              onClick={() => onEdit(operation)}
+                              aria-label={`Edit ${operationLabel}`}
+                              title="Edit Operation"
+                              className="
                             cursor-pointer
                             rounded-lg
                             border border-blue-500
@@ -271,19 +259,22 @@ const OperationTable = ({
                             hover:bg-blue-50
                             hover:text-blue-600
                           "
-                        >
-                          <SquarePen size={18} aria-hidden="true" />
-                        </button>
-                      )}
+                            >
+                              <SquarePen size={18} aria-hidden="true" />
+                            </button>
+                          )
+                        : null}
 
                       {/* Delete Operation */}
-                      {canDelete && typeof onDelete === "function" && (
-                        <button
-                          type="button"
-                          onClick={() => onDelete(operation)}
-                          aria-label={`Delete ${operationLabel}`}
-                          title="Delete Operation"
-                          className="
+                      {scope === "admin"
+                        ? canDelete &&
+                          typeof onDelete === "function" && (
+                            <button
+                              type="button"
+                              onClick={() => onDelete(operation)}
+                              aria-label={`Delete ${operationLabel}`}
+                              title="Delete Operation"
+                              className="
                               cursor-pointer
                               rounded-lg
                               border border-red-500
@@ -295,10 +286,11 @@ const OperationTable = ({
                               hover:bg-red-50
                               hover:text-red-600
                             "
-                        >
-                          <Trash size={18} aria-hidden="true" />
-                        </button>
-                      )}
+                            >
+                              <Trash size={18} aria-hidden="true" />
+                            </button>
+                          )
+                        : null}
                     </div>
                   </td>
                 </tr>

@@ -13,7 +13,7 @@ class OperationResource extends JsonResource
             'id' => $this->id,
 
             'invoice_number' => $this->invoice_number,
-            
+
             'patient_access_code' => $this->patient_access_code,
 
             'operation_date' => $this->operation_date

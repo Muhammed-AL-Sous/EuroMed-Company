@@ -15,6 +15,23 @@ import {
   RobotArm,
   Plus,
   ArrowLeft,
+  Eye,
+  FileStack,
+  FilePenLine,
+  Boxes,
+  PackageOpen,
+  Shapes,
+  Grid2x2Plus,
+  PackagePlus,
+  Factory,
+  ToolCase,
+  Ribbon,
+  HeartPulse,
+  ClipboardPlus,
+  IvBag,
+  UserGroup,
+  UserPlus,
+  UserRoundArrowLeft,
 } from "lucide-react";
 
 // ============== Stats Pages ============== //
@@ -138,11 +155,12 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/operations",
             label: "All Operations",
-            icon: ClipboardList,
+            icon: FileStack,
           },
           {
             to: "/admin/operations/create",
             label: "Create Operation",
+            icon: FilePenLine,
           },
         ],
       },
@@ -153,11 +171,12 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/products",
             label: "All Products",
-            icon: Package,
+            icon: Boxes,
           },
           {
             to: "/admin/products/create",
             label: "Create Product",
+            icon: PackageOpen,
           },
         ],
       },
@@ -169,11 +188,12 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/categories",
             label: "All Categories",
-            icon: Blocks,
+            icon: Shapes,
           },
           {
             to: "/admin/categories/create",
             label: "Create Category",
+            icon: Grid2x2Plus,
           },
         ],
       },
@@ -185,11 +205,12 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/subcategories",
             label: "All Subcategories",
-            icon: Box,
+            icon: Boxes,
           },
           {
             to: "/admin/subcategories/create",
             label: "Create Subcategory",
+            icon: PackagePlus,
           },
         ],
       },
@@ -201,11 +222,12 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/manufacturers",
             label: "All Manufacturers",
-            icon: RobotArm,
+            icon: ToolCase,
           },
           {
             to: "/admin/manufacturers/create",
             label: "Create Manufacturer",
+            icon: Factory,
           },
         ],
       },
@@ -217,11 +239,12 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/doctors",
             label: "All Doctors",
-            icon: Stethoscope,
+            icon: HeartPulse,
           },
           {
             to: "/admin/doctors/create",
             label: "Create Doctor Profile",
+            icon: Ribbon,
           },
         ],
       },
@@ -233,17 +256,25 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/hospitals",
             label: "All Hospitals",
-            icon: Hospital,
+            icon: IvBag,
           },
-          { to: "/admin/hospitals/create", label: "Create Hospital" },
+          {
+            to: "/admin/hospitals/create",
+            label: "Create Hospital",
+            icon: ClipboardPlus,
+          },
         ],
       },
       {
         label: "Patient Records",
         icon: Users,
         children: [
-          { to: "/admin/patients", label: "All Patients", icon: Users },
-          { to: "/admin/patients/create", label: "Create Patient" },
+          { to: "/admin/patients", label: "All Patients", icon: UserGroup },
+          {
+            to: "/admin/patients/create",
+            label: "Create Patient",
+            icon: UserPlus,
+          },
         ],
       },
 
@@ -254,11 +285,12 @@ export const ROLES_CONFIG = {
           {
             to: "/admin/users",
             label: "All Users",
-            icon: UserRoundGroup,
+            icon: Users,
           },
           {
             to: "/admin/users/create",
             label: "Create User",
+            icon: UserRoundArrowLeft,
           },
         ],
       },
@@ -454,10 +486,15 @@ export const ROLES_CONFIG = {
         children: [
           {
             to: "/doctor/operations",
-            label: "All Operations",
+            label: "My Operations",
             icon: ClipboardList,
           },
         ],
+      },
+      {
+        label: "Edit Account",
+        icon: Settings,
+        to: "/doctor/update-account",
       },
     ],
 
@@ -465,15 +502,18 @@ export const ROLES_CONFIG = {
       {
         path: "",
         element: DashboardPage,
+        action: {
+          label: "My Operation",
+          to: "/doctor/operations",
+          icon: Eye,
+          header: "Doctor Dashboard",
+        },
       },
 
       {
         path: "operations",
         element: OperationsPage,
         action: {
-          label: "Create Operation",
-          to: "/doctor/operations/create",
-          icon: Plus,
           header: "My Operations",
         },
       },
@@ -494,6 +534,14 @@ export const ROLES_CONFIG = {
           to: "/doctor/operations",
           icon: ArrowLeft,
           header: "Operation Details",
+        },
+      },
+
+      {
+        path: "/doctor/update-account",
+        element: UpdateUserPage,
+        action: {
+          header: "User Management",
         },
       },
     ],
