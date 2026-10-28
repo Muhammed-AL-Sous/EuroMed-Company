@@ -44,31 +44,31 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
     // Get Operations
     // ==================================================
     getOperations: builder.query({
-      query: ({ search = "", page = 1, scope = "admin" } = {}) => ({
-        url: getOperationsBaseUrl(scope),
+      query: ({
+        search = "",
+        page = 1,
+        scope = "admin",
+        doctor_id = "",
+        hospital_id = "",
+        operation_type_id = "",
+      } = {}) => ({
+        url: scope === "doctor" ? "/doctor/operations" : "/operations",
+
         method: "GET",
+
         params: {
           search: search || undefined,
           page,
+          doctor_id: scope !== "doctor" ? doctor_id || undefined : undefined,
+          hospital_id: hospital_id || undefined,
+          operation_type_id: operation_type_id || undefined,
         },
       }),
 
       transformResponse: (response) =>
         normalizeOperationsListResponse(response),
 
-      providesTags: (result) => [
-        ...(Array.isArray(result?.operations)
-          ? result.operations.map(({ id }) => ({
-              type: "Operations",
-              id,
-            }))
-          : []),
-
-        {
-          type: "Operations",
-          id: "LIST",
-        },
-      ],
+      // احتفظ بـ providesTags الموجود عندك كما هو
     }),
 
     // ==================================================
@@ -161,6 +161,7 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
 
 export const {
   useGetOperationFormOptionsQuery,
+  useLazyGetOperationQuery,
   useGetOperationsQuery,
   useGetOperationQuery,
   useDeleteOperationMutation,

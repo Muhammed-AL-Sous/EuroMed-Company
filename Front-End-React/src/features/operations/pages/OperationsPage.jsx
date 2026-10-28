@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
-import { useLocation } from "react-router";
-import { skipToken } from "@reduxjs/toolkit/query";
+import { useLocation, useSearchParams } from "react-router";
 import { Search, ShieldAlert, SquarePen, Trash2, X } from "lucide-react";
 import { Card, Text } from "@radix-ui/themes";
 import { notifySonner } from "./../../../lib/notifySonner";
@@ -10,7 +8,7 @@ import {
   useGetOperationsQuery,
   useDeleteOperationMutation,
   useUpdateOperationMutation,
-  useGetOperationQuery,
+  useLazyGetOperationQuery,
 } from "../OperationsApiSlice";
 
 import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
@@ -19,6 +17,7 @@ import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
 import EditModal from "../../../components/utility/EditModal";
 import OperationsTable from "../components/common/OperationsTable";
 import OperationEditForm from "../components/utility/OperationEditForm";
+import OperationReferenceSelect from "../components/utility/OperationReferenceSelect";
 // ==================================================
 // Constants
 // ==================================================
@@ -150,11 +149,8 @@ const OperationsPage = () => {
 
   const [formErrors, setFormErrors] = useState({});
 
-  const operationId = selectedEditOperation?.id;
-
-  const { data: getOperation } = useGetOperationQuery(
-    operationId != null ? { id: operationId, scope } : skipToken,
-  );
+  // Fetch details only when opening the edit modal.
+  const [fetchOperation] = useLazyGetOperationQuery();
 
   // ==================================================
   // Search State
@@ -162,6 +158,20 @@ const OperationsPage = () => {
 
   const [searchInput, setSearchInput] = useState(
     searchParams.get("search") ?? "",
+  );
+  const doctorId = searchParams.get("doctor_id") ?? "";
+  const hospitalId = searchParams.get("hospital_id") ?? "";
+  const operationTypeId = searchParams.get("operation_type_id") ?? "";
+
+  // Keep the selected objects so the reference controls display labels, not IDs.
+  const [filterEntities, setFilterEntities] = useState({
+    doctor: null,
+    hospital: null,
+    operation_type: null,
+  });
+
+  const hasFilters = Boolean(
+    (scope !== "doctor" && doctorId) || hospitalId || operationTypeId,
   );
 
   const [page, setPage] = useState(1);
@@ -184,6 +194,9 @@ const OperationsPage = () => {
     search: normalizedSearch,
     page,
     scope,
+    doctor_id: doctorId,
+    hospital_id: hospitalId,
+    operation_type_id: operationTypeId,
   });
 
   const operations = Array.isArray(data?.operations)
@@ -191,8 +204,30 @@ const OperationsPage = () => {
     : Array.isArray(data?.data)
       ? data.data
       : [];
-  console.log(operations);
+
   const meta = data?.meta ?? null;
+
+  // After a reload, an operation on the current page can supply the relation
+  // label. For zero-result filters, loading entities by ID needs dedicated APIs.
+  const getSelectedFilterEntity = (relation, value) => {
+    if (!value) return null;
+
+    const cached = filterEntities[relation];
+    if (cached && String(cached.id) === String(value)) return cached;
+
+    return (
+      operations.find(
+        (operation) => String(operation[`${relation}_id`]) === String(value),
+      )?.[relation] ?? null
+    );
+  };
+
+  const selectedDoctor = getSelectedFilterEntity("doctor", doctorId);
+  const selectedHospital = getSelectedFilterEntity("hospital", hospitalId);
+  const selectedOperationType = getSelectedFilterEntity(
+    "operation_type",
+    operationTypeId,
+  );
 
   // ==================================================
   // Mutations
@@ -209,6 +244,8 @@ const OperationsPage = () => {
   // ==================================================
 
   useEffect(() => {
+    if (searchInput.trim() !== normalizedSearch) return;
+
     const urlSearch = searchParams.get("search") ?? "";
 
     if (urlSearch === normalizedSearch) return;
@@ -227,7 +264,7 @@ const OperationsPage = () => {
       },
       { replace: true },
     );
-  }, [normalizedSearch, searchParams, setSearchParams]);
+  }, [normalizedSearch, searchInput, searchParams, setSearchParams]);
 
   // ==================================================
   // Delete Handlers
@@ -276,7 +313,10 @@ const OperationsPage = () => {
     try {
       // Load the complete record (relations and operation items), not
       // the abbreviated object from the operations table.
-      const fullOperation = await getOperation(operation.id).unwrap();
+      const fullOperation = await fetchOperation({
+        id: operation.id,
+        scope,
+      }).unwrap();
 
       setFormErrors({});
       setEditForm(createEditForm(fullOperation));
@@ -448,6 +488,59 @@ const OperationsPage = () => {
     );
   };
 
+  // Update one reference filter, keeping search and other filters untouched.
+  const handleReferenceFilterChange = (field, relation, id, entity) => {
+    const value = id == null ? "" : String(id);
+
+    setFilterEntities((current) => ({
+      ...current,
+      [relation]: entity ?? null,
+    }));
+    setPage(1);
+
+    setSearchParams(
+      (previousParams) => {
+        const params = new URLSearchParams(previousParams);
+        if (value) params.set(field, value);
+        else params.delete(field);
+        return params;
+      },
+      { replace: true },
+    );
+  };
+
+  const clearFilters = () => {
+    setFilterEntities({ doctor: null, hospital: null, operation_type: null });
+    setPage(1);
+    setSearchParams(
+      (previousParams) => {
+        const params = new URLSearchParams(previousParams);
+        params.delete("doctor_id");
+        params.delete("hospital_id");
+        params.delete("operation_type_id");
+        return params;
+      },
+      { replace: true },
+    );
+  };
+
+  const clearAllCriteria = () => {
+    setSearchInput("");
+    setFilterEntities({ doctor: null, hospital: null, operation_type: null });
+    setPage(1);
+    setSearchParams(
+      (previousParams) => {
+        const params = new URLSearchParams(previousParams);
+        params.delete("search");
+        params.delete("doctor_id");
+        params.delete("hospital_id");
+        params.delete("operation_type_id");
+        return params;
+      },
+      { replace: true },
+    );
+  };
+
   // ==================================================
   // Pagination
   // ==================================================
@@ -498,6 +591,59 @@ const OperationsPage = () => {
         </div>
       </div>
 
+      {/* Filters: selections immediately update the URL and query arguments. */}
+      <div className="grid grid-cols-1 gap-4 border-t border-slate-100 p-4 md:grid-cols-2 xl:grid-cols-4">
+        {scope !== "doctor" && (
+          <OperationReferenceSelect
+            type="doctor"
+            label="Doctor"
+            value={doctorId}
+            selectedEntity={selectedDoctor}
+            onChange={(id, entity) =>
+              handleReferenceFilterChange("doctor_id", "doctor", id, entity)
+            }
+          />
+        )}
+
+        <OperationReferenceSelect
+          type="hospital"
+          label="Hospital"
+          value={hospitalId}
+          selectedEntity={selectedHospital}
+          onChange={(id, entity) =>
+            handleReferenceFilterChange("hospital_id", "hospital", id, entity)
+          }
+        />
+
+        <OperationReferenceSelect
+          type="operation_type"
+          label="Operation Type"
+          value={operationTypeId}
+          selectedEntity={selectedOperationType}
+          onChange={(id, entity) =>
+            handleReferenceFilterChange(
+              "operation_type_id",
+              "operation_type",
+              id,
+              entity,
+            )
+          }
+        />
+
+        {hasFilters && (
+          <div className="flex items-end">
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:border-red-200 hover:text-red-600"
+            >
+              <X className="h-4 w-4" />
+              Clear Filters
+            </button>
+          </div>
+        )}
+      </div>
+
       {/* Active Search */}
       {hasSearch && (
         <div className="flex items-center justify-between gap-4 border-t border-slate-100 px-4 py-3 text-xs">
@@ -525,7 +671,10 @@ const OperationsPage = () => {
       ) : isError ? (
         <ErrorState />
       ) : operations.length === 0 ? (
-        <EmptyState hasSearch={hasSearch} onReset={clearSearch} />
+        <EmptyState
+          hasSearch={hasSearch || hasFilters}
+          onReset={clearAllCriteria}
+        />
       ) : (
         <>
           <OperationsTable
@@ -620,7 +769,7 @@ const EmptyState = ({ hasSearch, onReset }) => (
         onClick={onReset}
         className="mt-5 cursor-pointer rounded-xl bg-sky-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-sky-700"
       >
-        Reset Search
+        Reset Search and Filters
       </button>
     )}
   </div>

@@ -56,6 +56,11 @@ class OperationController extends Controller
                 'min:1',
                 'max:100',
             ],
+            'operation_type_id' => [
+                'sometimes',
+                'integer',
+                'exists:operation_types,id',
+            ],
         ]);
 
         $operations = Operation::query()
@@ -149,6 +154,13 @@ class OperationController extends Controller
                 $filters['hospital_id'] ?? null,
                 fn($query, $id) =>
                 $query->where('hospital_id', $id)
+            )
+
+            // Operation Type Filter
+            ->when(
+                $filters['operation_type_id'] ?? null,
+                fn($query, $id) =>
+                $query->where('operation_type_id', $id)
             )
 
             // Doctor Filter
