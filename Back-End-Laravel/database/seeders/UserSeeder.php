@@ -19,14 +19,14 @@ class UserSeeder extends Seeder
         ]);
         $admin->assignRole('admin');
 
-        $dataEntry = User::create([
+        $staff = User::create([
             'email' => 'staff@euromed.com',
             'name' => 'Staff',
             'password' => 'staff123',
             'email_verified_at' => now(),
             'is_active' => true,
         ]);
-        $dataEntry->assignRole('staff');
+        $staff->assignRole('staff');
 
         $doctor = User::create([
             'email' => 'doctor@euromed.com',

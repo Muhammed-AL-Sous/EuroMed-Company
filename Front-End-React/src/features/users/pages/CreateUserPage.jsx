@@ -18,7 +18,8 @@ import {
   EyeOff,
   Save,
 } from "lucide-react";
-
+import { UserRound } from "lucide-react";
+import SelectField from "../../../components/utility/SelectField";
 // Notify Sonner
 import { notifySonner } from "../../../lib/notifySonner";
 
@@ -383,6 +384,37 @@ const CreateUserPage = () => {
                   </Form.Field>
 
                   {/* =========== User Role =========== */}
+                  {/* <SelectField
+                    name="role"
+                    label="User Role"
+                    labelIcon={<UserRound size={17} />}
+                    placeholder="Select user role..."
+                    required
+                    value={createForm.role}
+                    onValueChange={(selectedRole) => {
+                      setCreateForm((currentForm) => ({
+                        ...currentForm,
+                        role: selectedRole,
+                      }));
+                    }}
+                    options={[
+                      {
+                        value: "admin",
+                        label: "Administrator",
+                        description: "Full system access",
+                      },
+                      {
+                        value: "staff",
+                        label: "Staff",
+                        description: "Manage operations and inventory",
+                      },
+                      {
+                        value: "doctor",
+                        label: "Doctor",
+                        description: "Manage own medical operations",
+                      },
+                    ]}
+                  /> */}
 
                   <Form.Field
                     className="grid content-start gap-1.5"

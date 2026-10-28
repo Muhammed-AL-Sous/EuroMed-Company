@@ -68,7 +68,7 @@ const OperationTable = ({
 
           <thead>
             <tr>
-              {/* <th className={`${headerCell} border-r`}>Invoice Number</th> */}
+              <th className={`${headerCell} border-r`}>Invoice No</th>
 
               <th className={`${headerCell} border-r`}>Operation Code</th>
 
@@ -121,13 +121,13 @@ const OperationTable = ({
               return (
                 <tr key={operation.id} className="group">
                   {/* Invoice Number */}
-                  {/* <td
+                  <td
                     className={`${bodyCell} ${lastRow} border-r ${hoverClass} whitespace-nowrap`}
                   >
                     <span className="font-semibold text-sky-800">
                       {operation.invoice_number ?? "—"}
                     </span>
-                  </td> */}
+                  </td>
 
                   <td
                     className={`${bodyCell} ${lastRow} border-r ${hoverClass} whitespace-nowrap`}

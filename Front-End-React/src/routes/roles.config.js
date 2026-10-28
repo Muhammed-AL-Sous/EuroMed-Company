@@ -487,7 +487,7 @@ export const ROLES_CONFIG = {
           {
             to: "/doctor/operations",
             label: "My Operations",
-            icon: ClipboardList,
+            icon: FileStack,
           },
         ],
       },
@@ -552,8 +552,68 @@ export const ROLES_CONFIG = {
 
     staffComponent: StaffStats,
 
-    sidebar: [{ icon: BarChart2, label: "Dashboard", to: "/staff" }],
+    sidebar: [
+      { icon: BarChart2, label: "Dashboard", to: "/staff" },
+      {
+        path: "operations/:id",
+        element: OperationDetailsPage,
+      },
+      {
+        label: "Operations",
+        icon: ClipboardList,
+        children: [
+          {
+            to: "/staff/operations",
+            label: "All Operations",
+            icon: FileStack,
+          },
+        ],
+      },
+      {
+        label: "Edit Account",
+        icon: Settings,
+        to: "/staff/update-account",
+      },
+    ],
 
-    routes: [{ path: "", element: DashboardPage }],
+    routes: [
+      {
+        path: "",
+        element: DashboardPage,
+        action: {
+          label: "All Operation",
+          to: "/staff/operations",
+          icon: Eye,
+          header: "Staff Dashboard",
+        },
+      },
+
+      {
+        path: "operations",
+        element: OperationsPage,
+        action: {
+          header: "All Operations",
+        },
+      },
+
+      {
+        path: "operations/:id",
+        element: OperationDetailsPage,
+        action: {
+          label: "Back to Operations",
+          to: "/staff/operations",
+          icon: ArrowLeft,
+          header: "Operation Details",
+        },
+      },
+
+      {
+        path: "/staff/update-account",
+        element: UpdateUserPage,
+        action: {
+          header: "User Management",
+        },
+      },
+    ],
   },
 };

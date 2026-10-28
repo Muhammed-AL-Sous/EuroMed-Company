@@ -1,8 +1,9 @@
 import { baseApi } from "../../api/apiSlice";
 import { normalizeOperationsListResponse } from "./OperationsQueryUtils";
 
-const getOperationsBaseUrl = (scope = "admin") =>
-  scope === "doctor" ? "/doctor/operations" : "/operations";
+const getOperationsBaseUrl = (scope = "admin") => {
+  return scope === "doctor" ? "/doctor/operations" : "/operations";
+};
 
 export const OperationsApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({

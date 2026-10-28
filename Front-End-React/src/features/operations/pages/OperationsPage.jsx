@@ -134,10 +134,10 @@ const getOperationLabel = (operation) => {
 
 const OperationsPage = () => {
   const location = useLocation();
-  const isDoctor =
-    location.pathname === "/doctor" || location.pathname.startsWith("/doctor/");
 
-  const scope = isDoctor ? "doctor" : "admin";
+  const role = location.pathname.split("/")[1];
+
+  const scope = ["admin", "staff", "doctor"].includes(role) ? role : "admin";
 
   const [searchParams, setSearchParams] = useSearchParams();
   // ==================================================
@@ -191,7 +191,7 @@ const OperationsPage = () => {
     : Array.isArray(data?.data)
       ? data.data
       : [];
-
+  console.log(operations);
   const meta = data?.meta ?? null;
 
   // ==================================================

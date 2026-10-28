@@ -53,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ]);
     });
 
-    // Admin And Data Entry
+    // Admin And Staff
     Route::middleware('role:admin|staff')->group(function () {
 
         // Patients

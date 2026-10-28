@@ -21,13 +21,11 @@ class OperationController extends Controller
     ) {}
 
 
+
     public function index(Request $request): JsonResponse
     {
         abort_unless(
-            $request->user()?->hasAnyRole([
-                'admin',
-                'staff',
-            ]),
+            $request->user()?->hasAnyRole(['admin', 'staff']),
             403
         );
 
@@ -69,15 +67,81 @@ class OperationController extends Controller
             ])
             ->withCount('items')
 
-            // Search by Invoice Number
+            // Search
             ->when(
-                $filters['search'] ?? null,
-                fn($query, $search) =>
-                $query->where(
-                    'invoice_number',
-                    'like',
-                    '%' . $search . '%'
-                )
+                $request->filled('search'),
+                function ($query) use ($filters) {
+
+                    $terms = preg_split(
+                        '/\s+/u',
+                        trim($filters['search'])
+                    );
+
+                    foreach ($terms as $term) {
+
+                        $like = "%{$term}%";
+
+                        $query->where(function ($q) use ($like) {
+
+                            $q
+                                // Invoice Number
+                                ->where(
+                                    'invoice_number',
+                                    'LIKE',
+                                    $like
+                                )
+
+                                // Patient Access Code
+                                ->orWhere(
+                                    'patient_access_code',
+                                    'LIKE',
+                                    $like
+                                )
+
+                                // Doctor Name
+                                ->orWhereHas(
+                                    'doctor',
+                                    fn($doctorQuery) =>
+                                    $doctorQuery->where(
+                                        'name',
+                                        'LIKE',
+                                        $like
+                                    )
+                                )
+
+                                // Patient Name / Phone
+                                ->orWhereHas(
+                                    'patient',
+                                    fn($patientQuery) =>
+                                    $patientQuery
+                                        ->where('name', 'LIKE', $like)
+                                        ->orWhere('phone', 'LIKE', $like)
+                                )
+
+                                // Hospital Name
+                                ->orWhereHas(
+                                    'hospital',
+                                    fn($hospitalQuery) =>
+                                    $hospitalQuery->where(
+                                        'name',
+                                        'LIKE',
+                                        $like
+                                    )
+                                )
+
+                                // Operation Type Name
+                                ->orWhereHas(
+                                    'operationType',
+                                    fn($typeQuery) =>
+                                    $typeQuery->where(
+                                        'name',
+                                        'LIKE',
+                                        $like
+                                    )
+                                );
+                        });
+                    }
+                }
             )
 
             // Hospital Filter
@@ -98,10 +162,7 @@ class OperationController extends Controller
             ->when(
                 $filters['date'] ?? null,
                 fn($query, $date) =>
-                $query->whereDate(
-                    'operation_date',
-                    $date
-                )
+                $query->whereDate('operation_date', $date)
             )
 
             ->latest('operation_date')
@@ -111,6 +172,7 @@ class OperationController extends Controller
             OperationResource::collection($operations)
         );
     }
+
 
 
     public function doctorIndex(Request $request): JsonResponse
