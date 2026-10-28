@@ -14,6 +14,7 @@ class UpdateManufacturerRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'code' => ['sometimes', 'required', 'string', 'max:255', "unique:manufacturers,code," . $this->route('manufacturer')->id],
             'name' => ['sometimes', 'required', 'string', 'max:255', "unique:manufacturers,name," . $this->route('manufacturer')->id],
             'origin' => ['sometimes', 'nullable', 'string', 'max:255'],
             'logo_text' => ['sometimes', 'nullable', 'string', 'max:255'],

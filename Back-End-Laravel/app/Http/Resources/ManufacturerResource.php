@@ -11,6 +11,7 @@ class ManufacturerResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'code' => $this->code,
             'name' => $this->name,
             'origin' => $this->origin,
             'logo_text' => $this->logo_text,

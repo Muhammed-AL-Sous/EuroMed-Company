@@ -1,0 +1,218 @@
+[
+    {
+        "code": "hosp-001",
+        "name": "Rozhalat Hospital",
+        "city": "Erbil",
+        "type": "Government"
+    },
+    {
+        "code": "hosp-002",
+        "name": "Rozhawa Hospital",
+        "city": "Erbil",
+        "type": "Government"
+    },
+    {
+        "code": "hosp-003",
+        "name": "Jumhury Hospital",
+        "city": "Erbil",
+        "type": "Government"
+    },
+    {
+        "code": "hosp-004",
+        "name": "Erbil - Emergency Hospital",
+        "city": "Erbil",
+        "type": "Government"
+    },
+    {
+        "code": "hosp-005",
+        "name": "Shaqlawa Hospital",
+        "city": "Erbil",
+        "type": "Government"
+    },
+    {
+        "code": "hosp-006",
+        "name": "Duhok - Emergency Hospital",
+        "city": "Duhok",
+        "type": "Government"
+    },
+    {
+        "code": "hosp-007",
+        "name": "Zheen Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-008",
+        "name": "Arzheen Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-009",
+        "name": "Balsam Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-010",
+        "name": "CMC Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-011",
+        "name": "Serdam Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-012",
+        "name": "Par Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-013",
+        "name": "Paky Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-014",
+        "name": "Paky Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-015",
+        "name": "Zanko Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-016",
+        "name": "Medicano Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-017",
+        "name": "Newroz Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-018",
+        "name": "Maryamana Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-019",
+        "name": "Mihrabani Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-020",
+        "name": "Hawler Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-021",
+        "name": "Shar Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-022",
+        "name": "Majidi Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-023",
+        "name": "The English Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-024",
+        "name": "Erbil International Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-025",
+        "name": "Swedish Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-026",
+        "name": "Peshmerga Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-027",
+        "name": "Pirmam Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-028",
+        "name": "Ble Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-029",
+        "name": "Ashti Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-030",
+        "name": "Valia Hospital",
+        "city": "Erbil",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-031",
+        "name": "Zakho - Nawroz Hospital",
+        "city": "Duhok",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-032",
+        "name": "Zhian Hospital",
+        "city": "Duhok",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-033",
+        "name": "Vin Hospital",
+        "city": "Duhok",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-034",
+        "name": "Vajeen Hospital",
+        "city": "Duhok",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-035",
+        "name": "Shiryan Hospital",
+        "city": "Duhok",
+        "type": "Private"
+    },
+    {
+        "code": "hosp-036",
+        "name": "Dr Ghazi Hospital",
+        "city": "Duhok",
+        "type": "Private"
+    }
+]

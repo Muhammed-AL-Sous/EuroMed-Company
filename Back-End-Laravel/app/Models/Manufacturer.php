@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Manufacturer extends Model
 {
     protected $fillable = [
+        'code',
         'name',
         'origin',
         "logo_text",

@@ -1,0 +1,17 @@
+[
+    {
+        "code": "cat-001",
+        "name": "Arthroplasty Surgery",
+        "description": "A surgical specialty that focuses on the diagnosis and treatment of musculoskeletal disorders, including bones, joints, ligaments, tendons, and muscles."
+    },
+    {
+        "code": "cat-002",
+        "name": "Arthroscopy Surgery",
+        "description": "Arthroscopy surgery is a minimally invasive surgical procedure used to visualize, diagnose, and treat problems inside a joint."
+    },
+    {
+        "code": "cat-003",
+        "name": "Trauma Surgery",
+        "description": "A surgical procedure performed on the heart or great vessels to treat various heart conditions."
+    }
+]

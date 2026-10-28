@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('hospitals', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
             $table->string('name');
             $table->enum('type', ['Government', 'Private'])->default('Private');
             $table->string('city')->nullable();

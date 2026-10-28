@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Hospital extends Model
 {
     protected $fillable = [
+        'code',
         'name',
         'city',
         'type'

@@ -14,6 +14,7 @@ class StoreSubCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'code' => ['required', 'string', 'max:255', 'unique:subcategories,code'],
             'name' => ['required', 'string', 'max:255', 'unique:subcategories,name'],
             'description' => ['nullable', 'string'],
             'image' => [

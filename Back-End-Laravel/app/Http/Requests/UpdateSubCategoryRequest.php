@@ -14,6 +14,7 @@ class UpdateSubCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'code' => ['sometimes', 'required', 'string', 'max:255', "unique:sub_categories,code," . $this->route('sub_category')->id],
             'name' => ['sometimes', 'required', 'string', 'max:255', "unique:sub_categories,name," . $this->route('sub_category')->id],
             'description' => ['nullable', 'string'],
             'image' => [

@@ -15,6 +15,7 @@ class StoreHospitalRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'code' => ['required', 'string', 'max:255', "unique:hospitals,code"],
             'name' => ['required', 'string', 'max:255', "unique:hospitals,name"],
             'city' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', 'in:Government,Private'],
