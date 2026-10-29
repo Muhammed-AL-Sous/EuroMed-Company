@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('operation_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('code');
+            $table->string('code')->unique();
+            $table->string('name')->unique();
             $table->text('description');
-            $table->unsignedTinyInteger('product_count');
             $table->timestamps();
         });
     }

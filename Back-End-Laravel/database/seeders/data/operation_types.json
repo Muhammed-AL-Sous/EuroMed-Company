@@ -1,0 +1,37 @@
+[
+    {
+        "code": "optype-001",
+        "name": "T Knee Replacement",
+        "description": "Total Knee Replacement Prosthesis, Femoral & Tibial Components, and Polyethylene Inserts."
+    },
+    {
+        "code": "optype-002",
+        "name": "T Hip Replacement",
+        "description": "Total Hip Replacement Stems, Acetabular Cups, Ceramic & Metallic Heads, Liners."
+    },
+    {
+        "code": "optype-003",
+        "name": "Bipolar",
+        "description": "Bipolar Hip Prosthesis Systems For Hemi-Arthroplasty Procedures."
+    },
+    {
+        "code": "optype-004",
+        "name": "Plate & Screw",
+        "description": "Anatomical Locking Compression Plates, Cortical & Cancellous Bone Fixation Screws."
+    },
+    {
+        "code": "optype-005",
+        "name": "Herbert Screw",
+        "description": "Headless Compression Herbert Screws For Osteochondral Fractures & Nonunions."
+    },
+    {
+        "code": "optype-006",
+        "name": "Tibial Nail",
+        "description": "Intramedullary Tibial Interlocking Nails."
+    },
+    {
+        "code": "optype-007",
+        "name": "Femoral Nail",
+        "description": "Intramedullary Femoral Interlocking Nails."
+    }
+]

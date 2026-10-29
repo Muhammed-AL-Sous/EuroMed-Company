@@ -17,7 +17,9 @@ class UpdateOperationTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100', "unique:operation_types,name," . $this->route('operation_type')->id],
+            'code' => ['required', 'string', 'max:255', "unique:operation_types,code," . $this->route('operation_type')->id],
+            'name' => ['required', 'string', 'max:255', "unique:operation_types,name," . $this->route('operation_type')->id],
+            'description' => ['sometimes', 'nullable', 'string'],
         ];
     }
 }

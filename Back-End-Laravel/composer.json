@@ -13,6 +13,7 @@
     "laravel/framework": "^v13.33.0",
     "laravel/sanctum": "^v4.3.3",
     "laravel/tinker": "^v3.0.2",
+    "phpoffice/phpspreadsheet": "^5.10",
     "spatie/browsershot": "^5.4",
     "spatie/laravel-permission": "^8.3"
   },

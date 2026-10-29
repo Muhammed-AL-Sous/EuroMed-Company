@@ -17,7 +17,9 @@ class StoreOperationTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100', "unique:operation_types,name"],
+            'code' => ['required', 'string', 'max:255', "unique:operation_types,code"],
+            'name' => ['required', 'string', 'max:255', "unique:operation_types,name"],
+            'description' => ['nullable', 'string'],
         ];
     }
 }

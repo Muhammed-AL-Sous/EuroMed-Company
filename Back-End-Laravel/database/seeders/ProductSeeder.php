@@ -3,140 +3,187 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
+use App\Models\Category;
+use App\Models\SubCategory;
+use App\Models\Manufacturer;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use RuntimeException;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $products = [
-            [
-                'code' => 'MTUUX100-K',
-                'name' => 'Tibial Base 1 Metalbacked',
-                'description' => 'Description for Tibial Base 1 Metalbacked',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 2,
-                'price' => 500,
-                'image_url' => 'products/tibial_base.png',
-            ],
+        $path = database_path('seeders/data/products.xlsx');
 
-            [
-                'code' => 'MTUUX200-K',
-                'name' => 'Tibial Base 2 Metalbacked',
-                'description' => 'Description for Tibial Base 2 Metalbacked',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 2,
-                'price' => 500,
-                'image_url' => 'products/tibial_base.png',
-            ],
+        if (! file_exists($path)) {
+            throw new RuntimeException(
+                'Products Excel file not found.'
+            );
+        }
 
-            [
-                'code' => 'MTUUX300-K',
-                'name' => 'Tibial Base 3 Metalbacked',
-                'description' => 'Description for Tibial Base 3 Metalbacked',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 2,
-                'price' => 500,
-                'image_url' => 'products/tibial_base.png',
-            ],
+        // Load Excel file
+        $rows = IOFactory::load($path)
+            ->getActiveSheet()
+            ->toArray(null, true, false, false);
 
-            [
-                'code' => 'MTUUX400-K',
-                'name' => 'Tibial Base 4 Metalbacked',
-                'description' => 'Description for Tibial Base 4 Metalbacked',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 2,
-                'price' => 500,
-                'image_url' => 'products/tibial_base.png',
-            ],
+        if (empty($rows)) {
+            throw new RuntimeException(
+                'Products Excel file is empty.'
+            );
+        }
 
-            [
-                'code' => 'MTUUX500-K',
-                'name' => 'Tibial Base 5 Metalbacked',
-                'description' => 'Description for Tibial Base 5 Metalbacked',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 2,
-                'price' => 500,
-                'image_url' => 'products/tibial_base.png',
-            ],
+        // Extract column headers
+        $headers = array_map(
+            fn($value) => trim((string) $value),
+            array_shift($rows)
+        );
 
-            [
-                'code' => 'MTUUX600-K',
-                'name' => 'Tibial Base 6 Metalbacked',
-                'description' => 'Description for Tibial Base 6 Metalbacked',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 2,
-                'price' => 500,
-                'image_url' => 'products/tibial_base.png',
-            ],
-
-            [
-                'code' => 'MTUUX700-K',
-                'name' => 'Tibial Base 7 Metalbacked',
-                'description' => 'Description for Tibial Base 7 Metalbacked',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 2,
-                'price' => 500,
-                'image_url' => 'products/tibial_base.png',
-            ],
-
-            [
-                'code' => 'MTUUX800-K',
-                'name' => 'Tibial Base 8 Metalbacked',
-                'description' => 'Description for Tibial Base 8 Metalbacked',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 2,
-                'price' => 500,
-                'image_url' => 'products/tibial_base.png',
-            ],
-
-            [
-                'code' => 'MO-MSEC-40/MA',
-                'name' => 'Cementless Modular Shell 40mm',
-                'description' => 'Description for Cementless Modular Shell 40mm',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 1,
-                'price' => 550,
-                'image_url' => 'products/MO-MSEC-40-MA.jpg',
-            ],
-
-            [
-                'code' => 'MO-MSEC-42/MA',
-                'name' => 'Cementless Modular Shell 42mm',
-                'description' => 'Description for Cementless Modular Shell 42mm',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 1,
-                'price' => 550,
-                'image_url' => 'products/MO-MSEC-42-MA.jpg',
-            ],
-
-            [
-                'code' => 'MO-MSEC-44/MB',
-                'name' => 'Cementless Modular Shell 44mm',
-                'description' => 'Description for Cementless Modular Shell 44mm',
-                'manufacturer_id' => 1,
-                'category_id' => 1,
-                'subcategory_id' => 1,
-                'price' => 550,
-                'image_url' => 'products/MO-MSEC-44-MB.jpg',
-            ],
+        // Validate required columns
+        $required = [
+            'code',
+            'name',
+            'manufacturer_code',
+            'category_code',
+            'subcategory_code',
         ];
 
-        foreach ($products as $product) {
-            Product::create($product);
+        $missing = array_diff($required, $headers);
+
+        if (! empty($missing)) {
+            throw new RuntimeException(
+                'Missing Excel columns: ' . implode(', ', $missing)
+            );
         }
+
+        DB::transaction(function () use ($rows, $headers) {
+
+            // Load relation IDs once for better performance
+            $manufacturers = Manufacturer::query()
+                ->pluck('id', 'code');
+
+            $categories = Category::query()
+                ->pluck('id', 'code');
+
+            $subcategories = SubCategory::query()
+                ->pluck('id', 'code');
+
+            foreach ($rows as $index => $values) {
+
+                $excelRow = $index + 2;
+
+                // Skip completely empty rows
+                $hasData = collect($values)->contains(
+                    fn($value) =>
+                    $value !== null &&
+                        trim((string) $value) !== ''
+                );
+
+                if (! $hasData) {
+                    continue;
+                }
+
+                // Convert Excel row to associative array
+                $row = array_combine(
+                    $headers,
+                    array_slice(
+                        array_pad(
+                            $values,
+                            count($headers),
+                            null
+                        ),
+                        0,
+                        count($headers)
+                    )
+                );
+
+                // Normalize values
+                $getValue = fn(string $key) =>
+                trim((string) ($row[$key] ?? ''));
+
+                $code = $getValue('code');
+                $name = $getValue('name');
+
+                $manufacturerCode = $getValue('manufacturer_code');
+                $categoryCode = $getValue('category_code');
+                $subcategoryCode = $getValue('subcategory_code');
+
+                // Validate required values
+                if (
+                    $code === '' ||
+                    $name === '' ||
+                    $manufacturerCode === '' ||
+                    $categoryCode === '' ||
+                    $subcategoryCode === ''
+                ) {
+                    throw new RuntimeException(
+                        "Missing required data at Excel row {$excelRow}"
+                    );
+                }
+
+                // Resolve Manufacturer ID
+                $manufacturerId = $manufacturers->get(
+                    $manufacturerCode
+                );
+
+                if ($manufacturerId === null) {
+                    throw new RuntimeException(
+                        "Manufacturer '{$manufacturerCode}' not found at row {$excelRow}"
+                    );
+                }
+
+                // Resolve Category ID
+                $categoryId = $categories->get(
+                    $categoryCode
+                );
+
+                if ($categoryId === null) {
+                    throw new RuntimeException(
+                        "Category '{$categoryCode}' not found at row {$excelRow}"
+                    );
+                }
+
+                // Resolve Subcategory ID independently
+                $subcategoryId = $subcategories->get(
+                    $subcategoryCode
+                );
+
+                if ($subcategoryId === null) {
+                    throw new RuntimeException(
+                        "Subcategory '{$subcategoryCode}' not found at row {$excelRow}"
+                    );
+                }
+
+                // Validate price
+                $price = $getValue('price');
+
+                if ($price !== '' && ! is_numeric($price)) {
+                    throw new RuntimeException(
+                        "Invalid price at Excel row {$excelRow}"
+                    );
+                }
+
+                // Create or update product
+                Product::updateOrCreate(
+                    [
+                        'code' => $code,
+                    ],
+                    [
+                        'name' => $name,
+                        'description' => $getValue('description') ?: null,
+                        'manufacturer_id' => $manufacturerId,
+                        'category_id' => $categoryId,
+                        'subcategory_id' => $subcategoryId,
+                        'price' => $price !== '' ? $price : null,
+                        'image_url' => $getValue('image_url') ?: null,
+                    ]
+                );
+            }
+        });
+
+        $this->command->info(
+            'Products imported successfully.'
+        );
     }
 }

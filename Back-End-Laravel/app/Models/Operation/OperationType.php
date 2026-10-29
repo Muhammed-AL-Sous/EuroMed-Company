@@ -10,10 +10,9 @@ class OperationType extends Model
     protected $table = 'operation_types';
 
     protected $fillable = [
-        'name',
         'code',
+        'name',
         'description',
-        'product_count'
     ];
 
     public function operations(): HasMany
