@@ -5,8 +5,8 @@
         "origin": "USA",
         "logo_text": "Maxx Orthopedics",
         "description": "Innovative Joint Replacement Systems Engineered for Patient Precision and Biomechanical Longevity.",
-        "website": "",
-        "is_active": ""
+        "website": "https://maxxortho.com",
+        "is_active": true
     },
     {
         "code": "manufacturer-002",
@@ -14,8 +14,8 @@
         "origin": "USA",
         "logo_text": "Zimmer Biomet",
         "description": "Global Leader in Musculoskeletal Healthcare, Joint Reconstruction, and Trauma Technologies.",
-        "website": "",
-        "is_active": ""
+        "website": "https://zimmerbiomet.com",
+        "is_active": true
     },
     {
         "code": "manufacturer-003",
@@ -23,8 +23,8 @@
         "origin": "Turkey",
         "logo_text": "Normmed Medical",
         "description": "Turkey Precision Orthopedic Implant Manufacturer Specializing in Advanced Plate-and-Screw Systems.",
-        "website": "",
-        "is_active": ""
+        "website": "https://www.normmed.com.tr/",
+        "is_active": true
     },
     {
         "code": "manufacturer-004",
@@ -32,8 +32,8 @@
         "origin": "Turkey",
         "logo_text": "Aysam Orthopedics",
         "description": "High-Grade Surgical Implants and Intramedullary Nailing Systems For Complex Trauma Surgery.",
-        "website": "",
-        "is_active": ""
+        "website": "https://aysam.com.tr",
+        "is_active": true
     },
     {
         "code": "manufacturer-005",
@@ -41,8 +41,8 @@
         "origin": "UK",
         "logo_text": "Smith & Nephew",
         "description": "Worldwide Medical Technology Company Producing Sports Medicine and Joint Reconstruction Solutions.",
-        "website": "",
-        "is_active": ""
+        "website": "https://smith-nephew.com",
+        "is_active": true
     },
     {
         "code": "manufacturer-006",
@@ -50,8 +50,8 @@
         "origin": "Italy",
         "logo_text": "Ortonommedical Surgical",
         "description": "Specialized European manufacturer of trauma products, cerclage cables, and cannulated screw systems.",
-        "website": "",
-        "is_active": ""
+        "website": "https://ortonommedical.com",
+        "is_active": true
     },
     {
         "code": "manufacturer-007",
@@ -59,7 +59,7 @@
         "origin": "Turkey",
         "logo_text": "Tasarimmed Medical",
         "description": "Tasarimmed Medical is a Turkish manufacturer specializing in orthopedic implants, spinal systems, and surgical medical devices.",
-        "website": "",
-        "is_active": ""
+        "website": "https://www.tasarimmed.com.tr/",
+        "is_active": true
     }
 ]

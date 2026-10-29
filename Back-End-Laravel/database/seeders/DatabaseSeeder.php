@@ -21,12 +21,12 @@ class DatabaseSeeder extends Seeder
             SubCategorySeeder::class,
             PatientSeeder::class,
             ProductSeeder::class,
-            OperationTypeSeeder::class,
             HospitalSeeder::class,
-            DoctorSeeder::class,
+            OperationTypeSeeder::class,
             RoleSeeder::class,
+            PermissionSeeder::class,
             UserSeeder::class,
-            PermissionSeeder::class
+            DoctorSeeder::class,
         ]);
     }
 }

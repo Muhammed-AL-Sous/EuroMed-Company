@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "name": "Admin",
+        "email": "admin@euromed.com",
+        "password": "admin@123",
+        "role": "admin",
+        "is_active": true
+    },
+    {
+        "id": 2,
+        "name": "Staff",
+        "email": "staff@euromed.com",
+        "password": "staff@123",
+        "role": "staff",
+        "is_active": true
+    },
+    {
+        "id": 3,
+        "name": "Dr Brwa Dilshad Jaff",
+        "email": "brwa-jaff@euromed.com",
+        "password": "brw@jaff@123",
+        "role": "doctor",
+        "is_active": true
+    },
+    {
+        "id": 4,
+        "name": "Dr Ahmed Rawanduzy",
+        "email": "Ahmed-Rawanduzy@euromed.com",
+        "password": "Ahm@Raw@123",
+        "role": "doctor",
+        "is_active": true
+    },
+    {
+        "id": 5,
+        "name": "Dr Amanj Mohsin Gardi",
+        "email": "amanj-gardi@euromed.com",
+        "password": "aman@gar@123",
+        "role": "doctor",
+        "is_active": true
+    }
+]
