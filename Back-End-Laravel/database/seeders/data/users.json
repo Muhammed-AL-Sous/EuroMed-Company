@@ -38,5 +38,45 @@
         "password": "aman@gar@123",
         "role": "doctor",
         "is_active": true
+    },
+    {
+        "id": 6,
+        "name": "Dr Ali Faisal Saeed",
+        "email": "ali-faisal@euromed.com",
+        "password": "ali@fais@123",
+        "role": "doctor",
+        "is_active": true
+    },
+    {
+        "id": 7,
+        "name": "Dr Imad Sherwany",
+        "email": "imad-sher@euromed.com",
+        "password": "imad@sher@123",
+        "role": "doctor",
+        "is_active": true
+    },
+    {
+        "id": 8,
+        "name": "Dr Ari Muhammed Ismail",
+        "email": "ari-mhd@euromed.com",
+        "password": "ari@mhd@123",
+        "role": "doctor",
+        "is_active": true
+    },
+    {
+        "id": 9,
+        "name": "Dr Abdulsamad Khoshnaw",
+        "email": "abd-khosh@euromed.com",
+        "password": "abd@khosh@123",
+        "role": "doctor",
+        "is_active": true
+    },
+    {
+        "id": 10,
+        "name": "Dr Mushtaq Abdulkhaleq Khorsheed",
+        "email": "mushtaq-khor@euromed.com",
+        "password": "mush@khor@123",
+        "role": "doctor",
+        "is_active": true
     }
 ]
