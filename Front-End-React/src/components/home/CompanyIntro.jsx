@@ -122,7 +122,7 @@ const CompanyIntro = () => {
                 initial={{ opacity: 0, scale: 0.7 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.4 }}
+                transition={{ duration: 0.2, delay: idx * 0.3 }}
               >
                 <div
                   key={idx}

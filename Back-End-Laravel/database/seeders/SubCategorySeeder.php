@@ -27,6 +27,7 @@ class SubCategorySeeder extends Seeder
                 [
                     'name' => $subcategory['name'],
                     'description' => $subcategory['description'],
+                    'image_url' => $subcategory['image_url'],
                 ]
             );
         }

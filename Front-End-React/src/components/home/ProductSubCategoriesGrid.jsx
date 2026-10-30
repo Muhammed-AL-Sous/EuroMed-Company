@@ -87,8 +87,8 @@ const ProductSubCategoriesGrid = ({ subCategories = [] }) => {
                       <div className="flex items-center justify-between mb-4">
                         <div
                           className="
-                          w-12
-                          h-12
+                          w-16
+                          h-16
                           rounded-xl
                           bg-sky-50
                           text-sky-600
@@ -103,7 +103,7 @@ const ProductSubCategoriesGrid = ({ subCategories = [] }) => {
                               subCategory.image_url || "/images/placeholder.png"
                             }
                             alt={subCategory.name}
-                            className="w-12 h-12 object-contain"
+                            className="w-15 h-15 object-contain"
                           />
                         </div>
 
