@@ -6,6 +6,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OperationController;
+use App\Http\Controllers\OperationExcelController;
 use App\Http\Controllers\OperationItemController;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -66,6 +67,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get(
             'operations',
             [OperationController::class, 'index']
+        );
+
+        Route::get(
+            '/operations/import-template',
+            [OperationExcelController::class, 'template']
+        );
+
+        Route::post(
+            '/operations/import',
+            [OperationExcelController::class, 'import']
         );
 
         Route::post(

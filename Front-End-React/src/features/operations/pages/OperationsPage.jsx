@@ -1,6 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useSearchParams } from "react-router";
-import { Search, ShieldAlert, SquarePen, Trash2, X } from "lucide-react";
+import {
+  Download,
+  LoaderCircle,
+  Search,
+  ShieldAlert,
+  SquarePen,
+  Trash2,
+  Upload,
+  X,
+} from "lucide-react";
 import { Card, Text } from "@radix-ui/themes";
 import { notifySonner } from "./../../../lib/notifySonner";
 
@@ -9,6 +18,8 @@ import {
   useDeleteOperationMutation,
   useUpdateOperationMutation,
   useLazyGetOperationQuery,
+  useDownloadOperationsTemplateMutation,
+  useImportOperationsMutation,
 } from "../OperationsApiSlice";
 
 import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
@@ -127,6 +138,19 @@ const getOperationLabel = (operation) => {
     : `Operation #${operation.id}`;
 };
 
+// Convert Laravel 422 validation errors into readable row-level messages.
+const collectImportErrors = (error) => {
+  const errors = error?.data?.errors;
+
+  if (!errors || typeof errors !== "object") return [];
+
+  return Object.entries(errors).flatMap(([field, messages]) =>
+    (Array.isArray(messages) ? messages : [messages]).map(
+      (message) => `${field}: ${String(message)}`,
+    ),
+  );
+};
+
 // ==================================================
 // Operations Page
 // ==================================================
@@ -137,6 +161,16 @@ const OperationsPage = () => {
   const role = location.pathname.split("/")[1];
 
   const scope = ["admin", "staff", "doctor"].includes(role) ? role : "admin";
+  const canImportOperations = scope === "admin" || scope === "staff";
+
+  const excelInputRef = useRef(null);
+  const [importErrors, setImportErrors] = useState([]);
+
+  const [downloadOperationsTemplate, { isLoading: isDownloadingTemplate }] =
+    useDownloadOperationsTemplateMutation();
+
+  const [importOperations, { isLoading: isImporting }] =
+    useImportOperationsMutation();
 
   const [searchParams, setSearchParams] = useSearchParams();
   // ==================================================
@@ -238,6 +272,79 @@ const OperationsPage = () => {
 
   const [updateOperation, { isLoading: isUpdating }] =
     useUpdateOperationMutation();
+
+  // ==================================================
+  // Download Excel Template
+  // ==================================================
+
+const handleDownloadExcelTemplate = async () => {
+  if (!canImportOperations || isDownloadingTemplate || isImporting) {
+    return;
+  }
+
+  try {
+    await downloadOperationsTemplate().unwrap();
+
+    notifySonner("Excel Template Downloaded Successfully");
+  } catch (error) {
+    console.error("Failed to Download Excel Template:", error);
+
+    notifySonner(
+      error?.data?.message ||
+        error?.message ||
+        error?.error ||
+        "Failed to Download Excel Template",
+      "error",
+    );
+  }
+};
+
+
+  // ==================================================
+  // Import Operations From Excel
+  // ==================================================
+  const handleExcelFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = ""; // Allows selecting the same file again.
+
+    if (!file || !canImportOperations || isImporting) return;
+
+    setImportErrors([]);
+
+    if (!/\.xlsx$/i.test(file.name)) {
+      notifySonner("Please Select an .xlsx Excel File", "error");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      notifySonner("Excel File Must Be 10 MB or Less", "error");
+      return;
+    }
+
+    try {
+      const result = await importOperations(file).unwrap();
+      setPage(1);
+
+      const operationsCount = result?.operations_created;
+      const itemsCount = result?.items_created;
+
+      notifySonner(
+        typeof operationsCount === "number" && typeof itemsCount === "number"
+          ? `Imported ${operationsCount} operations and ${itemsCount} items successfully`
+          : result?.message || "Operations Imported Successfully",
+      );
+    } catch (error) {
+      console.error("Failed to Import Operations:", error);
+
+      const details = collectImportErrors(error);
+      setImportErrors(details);
+
+      notifySonner(
+        error?.data?.message || "Failed to Import Operations",
+        "error",
+      );
+    }
+  };
 
   // ==================================================
   // Sync Search With URL
@@ -561,13 +668,58 @@ const OperationsPage = () => {
   return (
     <Card variant="ghost">
       {/* Header */}
-      <div className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between">
-        <Text as="div" size="6" weight="bold" className="text-sky-900">
-          All Operations
-        </Text>
+      <div className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <Text as="div" size="6" weight="bold" className="text-sky-900">
+            All Operations
+          </Text>
+
+          {canImportOperations && (
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={handleDownloadExcelTemplate}
+                disabled={isDownloadingTemplate || isImporting}
+                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-sky-200 bg-white px-4 py-2.5 text-sm font-semibold text-sky-700 transition hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isDownloadingTemplate ? (
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="h-4 w-4" />
+                )}
+                {isDownloadingTemplate
+                  ? "Downloading..."
+                  : "Download Excel Template"}
+              </button>
+
+              <input
+                ref={excelInputRef}
+                type="file"
+                accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                onChange={handleExcelFileChange}
+                aria-label="Choose Excel file to import operations"
+                className="sr-only"
+              />
+
+              <button
+                type="button"
+                onClick={() => excelInputRef.current?.click()}
+                disabled={isImporting || isDownloadingTemplate}
+                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isImporting ? (
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Upload className="h-4 w-4" />
+                )}
+                {isImporting ? "Importing..." : "Import Operations"}
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Search */}
-        <div className="relative w-full md:max-w-md">
+        <div className="relative w-full md:max-w-md md:self-end">
           <Search className="pointer-events-none absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2 text-slate-400" />
 
           <input
@@ -590,6 +742,41 @@ const OperationsPage = () => {
           )}
         </div>
       </div>
+
+      {/* Show Laravel row-level import validation errors */}
+      {canImportOperations && importErrors.length > 0 && (
+        <div
+          role="alert"
+          className="mx-4 mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="font-semibold">Excel Import Failed</p>
+              <p className="mt-1 text-red-700">
+                Please correct these errors and upload the file again:
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setImportErrors([])}
+              aria-label="Dismiss import errors"
+              className="cursor-pointer rounded p-1 transition hover:bg-red-100"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <ul className="mt-3 list-inside list-disc space-y-1 wrap-break-word">
+            {importErrors.slice(0, 10).map((message, index) => (
+              <li key={`${index}-${message}`}>{message}</li>
+            ))}
+          </ul>
+          {importErrors.length > 10 && (
+            <p className="mt-2 font-medium">
+              +{importErrors.length - 10} more errors
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Filters: selections immediately update the URL and query arguments. */}
       <div className="grid grid-cols-1 gap-4 border-t border-slate-100 p-4 md:grid-cols-2 xl:grid-cols-4">

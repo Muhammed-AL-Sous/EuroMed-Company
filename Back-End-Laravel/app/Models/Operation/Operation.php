@@ -23,6 +23,7 @@ class Operation extends Model
         'side',
         'patient_id',
         'description',
+        "import_reference"
     ];
 
     protected function casts(): array

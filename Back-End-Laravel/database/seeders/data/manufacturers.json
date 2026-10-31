@@ -61,5 +61,14 @@
         "description": "Tasarimmed Medical is a Turkish manufacturer specializing in orthopedic implants, spinal systems, and surgical medical devices.",
         "website": "https://www.tasarimmed.com.tr/",
         "is_active": true
+    },
+    {
+        "code": "manufacturer-008",
+        "name": "Biocomposites",
+        "origin": "UK",
+        "logo_text": "Biocomposites Medical",
+        "description": "Biocomposites is an international medical device company that engineers, manufactures and markets world leading products for use in infection management in bone and soft tissue. Based in Keele, UK, it has global operations across Europe, USA, Canada, China and India.",
+        "website": "https://biocomposites.com/",
+        "is_active": true
     }
 ]

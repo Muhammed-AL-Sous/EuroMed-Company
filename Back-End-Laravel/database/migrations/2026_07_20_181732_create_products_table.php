@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name')->unique();
             $table->text('description')->nullable();
-
+            $table->string('import_reference', 100)->nullable()->unique();
             $table->foreignId('manufacturer_id')
                 ->constrained()
                 ->restrictOnDelete();
