@@ -14,6 +14,7 @@ import {
   Church,
   FileText,
   GlobeCode,
+  Hash,
   RobotArm,
   Save,
 } from "lucide-react";
@@ -34,6 +35,7 @@ const INPUT_CLASS =
 
 const CreateManufacturerPage = () => {
   const [createForm, setCreateForm] = useState({
+    code: "",
     name: "",
     origin: "",
     logo_text: "",
@@ -65,6 +67,7 @@ const CreateManufacturerPage = () => {
       await addManufacturer(createForm).unwrap();
 
       setCreateForm({
+        code: "",
         name: "",
         origin: "",
         logo_text: "",
@@ -99,6 +102,42 @@ const CreateManufacturerPage = () => {
             <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
               <Form.Root className="w-full" onSubmit={handleSubmitManufacturer}>
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* =========== Manufacturer Code =========== */}
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="code"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Hash size={16} />
+                      Manufacturer Code
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        required
+                        id="manufacturer-code"
+                        name="code"
+                        type="text"
+                        value={createForm.code}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Manufacturer Code"
+                      />
+                    </Form.Control>
+
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Manufacturer Code
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Manufacturer Code
+                    </Form.Message>
+                  </Form.Field>
                   {/* =========== Manufacturer Name =========== */}
                   <Form.Field
                     className="grid content-start gap-1.5"

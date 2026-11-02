@@ -1,6 +1,6 @@
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
-import { Blocks, Church, FileText, Save } from "lucide-react";
+import { Blocks, Church, FileText, Hash, Save } from "lucide-react";
 
 import { notifySonner } from "../../../lib/notifySonner";
 import { useState } from "react";
@@ -16,6 +16,7 @@ const INPUT_CLASS =
 
 const CreateCategoryPage = () => {
   const [createForm, setCreateForm] = useState({
+    code: "",
     name: "",
     description: "",
   });
@@ -38,6 +39,7 @@ const CreateCategoryPage = () => {
       await addCategory(createForm).unwrap();
 
       setCreateForm({
+        code: "",
         name: "",
         description: "",
       });
@@ -65,6 +67,42 @@ const CreateCategoryPage = () => {
             <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
               <Form.Root className="w-full" onSubmit={handleSubmitCategory}>
                 <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 md:grid-cols-2">
+                  {/* =========== Category Code =========== */}
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="code"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Hash size={16} />
+                      Category Code
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        required
+                        id="category-code"
+                        name="code"
+                        type="text"
+                        value={createForm.code}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Category Code"
+                      />
+                    </Form.Control>
+
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Category Code
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Category Code
+                    </Form.Message>
+                  </Form.Field>
                   {/* =========== Category Name =========== */}
                   <Form.Field
                     className="grid content-start gap-1.5"

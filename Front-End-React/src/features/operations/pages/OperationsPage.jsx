@@ -277,28 +277,27 @@ const OperationsPage = () => {
   // Download Excel Template
   // ==================================================
 
-const handleDownloadExcelTemplate = async () => {
-  if (!canImportOperations || isDownloadingTemplate || isImporting) {
-    return;
-  }
+  const handleDownloadExcelTemplate = async () => {
+    if (!canImportOperations || isDownloadingTemplate || isImporting) {
+      return;
+    }
 
-  try {
-    await downloadOperationsTemplate().unwrap();
+    try {
+      await downloadOperationsTemplate().unwrap();
 
-    notifySonner("Excel Template Downloaded Successfully");
-  } catch (error) {
-    console.error("Failed to Download Excel Template:", error);
+      notifySonner("Excel Template Downloaded Successfully");
+    } catch (error) {
+      console.error("Failed to Download Excel Template:", error);
 
-    notifySonner(
-      error?.data?.message ||
-        error?.message ||
-        error?.error ||
-        "Failed to Download Excel Template",
-      "error",
-    );
-  }
-};
-
+      notifySonner(
+        error?.data?.message ||
+          error?.message ||
+          error?.error ||
+          "Failed to Download Excel Template",
+        "error",
+      );
+    }
+  };
 
   // ==================================================
   // Import Operations From Excel
@@ -717,30 +716,6 @@ const handleDownloadExcelTemplate = async () => {
             </div>
           )}
         </div>
-
-        {/* Search */}
-        <div className="relative w-full md:max-w-md md:self-end">
-          <Search className="pointer-events-none absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2 text-slate-400" />
-
-          <input
-            type="text"
-            value={searchInput}
-            onChange={handleSearchChange}
-            placeholder="Search operations..."
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-10 pl-11 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-          />
-
-          {searchInput && (
-            <button
-              type="button"
-              onClick={clearSearch}
-              aria-label="Clear search"
-              className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-slate-400 transition hover:text-red-500"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
       </div>
 
       {/* Show Laravel row-level import validation errors */}
@@ -780,6 +755,37 @@ const handleDownloadExcelTemplate = async () => {
 
       {/* Filters: selections immediately update the URL and query arguments. */}
       <div className="grid grid-cols-1 gap-4 border-t border-slate-100 p-4 md:grid-cols-2 xl:grid-cols-4">
+        {/* Search */}
+        <div>
+          <span className="text-sm font-semibold text-slate-700 ">
+            {" "}
+            Global Search
+          </span>
+          <span className="text-red-500 font-semibold px-1">*</span>
+          <div className="relative w-full md:max-w-md md:self-end">
+            <Search className="pointer-events-none absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2 text-slate-400" />
+
+            <input
+              type="text"
+              value={searchInput}
+              onChange={handleSearchChange}
+              placeholder="Search operations..."
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-10 pl-11 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+            />
+
+            {searchInput && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                aria-label="Clear search"
+                className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-slate-400 transition hover:text-red-500"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
         {scope !== "doctor" && (
           <OperationReferenceSelect
             type="doctor"

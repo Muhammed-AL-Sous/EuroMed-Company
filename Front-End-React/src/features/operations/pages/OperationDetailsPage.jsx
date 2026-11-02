@@ -200,7 +200,7 @@ const OperationMaterialsTable = ({ items }) => {
 
     const product = item.product;
 
-    return [product?.name, product?.code, product?.description]
+    return [product?.code, product?.name, product?.description]
       .filter(Boolean)
       .some((value) => String(value).toLowerCase().includes(searchTerm));
   });
@@ -259,11 +259,11 @@ const OperationMaterialsTable = ({ items }) => {
                 </th>
 
                 <th scope="col" className="px-4 py-3 font-semibold">
-                  Product
+                  Product Code
                 </th>
 
                 <th scope="col" className="px-4 py-3 font-semibold">
-                  Product Code
+                  Product
                 </th>
 
                 <th scope="col" className="px-4 py-3 text-center font-semibold">
@@ -271,7 +271,7 @@ const OperationMaterialsTable = ({ items }) => {
                 </th>
 
                 <th scope="col" className="px-4 py-3 text-right font-semibold">
-                  Catalog Price
+                  Product Image
                 </th>
               </tr>
             </thead>
@@ -295,22 +295,16 @@ const OperationMaterialsTable = ({ items }) => {
                       {/* Index */}
                       <td className="px-4 py-4 text-slate-500">{index + 1}</td>
 
+                      {/* Code */}
+                      <td className="px-4 py-4">
+                        <span className="inline-block rounded-md bg-slate-100 px-2.5 py-1 font-mono text-xs font-medium text-slate-700">
+                          {displayValue(product?.code)}
+                        </span>
+                      </td>
+
                       {/* Product */}
                       <td className="px-4 py-4">
                         <div className="flex min-w-56 items-center gap-3">
-                          <div className="flex h-13 w-13 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-                            {imageUrl ? (
-                              <img
-                                src={imageUrl}
-                                alt={product?.name || "Product"}
-                                className="h-full w-full object-contain"
-                                loading="lazy"
-                              />
-                            ) : (
-                              <Package size={22} className="text-slate-400" />
-                            )}
-                          </div>
-
                           <div className="min-w-0">
                             <p className="font-semibold text-slate-800">
                               {displayValue(product?.name)}
@@ -324,13 +318,6 @@ const OperationMaterialsTable = ({ items }) => {
                         </div>
                       </td>
 
-                      {/* Code */}
-                      <td className="px-4 py-4">
-                        <span className="inline-block rounded-md bg-slate-100 px-2.5 py-1 font-mono text-xs font-medium text-slate-700">
-                          {displayValue(product?.code)}
-                        </span>
-                      </td>
-
                       {/* Quantity */}
                       <td className="px-4 py-4 text-center">
                         <span className="inline-flex min-w-10 justify-center rounded-full bg-sky-50 px-3 py-1 font-semibold tabular-nums text-sky-700">
@@ -338,9 +325,20 @@ const OperationMaterialsTable = ({ items }) => {
                         </span>
                       </td>
 
-                      {/* Catalog Price */}
-                      <td className="px-4 py-4 text-right font-semibold tabular-nums text-slate-700">
-                        {formatPrice(product?.price)}
+                      {/* Product Img */}
+                      <td className="px-4 py-4 flex justify-center">
+                        <div className="h-13 w-13 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={product?.name || "Product"}
+                              className="h-full w-full object-contain"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <Package size={22} className="text-slate-400" />
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -371,11 +369,6 @@ const OperationMaterialsTable = ({ items }) => {
           </table>
         </div>
       </div>
-
-      <p className="mt-3 text-xs text-slate-500">
-        Catalog prices reflect current product values, not necessarily the
-        prices at the time of the operation.
-      </p>
     </DetailsCard>
   );
 };

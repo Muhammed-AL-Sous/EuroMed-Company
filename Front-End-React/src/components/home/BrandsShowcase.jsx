@@ -48,7 +48,7 @@ const BrandsShowcase = () => {
 
                 <div className="mt-6 pt-4 border-t border-slate-200/60 flex items-center justify-between">
                   <Link
-                    to={`/products?brand=${brand.id}`}
+                    to={`/products?manufacturer_id=${brand.id}`}
                     className="text-xs font-bold text-sky-600 hover:text-sky-700 flex items-center gap-1"
                   >
                     View Implants ({brand.products_count || 0})

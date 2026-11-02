@@ -92,3 +92,76 @@ body {
 }
 
 /* ================================================================= */
+
+/* =========================================
+   Operation Report - Print / PDF
+========================================= */
+
+@page {
+  size: A4 portrait;
+  margin: 10mm;
+}
+
+@media print {
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+
+  .operation-report {
+    width: 100% !important;
+    max-width: none !important;
+    background: white !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Allow cards to continue on the next page */
+  .operation-report .report-card {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    padding: 3mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Keep section titles with their content */
+  .operation-report h2,
+  .operation-report h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Product table */
+  .operation-report table {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-collapse: collapse;
+  }
+
+  .operation-report th,
+  .operation-report td {
+    padding: 4px !important;
+    font-size: 10px !important;
+  }
+
+  /* Repeat table headers on each page */
+  .operation-report thead {
+    display: table-header-group;
+  }
+
+  /* Do not split a product row */
+  .operation-report tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .operation-report img {
+    max-width: 100%;
+    break-inside: avoid;
+  }
+}

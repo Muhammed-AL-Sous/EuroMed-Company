@@ -1,6 +1,6 @@
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
-import { Church, FileText, Box as BoxIcon, Save } from "lucide-react";
+import { Church, FileText, Box as BoxIcon, Save, Hash } from "lucide-react";
 
 import { notifySonner } from "../../../lib/notifySonner";
 import { useState } from "react";
@@ -19,6 +19,7 @@ const INPUT_CLASS =
 
 const CreateSubCategoryPage = () => {
   const [createForm, setCreateForm] = useState({
+    code: "",
     name: "",
     description: "",
   });
@@ -42,6 +43,7 @@ const CreateSubCategoryPage = () => {
     e.preventDefault();
 
     const formData = new FormData();
+    formData.append("code", createForm.code.trim());
     formData.append("name", createForm.name.trim());
     formData.append("description", createForm.description.trim());
 
@@ -58,6 +60,7 @@ const CreateSubCategoryPage = () => {
       setImageResetKey((prev) => prev + 1);
 
       setCreateForm({
+        code: "",
         name: "",
         description: "",
         image_url: "",
@@ -100,6 +103,42 @@ const CreateSubCategoryPage = () => {
                 />
 
                 <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 md:grid-cols-2">
+                  {/* =========== SubCategory Code =========== */}
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="code"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Hash size={16} />
+                      SubCategory Code
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        required
+                        id="subcategory-code"
+                        name="code"
+                        type="text"
+                        value={createForm.code}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Subcategory Code"
+                      />
+                    </Form.Control>
+
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The SubCategory Code
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid SubCategory Code
+                    </Form.Message>
+                  </Form.Field>
                   {/* =========== SubCategory Name =========== */}
                   <Form.Field
                     className="grid content-start gap-1.5"

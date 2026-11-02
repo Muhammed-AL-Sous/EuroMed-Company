@@ -99,7 +99,18 @@ const getErrorMessage = (error) =>
 // ---------------------------------------------------------
 const DetailsCard = ({ children, className = "" }) => (
   <section
-    className={`break-inside-avoid rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 print:shadow-none ${className}`}
+    className={`
+      report-card
+      rounded-xl border border-slate-200
+      bg-white p-5 shadow-sm sm:p-6
+
+      print:break-inside-auto
+      print:rounded-md
+      print:p-3
+      print:shadow-none
+
+      ${className}
+    `}
   >
     {children}
   </section>
@@ -158,127 +169,128 @@ const Notes = ({ label, children, tone = "neutral" }) => (
 // ---------------------------------------------------------
 // Detailed product: ALL fields from the original component
 // ---------------------------------------------------------
-const ProductDetailsCard = ({ item, index }) => {
-  const product = item.product;
-  if (!product) return null;
+// const ProductDetailsCard = ({ item, index }) => {
+//   const product = item.product;
+//   if (!product) return null;
 
-  const imageUrl = resolveImageUrl(product.image_url);
-  const specifications =
-    product.specifications &&
-    typeof product.specifications === "object" &&
-    !Array.isArray(product.specifications)
-      ? Object.entries(product.specifications)
-      : [];
-  const sizes = Array.isArray(product.available_sizes)
-    ? product.available_sizes
-    : [];
+//   const imageUrl = resolveImageUrl(product.image_url);
+//   const specifications =
+//     product.specifications &&
+//     typeof product.specifications === "object" &&
+//     !Array.isArray(product.specifications)
+//       ? Object.entries(product.specifications)
+//       : [];
+//   const sizes = Array.isArray(product.available_sizes)
+//     ? product.available_sizes
+//     : [];
 
-  return (
-    <article className="break-inside-avoid overflow-hidden rounded-xl border border-slate-200 bg-white">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 bg-slate-50 px-4 py-4 sm:px-5">
-        <div className="min-w-0">
-          <p className="text-xs font-semibold text-sky-700">
-            Material #{index + 1}
-          </p>
-          <h3 className="mt-1 break-words text-base font-bold text-slate-800">
-            {getName(product.name)}
-          </h3>
-          <p className="mt-1 font-mono text-xs text-slate-500">
-            {showValue(product.code)}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <span className="rounded-lg bg-sky-100 px-3 py-1.5 text-xs font-semibold text-sky-800">
-            Quantity: {showValue(item.quantity)}
-          </span>
-          <span className="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
-            {formatPrice(product.price)}
-          </span>
-        </div>
-      </div>
+//   return (
+//     <article className="break-inside-avoid overflow-hidden rounded-xl border border-slate-200 bg-white">
+//       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 bg-slate-50 px-4 py-4 sm:px-5">
+//         <div className="min-w-0">
+//           <p className="text-xs font-semibold text-sky-700">
+//             Material #{index + 1}
+//           </p>
+//           <h3 className="mt-1 break-words text-base font-bold text-slate-800">
+//             {getName(product.name)}
+//           </h3>
+//           <p className="mt-1 font-mono text-xs text-slate-500">
+//             {showValue(product.code)}
+//           </p>
+//         </div>
+//         <div className="flex flex-wrap gap-2">
+//           <span className="rounded-lg bg-sky-100 px-3 py-1.5 text-xs font-semibold text-sky-800">
+//             Quantity: {showValue(item.quantity)}
+//           </span>
+//           <span className="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
+//             {formatPrice(product.price)}
+//           </span>
+//         </div>
+//       </div>
 
-      <div className="space-y-5 p-4 sm:p-5">
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-          <InfoField label="Product ID" value={product.id} />
-          <InfoField label="Product Code" value={product.code} mono />
-          <InfoField label="Manufacturer ID" value={product.manufacturer_id} />
-          <InfoField label="Category ID" value={product.category_id} />
-          <InfoField label="Subcategory ID" value={product.subcategory_id} />
-          <InfoField label="Unit Price" value={formatPrice(product.price)} />
-          <InfoField label="Used Quantity" value={item.quantity} />
-          <InfoField label="Item ID" value={item.id} />
-        </div>
+//       <div className="space-y-5 p-4 sm:p-5">
+//         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+//           <InfoField label="Product ID" value={product.id} />
+//           <InfoField label="Product Code" value={product.code} mono />
+//           <InfoField label="Manufacturer ID" value={product.manufacturer_id} />
+//           <InfoField label="Category ID" value={product.category_id} />
+//           <InfoField label="Subcategory ID" value={product.subcategory_id} />
+//           <InfoField label="Unit Price" value={formatPrice(product.price)} />
+//           <InfoField label="Used Quantity" value={item.quantity} />
+//           <InfoField label="Item ID" value={item.id} />
+//         </div>
 
-        {imageUrl && (
-          <div className="flex justify-center border-t border-slate-100 pt-5">
-            <img
-              src={imageUrl}
-              alt={getName(product.name)}
-              className="h-44 w-44 rounded-xl border border-slate-200 bg-white object-contain p-3"
-              loading="lazy"
-            />
-          </div>
-        )}
+//         {imageUrl && (
+//           <div className="flex justify-center border-t border-slate-100 pt-5">
+//             <img
+//               src={imageUrl}
+//               alt={getName(product.name)}
+//               className="h-44 w-44 rounded-xl border border-slate-200 bg-white object-contain p-3"
+//               loading="lazy"
+//             />
+//           </div>
+//         )}
 
-        {product.description && (
-          <Notes label="Product Description">{product.description}</Notes>
-        )}
-        {product.medical_usage && (
-          <Notes label="Medical Usage" tone="info">
-            {product.medical_usage}
-          </Notes>
-        )}
+//         {product.description && (
+//           <Notes label="Product Description">{product.description}</Notes>
+//         )}
+//         {product.medical_usage && (
+//           <Notes label="Medical Usage" tone="info">
+//             {product.medical_usage}
+//           </Notes>
+//         )}
 
-        {specifications.length > 0 && (
-          <div>
-            <h4 className="text-xs font-semibold text-slate-500">
-              Specifications
-            </h4>
-            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {specifications.map(([key, value]) => (
-                <div
-                  key={key}
-                  className="rounded-lg border border-slate-200 bg-slate-50 p-3"
-                >
-                  <p className="break-words text-xs font-medium text-slate-500">
-                    {key}
-                  </p>
-                  <p className="mt-1 break-words text-sm font-semibold text-slate-800">
-                    {showValue(value)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+//         {specifications.length > 0 && (
+//           <div>
+//             <h4 className="text-xs font-semibold text-slate-500">
+//               Specifications
+//             </h4>
+//             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+//               {specifications.map(([key, value]) => (
+//                 <div
+//                   key={key}
+//                   className="rounded-lg border border-slate-200 bg-slate-50 p-3"
+//                 >
+//                   <p className="break-words text-xs font-medium text-slate-500">
+//                     {key}
+//                   </p>
+//                   <p className="mt-1 break-words text-sm font-semibold text-slate-800">
+//                     {showValue(value)}
+//                   </p>
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         )}
 
-        {sizes.length > 0 && (
-          <div>
-            <h4 className="text-xs font-semibold text-slate-500">
-              Available Sizes
-            </h4>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {sizes.map((size, sizeIndex) => (
-                <span
-                  key={`${String(size)}-${sizeIndex}`}
-                  className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700"
-                >
-                  {showValue(size)}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </article>
-  );
-};
+//         {sizes.length > 0 && (
+//           <div>
+//             <h4 className="text-xs font-semibold text-slate-500">
+//               Available Sizes
+//             </h4>
+//             <div className="mt-3 flex flex-wrap gap-2">
+//               {sizes.map((size, sizeIndex) => (
+//                 <span
+//                   key={`${String(size)}-${sizeIndex}`}
+//                   className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700"
+//                 >
+//                   {showValue(size)}
+//                 </span>
+//               ))}
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </article>
+//   );
+// };
 
 // ---------------------------------------------------------
 // Read-only report. This is the node used by Print / PDF.
 // ---------------------------------------------------------
 const OperationReport = ({ operation, reportRef }) => {
   const items = Array.isArray(operation.items) ? operation.items : EMPTY_ITEMS;
+  console.log(items);
   const totalQuantity = items.reduce(
     (sum, item) => sum + (Number(item.quantity) || 0),
     0,
@@ -321,6 +333,12 @@ const OperationReport = ({ operation, reportRef }) => {
         />
         <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 sm:grid-cols-2 xl:grid-cols-4">
           <InfoField
+            icon={KeyRound}
+            label="Operation Code"
+            value={operation.patient_access_code}
+            mono
+          />
+          <InfoField
             icon={CalendarDays}
             label="Operation Date"
             value={formatDate(operation.operation_date)}
@@ -329,37 +347,40 @@ const OperationReport = ({ operation, reportRef }) => {
             label="Operation Type"
             value={getName(operation.operation_type?.name)}
           />
-          <InfoField
-            icon={KeyRound}
-            label="Operation Code"
-            value={operation.patient_access_code}
-            mono
-          />
+
           <InfoField icon={Layers3} label="Side" value={operation.side} />
-          <InfoField
+          {/* <InfoField
             icon={FileText}
             label="Invoice Number"
             value={operation.invoice_number}
             mono
-          />
-          <InfoField icon={Hash} label="Operation ID" value={operation.id} />
-          <InfoField
+          /> */}
+          {/* <InfoField icon={Hash} label="Operation ID" value={operation.id} /> */}
+          {/* <InfoField
             icon={CalendarDays}
             label="Created At"
             value={formatDate(operation.created_at)}
-          />
-          <InfoField
+          /> */}
+          {/* <InfoField
             icon={CalendarDays}
             label="Updated At"
             value={formatDate(operation.updated_at)}
-          />
+          /> */}
         </div>
         {operation.description && (
           <Notes label="Operation Description">{operation.description}</Notes>
         )}
       </DetailsCard>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div
+        className="
+    grid grid-cols-1 gap-5
+    lg:grid-cols-3
+    print:grid-cols-3
+    print:gap-2
+    print:items-start
+  "
+      >
         {operation.patient && (
           <DetailsCard>
             <SectionHeader
@@ -367,7 +388,17 @@ const OperationReport = ({ operation, reportRef }) => {
               title="Patient Information"
               subtitle="Patient details"
             />
-            <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 sm:grid-cols-2">
+            <div
+              className="
+  mt-5 grid grid-cols-1 gap-5
+  border-t border-slate-100 pt-5
+  sm:grid-cols-2
+  print:mt-2
+  print:grid-cols-1
+  print:gap-2
+  print:pt-2
+"
+            >
               <InfoField
                 icon={UserRound}
                 label="Patient Name"
@@ -388,11 +419,11 @@ const OperationReport = ({ operation, reportRef }) => {
                 label="Date of Birth"
                 value={formatDate(operation.patient.date_of_birth)}
               />
-              <InfoField
+              {/* <InfoField
                 icon={Hash}
                 label="Patient ID"
                 value={operation.patient.id}
-              />
+              /> */}
             </div>
           </DetailsCard>
         )}
@@ -404,7 +435,17 @@ const OperationReport = ({ operation, reportRef }) => {
               title="Attending Doctor"
               subtitle="Physician responsible for the operation"
             />
-            <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 sm:grid-cols-2">
+            <div
+              className="
+  mt-5 grid grid-cols-1 gap-5
+  border-t border-slate-100 pt-5
+  sm:grid-cols-2
+  print:mt-2
+  print:grid-cols-1
+  print:gap-2
+  print:pt-2
+"
+            >
               <InfoField
                 icon={Stethoscope}
                 label="Doctor Name"
@@ -422,9 +463,7 @@ const OperationReport = ({ operation, reportRef }) => {
             </Notes>
           </DetailsCard>
         )}
-      </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {operation.hospital && (
           <DetailsCard>
             <SectionHeader
@@ -432,7 +471,17 @@ const OperationReport = ({ operation, reportRef }) => {
               title="Hospital Information"
               subtitle="Medical facility details"
             />
-            <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 sm:grid-cols-2">
+            <div
+              className="
+  mt-5 grid grid-cols-1 gap-5
+  border-t border-slate-100 pt-5
+  sm:grid-cols-2
+  print:mt-2
+  print:grid-cols-1
+  print:gap-2
+  print:pt-2
+"
+            >
               <InfoField
                 icon={Building2}
                 label="Hospital"
@@ -447,16 +496,19 @@ const OperationReport = ({ operation, reportRef }) => {
                 label="City"
                 value={getName(operation.hospital.city)}
               />
-              <InfoField
+              {/* <InfoField
                 icon={Hash}
                 label="Hospital ID"
                 value={operation.hospital.id}
-              />
+              /> */}
             </div>
           </DetailsCard>
         )}
+      </div>
 
-        {operation.operation_type && (
+      {/* <div className="grid grid-cols-1 gap-5 lg:grid-cols-3"> */}
+
+      {/* {operation.operation_type && (
           <DetailsCard>
             <SectionHeader
               icon={FileText}
@@ -490,8 +542,8 @@ const OperationReport = ({ operation, reportRef }) => {
               </Notes>
             )}
           </DetailsCard>
-        )}
-      </div>
+        )} */}
+      {/* </div> */}
 
       <DetailsCard>
         <SectionHeader
@@ -509,46 +561,83 @@ const OperationReport = ({ operation, reportRef }) => {
             </div>
           }
         />
-        <div className="mt-5 overflow-x-auto rounded-lg border border-slate-200">
-          <table className="w-full min-w-[620px] border-collapse text-left text-sm">
+        <div className="mt-5 overflow-x-auto rounded-lg border border-slate-200 print:mt-2 print:overflow-visible">
+          <table className="w-full min-w-155 border-collapse text-center text-sm">
             <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
               <tr>
-                <th scope="col" className="px-4 py-3">
+                <th scope="col" className="px-4 py-3 border-r border-slate-200">
                   #
                 </th>
-                <th scope="col" className="px-4 py-3">
-                  Product
-                </th>
-                <th scope="col" className="px-4 py-3">
+                <th scope="col" className="px-4 py-3 border-r border-slate-200">
                   Code
                 </th>
-                <th scope="col" className="px-4 py-3 text-center">
+                <th scope="col" className="px-4 py-3 border-r border-slate-200">
+                  Product
+                </th>
+
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-center border-r border-slate-200"
+                >
                   Quantity
                 </th>
-                <th scope="col" className="px-4 py-3 text-right">
-                  Unit Price
+                <th scope="col" className="px-4 py-3 text-center ">
+                  Product Image
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {items.length > 0 ? (
-                items.map((item, index) => (
-                  <tr key={item.id ?? index} className="hover:bg-sky-50/50">
-                    <td className="px-4 py-3 text-slate-500">{index + 1}</td>
-                    <td className="px-4 py-3 font-semibold text-slate-800">
-                      {getName(item.product?.name)}
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600">
-                      {showValue(item.product?.code)}
-                    </td>
-                    <td className="px-4 py-3 text-center font-semibold text-sky-700">
-                      {showValue(item.quantity)}
-                    </td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-700">
-                      {formatPrice(item.product?.price)}
-                    </td>
-                  </tr>
-                ))
+                items.map((item, index) => {
+                  const imageUrl =
+                    typeof item?.product?.image_url === "string" &&
+                    /^https?:\/\//i.test(item?.product?.image_url)
+                      ? item?.product?.image_url
+                      : null;
+                  // console.log(imageUrl)
+                  return (
+                    <tr key={item.id ?? index} className="hover:bg-sky-50/50">
+                      <td className="px-4 py-3 font-semibold text-slate-500 border border-slate-200">
+                        {index + 1}
+                      </td>
+
+                      <td className="px-4 py-3 border border-slate-200">
+                        <span className="inline-block rounded-md bg-slate-100 px-2.5 py-1 font-mono text-xs font-bold text-slate-700">
+                          {showValue(item.product?.code)}
+                        </span>
+                      </td>
+
+                      <td className="px-4 py-3 text-xs text-slate-600 border border-slate-200">
+                        <div className="flex min-w-56 items-center justify-center gap-3">
+                          <div className="min-w-0">
+                            <p className="font-semibold text-slate-800">
+                              {getName(item.product?.name)}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-3 text-center font-semibold text-sky-700 border border-slate-200">
+                        {showValue(item.quantity)}
+                      </td>
+
+                      <td className="px-4 py-3 text-slate-700 border border-slate-200">
+                        <div className="flex items-center justify-center w-full h-full">
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={item?.name || "Product"}
+                              className="w-15 h-10 object-contain"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <Package size={22} className="text-slate-400" />
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td
@@ -564,7 +653,7 @@ const OperationReport = ({ operation, reportRef }) => {
         </div>
       </DetailsCard>
 
-      {items.some((item) => item.product) && (
+      {/* {items.some((item) => item.product) && (
         <DetailsCard>
           <SectionHeader
             icon={Package}
@@ -581,15 +670,7 @@ const OperationReport = ({ operation, reportRef }) => {
             ))}
           </div>
         </DetailsCard>
-      )}
-
-      <footer className="flex flex-wrap justify-between gap-3 rounded-xl border border-slate-200 bg-white px-5 py-4 text-xs text-slate-500">
-        <span>
-          Verification Authority: EuroMed Quality Control &amp; Compliance
-          Office, Erbil, Iraq
-        </span>
-        <span className="font-mono">ISO 13485 Compliant</span>
-      </footer>
+      )} */}
     </div>
   );
 };
@@ -677,9 +758,26 @@ const OperationDetailsPage = () => {
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
+
     documentTitle: operationData
       ? `Operation-${operationData.patient_access_code}`
       : "Operation-Certificate",
+
+    pageStyle: `
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
+    @media print {
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: auto;
+        overflow: visible;
+      }
+    }
+  `,
   });
 
   // Keeps the original Laravel + Browsershot PDF endpoint contract.
@@ -877,7 +975,17 @@ const OperationDetailsPage = () => {
                 </button>
               </div>
             </div>
-            <OperationReport reportRef={printRef} operation={operationData} />
+            <OperationReport
+              reportRef={printRef}
+              className="
+    operation-report
+    space-y-5 bg-slate-50 p-1
+    print:space-y-2
+    print:bg-white
+    print:p-0
+  "
+              operation={operationData}
+            />
           </>
         )}
       </div>

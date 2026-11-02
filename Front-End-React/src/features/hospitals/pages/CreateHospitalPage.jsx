@@ -1,6 +1,13 @@
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
-import { Church, GlobeLock, Hospital, Landmark, Save } from "lucide-react";
+import {
+  Church,
+  GlobeLock,
+  Hash,
+  Hospital,
+  Landmark,
+  Save,
+} from "lucide-react";
 
 import { useAddHospitalMutation } from "../HospitalsApiSlice";
 import { notifySonner } from "../../../lib/notifySonner";
@@ -16,6 +23,7 @@ const INPUT_CLASS =
 
 const CreateHospitalPage = () => {
   const [createForm, setCreateForm] = useState({
+    code: "",
     name: "",
     type: "Government",
     city: "",
@@ -39,6 +47,7 @@ const CreateHospitalPage = () => {
       await addHospital(createForm).unwrap();
 
       setCreateForm({
+        code: "",
         name: "",
         type: "Government",
         city: "",
@@ -67,6 +76,42 @@ const CreateHospitalPage = () => {
             <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
               <Form.Root className="w-full" onSubmit={handleSubmitHospital}>
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* =========== Hospital Code =========== */}
+                  <Form.Field
+                    className="grid content-start gap-1.5"
+                    name="code"
+                  >
+                    <Form.Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                      <Hash size={16} />
+                      Hospital Code
+                    </Form.Label>
+                    <Form.Control asChild>
+                      <input
+                        className={INPUT_CLASS}
+                        required
+                        id="hospital-code"
+                        name="code"
+                        type="text"
+                        value={createForm.code}
+                        onChange={handleCreateFormChange}
+                        disabled={isCreating}
+                        placeholder="Enter Hospital Code"
+                      />
+                    </Form.Control>
+
+                    <Form.Message
+                      className="text-xs text-red-700 font-bold mt-2"
+                      match="valueMissing"
+                    >
+                      Please Enter The Hospital Code
+                    </Form.Message>
+                    <Form.Message
+                      className="text-[13px] text-red-700 opacity-80"
+                      match="typeMismatch"
+                    >
+                      Please Provide a Valid Hospital Code
+                    </Form.Message>
+                  </Form.Field>
                   {/* =========== Hospital Name =========== */}
                   <Form.Field
                     className="grid content-start gap-1.5"
