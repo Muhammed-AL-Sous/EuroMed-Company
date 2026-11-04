@@ -185,11 +185,12 @@ class OperationController extends Controller
         );
     }
 
-
-
     public function doctorIndex(Request $request): JsonResponse
     {
-        abort_unless($request->user()?->hasRole('doctor'), 403);
+        abort_unless(
+            $request->user()?->hasRole('doctor'),
+            403
+        );
 
         $doctor = $request->user()->doctor;
 
@@ -198,9 +199,32 @@ class OperationController extends Controller
         }
 
         $filters = $request->validate([
-            'hospital_id' => ['sometimes', 'integer', 'exists:hospitals,id'],
-            'date' => ['sometimes', 'date'],
-            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'search' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:100',
+            ],
+            'hospital_id' => [
+                'sometimes',
+                'integer',
+                'exists:hospitals,id',
+            ],
+            'date' => [
+                'sometimes',
+                'date',
+            ],
+            'operation_type_id' => [
+                'sometimes',
+                'integer',
+                'exists:operation_types,id',
+            ],
+            'per_page' => [
+                'sometimes',
+                'integer',
+                'min:1',
+                'max:100',
+            ],
         ]);
 
         $operations = $this->operationService->doctorOperations(
@@ -208,7 +232,9 @@ class OperationController extends Controller
             $filters
         );
 
-        return $this->success(OperationResource::collection($operations));
+        return $this->success(
+            OperationResource::collection($operations)
+        );
     }
 
     public function store(

@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_number')->unique()->nullable();
             $table->date('operation_date');
-
+            $table->string('import_reference', 100)
+                ->nullable()
+                ->unique();
             $table->foreignId('doctor_id')
                 ->constrained('doctors')
                 ->restrictOnDelete();

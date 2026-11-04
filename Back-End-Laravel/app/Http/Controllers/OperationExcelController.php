@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Doctor;
 use App\Models\Hospital;
-use App\Models\Operation;
+use App\Models\Operation\Operation;
 use App\Models\Operation\OperationType;
 use App\Models\Patient;
 use App\Models\Product;
@@ -13,7 +13,6 @@ use DateTimeImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\NamedRange;
@@ -41,6 +40,7 @@ class OperationExcelController extends Controller
         $operations->setTitle('Operations');
         $operations->fromArray([
             'import_reference',
+            'operation_code',
             'operation_date',
             'doctor',
             'hospital',
@@ -53,8 +53,73 @@ class OperationExcelController extends Controller
         $items = $book->createSheet();
         $items->setTitle('OperationItems');
         $items->fromArray([
-            'import_reference', 'product', 'quantity',
+            'import_reference',
+            'product',
+            'quantity',
         ], null, 'A1');
+
+        // Visible database snapshot, so staff can see which references and codes
+        // are already taken before entering new operations in the blank template.
+        // The import endpoint still validates uniqueness against the LIVE database.
+        $existing = $book->createSheet();
+        $existing->setTitle('ExistingOperations');
+        $existing->setCellValue('A1', 'Existing operations in the database (reference list)');
+        $existing->setCellValue(
+            'A2',
+            'Snapshot taken at ' . now()->format('Y-m-d H:i') . '. Download the template again to refresh this list.'
+        );
+        $existing->fromArray([
+            'database_id',
+            'import_reference',
+            'operation_code',
+            'invoice_number',
+            'operation_date',
+        ], null, 'A4');
+        $existing->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $existing->getStyle('A4:E4')->getFont()->setBold(true);
+        $existing->freezePane('A5');
+
+        foreach (['A' => 16, 'B' => 28, 'C' => 24, 'D' => 26, 'E' => 22] as $col => $width) {
+            $existing->getColumnDimension($col)->setWidth($width);
+        }
+
+        $existingRow = 5;
+        foreach (
+            Operation::query()
+                ->select(['id', 'import_reference', 'patient_access_code', 'invoice_number', 'operation_date'])
+                ->orderByDesc('id')
+                ->cursor() as $storedOperation
+        ) {
+            $existing->setCellValue("A{$existingRow}", $storedOperation->id);
+
+            // Write user/database strings as literal text, never Excel formulas.
+            foreach (
+                [
+                    'B' => $storedOperation->import_reference,
+                    'C' => $storedOperation->patient_access_code,
+                    'D' => $storedOperation->invoice_number,
+                    'E' => substr((string) ($storedOperation->getRawOriginal('operation_date') ?? ''), 0, 10),
+                ] as $column => $value
+            ) {
+                $existing->setCellValueExplicit(
+                    "{$column}{$existingRow}",
+                    (string) ($value ?? ''),
+                    DataType::TYPE_STRING
+                );
+            }
+
+            $existingRow++;
+        }
+
+        if ($existingRow === 5) {
+            $existing->setCellValue('A5', 'No operations have been saved yet.');
+        }
+        $existing->setAutoFilter('A4:E' . max(5, $existingRow - 1));
+        $existing->setCellValue(
+            'G4',
+            'A blank import_reference means that operation has no import reference; its operation_code may still be in use.'
+        );
+        $existing->getColumnDimension('G')->setWidth(95);
 
         $lists = $book->createSheet();
         $lists->setTitle('Lists');
@@ -91,27 +156,31 @@ class OperationExcelController extends Controller
         }
 
         // The value list is convenience, NOT a security boundary.
-        $this->applyDropdown($operations, 'C', 'DoctorsOptions', self::MAX_OPERATIONS);
-        $this->applyDropdown($operations, 'D', 'HospitalsOptions', self::MAX_OPERATIONS);
-        $this->applyDropdown($operations, 'E', 'OperationTypesOptions', self::MAX_OPERATIONS);
-        $this->applyDropdown($operations, 'F', 'PatientsOptions', self::MAX_OPERATIONS);
-        $this->applyDropdown($operations, 'G', 'SidesOptions', self::MAX_OPERATIONS);
+        $this->applyDropdown($operations, 'D', 'DoctorsOptions', self::MAX_OPERATIONS);
+        $this->applyDropdown($operations, 'E', 'HospitalsOptions', self::MAX_OPERATIONS);
+        $this->applyDropdown($operations, 'F', 'OperationTypesOptions', self::MAX_OPERATIONS);
+        $this->applyDropdown($operations, 'G', 'PatientsOptions', self::MAX_OPERATIONS);
+        $this->applyDropdown($operations, 'H', 'SidesOptions', self::MAX_OPERATIONS);
         $this->applyDropdown($items, 'B', 'ProductsOptions', self::MAX_ITEMS);
 
-        $operations->getStyle('A1:H1')->getFont()->setBold(true);
+        $operations->getStyle('A1:I1')->getFont()->setBold(true);
         $items->getStyle('A1:C1')->getFont()->setBold(true);
         $operations->freezePane('A2');
         $items->freezePane('A2');
 
-        foreach (['A' => 25, 'B' => 20, 'C' => 40, 'D' => 48, 'E' => 48, 'F' => 48, 'G' => 18, 'H' => 55] as $col => $width) {
+        foreach (['A' => 25, 'B' => 20, 'C' => 20, 'D' => 40, 'E' => 48, 'F' => 48, 'G' => 48, 'H' => 18, 'I' => 55] as $col => $width) {
             $operations->getColumnDimension($col)->setWidth($width);
         }
         foreach (['A' => 25, 'B' => 55, 'C' => 16] as $col => $width) {
             $items->getColumnDimension($col)->setWidth($width);
         }
 
-        // Encourages YYYY-MM-DD strings rather than locale-dependent Excel dates.
+        // Preserve manually entered operation codes as text (e.g. A0001).
         $operations->getStyle('B2:B' . (self::MAX_OPERATIONS + 1))
+            ->getNumberFormat()->setFormatCode('@');
+
+        // Encourage YYYY-MM-DD strings rather than locale-dependent Excel dates.
+        $operations->getStyle('C2:C' . (self::MAX_OPERATIONS + 1))
             ->getNumberFormat()->setFormatCode('@');
 
         // Do not confuse hiding a sheet with authentication or data protection.
@@ -130,7 +199,8 @@ class OperationExcelController extends Controller
 
     /**
      * Import operations atomically; reject ALL rows if even one is invalid.
-     * The same import_reference can never be created twice (DB UNIQUE index).
+     * import_reference links rows to items; operation_code is manually supplied.
+     * Both import_reference and patient_access_code require DB UNIQUE indexes.
      */
     public function import(Request $request): JsonResponse
     {
@@ -157,8 +227,10 @@ class OperationExcelController extends Controller
                 ], 422);
             }
 
-            if ($operationsSheet->getHighestDataRow() > self::MAX_OPERATIONS + 1
-                || $itemsSheet->getHighestDataRow() > self::MAX_ITEMS + 1) {
+            if (
+                $operationsSheet->getHighestDataRow() > self::MAX_OPERATIONS + 1
+                || $itemsSheet->getHighestDataRow() > self::MAX_ITEMS + 1
+            ) {
                 return response()->json([
                     'message' => 'The file exceeds the maximum of 500 operations or 2000 item rows.',
                 ], 422);
@@ -167,8 +239,15 @@ class OperationExcelController extends Controller
             $errors = [];
 
             $expectedOperationsHeaders = [
-                'import_reference', 'operation_date', 'doctor', 'hospital',
-                'operation_type', 'patient', 'side', 'description',
+                'import_reference',
+                'operation_code',
+                'operation_date',
+                'doctor',
+                'hospital',
+                'operation_type',
+                'patient',
+                'side',
+                'description',
             ];
             $expectedItemsHeaders = ['import_reference', 'product', 'quantity'];
 
@@ -190,21 +269,33 @@ class OperationExcelController extends Controller
             }
 
             $operations = [];
-            foreach ($this->sheetRows($operationsSheet, 'H') as $rowNumber => $cells) {
+            $seenOperationCodes = [];
+            foreach ($this->sheetRows($operationsSheet, 'I') as $rowNumber => $cells) {
                 $ref = trim((string) ($cells['A'] ?? ''));
-                $date = $this->dateValue($cells['B'] ?? null);
-                $doctor = $this->resolveChoice($cells['C'] ?? null, $lookup['doctors']);
-                $hospital = $this->resolveChoice($cells['D'] ?? null, $lookup['hospitals']);
-                $type = $this->resolveChoice($cells['E'] ?? null, $lookup['operation_types']);
-                $patient = $this->resolveChoice($cells['F'] ?? null, $lookup['patients']);
-                $side = trim((string) ($cells['G'] ?? ''));
-                $description = trim((string) ($cells['H'] ?? ''));
+                $operationCode = strtoupper(trim((string) ($cells['B'] ?? '')));
+                $date = $this->dateValue($cells['C'] ?? null);
+                $doctor = $this->resolveChoice($cells['D'] ?? null, $lookup['doctors']);
+                $hospital = $this->resolveChoice($cells['E'] ?? null, $lookup['hospitals']);
+                $type = $this->resolveChoice($cells['F'] ?? null, $lookup['operation_types']);
+                $patient = $this->resolveChoice($cells['G'] ?? null, $lookup['patients']);
+                $side = trim((string) ($cells['H'] ?? ''));
+                $description = trim((string) ($cells['I'] ?? ''));
                 $where = "Operations!{$rowNumber}";
 
                 if (!preg_match('/^[A-Za-z0-9_-]{1,100}$/D', $ref)) {
                     $errors[$where][] = 'import_reference must be 1-100 letters, digits, - or _.';
                 } elseif (isset($operations[$ref])) {
                     $errors[$where][] = "Duplicate import_reference: {$ref}.";
+                }
+
+                // User provides the code; the server never generates it.
+                // The existing patient_access_code DB column is used by patient lookup.
+                if (!preg_match('/^[A-Z][A-Z0-9_-]{2,31}$/D', $operationCode)) {
+                    $errors[$where][] = 'operation_code must be 3-32 characters, start with a letter, and contain only A-Z, 0-9, - or _ (example: A0001).';
+                } elseif (isset($seenOperationCodes[$operationCode])) {
+                    $errors[$where][] = "Duplicate operation_code: {$operationCode}.";
+                } else {
+                    $seenOperationCodes[$operationCode] = $ref;
                 }
 
                 if ($date === null) $errors[$where][] = 'Invalid date; use YYYY-MM-DD.';
@@ -218,6 +309,7 @@ class OperationExcelController extends Controller
 
                 if ($ref !== '' && !isset($operations[$ref])) {
                     $operations[$ref] = [
+                        'patient_access_code' => $operationCode,
                         'operation_date' => $date,
                         'doctor_id' => $doctor,
                         'hospital_id' => $hospital,
@@ -276,11 +368,21 @@ class OperationExcelController extends Controller
             }
 
             if ($operations !== []) {
-                $existing = Operation::query()
+                $existingReferences = Operation::query()
                     ->whereIn('import_reference', array_keys($operations))
                     ->pluck('import_reference');
-                foreach ($existing as $ref) {
+                foreach ($existingReferences as $ref) {
                     $errors["Operations[{$ref}]"][] = 'This reference was already imported.';
+                }
+
+                // The manually provided code must also be unique across existing operations.
+                $existingCodes = Operation::query()
+                    ->whereIn('patient_access_code', array_keys($seenOperationCodes))
+                    ->pluck('patient_access_code');
+                foreach ($existingCodes as $code) {
+                    $ref = $seenOperationCodes[$code] ?? null;
+                    $errors[$ref !== null ? "Operations[{$ref}]" : 'Operations'][] =
+                        "operation_code {$code} already exists in the database.";
                 }
             }
 
@@ -295,13 +397,15 @@ class OperationExcelController extends Controller
             $itemCount = 0;
 
             DB::transaction(function () use (
-                $operations, $itemsByReference, &$operationCount, &$itemCount
+                $operations,
+                $itemsByReference,
+                &$operationCount,
+                &$itemCount
             ): void {
                 foreach ($operations as $ref => $data) {
                     $operation = Operation::create([
                         ...$data,
                         'import_reference' => $ref,
-                        'patient_access_code' => Str::random(48),
                     ]);
 
                     foreach ($itemsByReference[$ref] as $item) {
@@ -327,25 +431,25 @@ class OperationExcelController extends Controller
     {
         return [
             'doctors' => Doctor::query()->orderBy('name')->get(['id', 'name'])
-                ->mapWithKeys(fn ($d) => [$d->id => $this->label($d->name, $d->id)])->all(),
+                ->mapWithKeys(fn($d) => [$d->id => $this->label($d->name, $d->id)])->all(),
             'hospitals' => Hospital::query()->orderBy('name')
                 ->get(['id', 'name', 'city', 'type'])
-                ->mapWithKeys(fn ($h) => [
+                ->mapWithKeys(fn($h) => [
                     $h->id => $this->label(
                         $h->name . ' | ' . ($h->city ?: '-') . ' | ' . ($h->type ?: '-'),
                         $h->id
                     ),
                 ])->all(),
             'operation_types' => OperationType::query()->orderBy('name')->get(['id', 'name', 'code'])
-                ->mapWithKeys(fn ($t) => [
+                ->mapWithKeys(fn($t) => [
                     $t->id => $this->label($t->name . ' | ' . ($t->code ?: '-'), $t->id),
                 ])->all(),
             'patients' => Patient::query()->orderBy('name')->get(['id', 'name', 'phone'])
-                ->mapWithKeys(fn ($p) => [
+                ->mapWithKeys(fn($p) => [
                     $p->id => $this->label($p->name . ' | ' . ($p->phone ?: '-'), $p->id),
                 ])->all(),
             'products' => Product::query()->orderBy('name')->get(['id', 'name', 'code'])
-                ->mapWithKeys(fn ($p) => [
+                ->mapWithKeys(fn($p) => [
                     $p->id => $this->label($p->name . ' | ' . ($p->code ?: '-'), $p->id),
                 ])->all(),
             'sides' => ['Left', 'Right', 'Bilateral'],

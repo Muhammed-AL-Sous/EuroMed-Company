@@ -132,29 +132,116 @@ class OperationService
 
     public function doctorOperations(
         int $doctorId,
-        array $filters
+        array $filters = []
     ): LengthAwarePaginator {
         return Operation::query()
             ->where('doctor_id', $doctorId)
+
+            // Search Filter
+            ->when(
+                filled($filters['search'] ?? null),
+                function ($query) use ($filters) {
+
+                    $terms = preg_split(
+                        '/\s+/u',
+                        trim($filters['search'])
+                    );
+
+                    foreach ($terms as $term) {
+                        $like = "%{$term}%";
+
+                        $query->where(function ($q) use ($like) {
+                            $q
+                                // Invoice Number
+                                ->where(
+                                    'invoice_number',
+                                    'LIKE',
+                                    $like
+                                )
+
+                                // Patient Access Code
+                                ->orWhere(
+                                    'patient_access_code',
+                                    'LIKE',
+                                    $like
+                                )
+
+                                // Doctor Name
+                                ->orWhereHas(
+                                    'doctor',
+                                    fn($doctorQuery) =>
+                                    $doctorQuery->where(
+                                        'name',
+                                        'LIKE',
+                                        $like
+                                    )
+                                )
+
+                                // Patient Name / Phone
+                                ->orWhereHas(
+                                    'patient',
+                                    fn($patientQuery) =>
+                                    $patientQuery
+                                        ->where('name', 'LIKE', $like)
+                                        ->orWhere('phone', 'LIKE', $like)
+                                )
+
+                                // Hospital Name
+                                ->orWhereHas(
+                                    'hospital',
+                                    fn($hospitalQuery) =>
+                                    $hospitalQuery->where(
+                                        'name',
+                                        'LIKE',
+                                        $like
+                                    )
+                                )
+
+                                // Operation Type Name
+                                ->orWhereHas(
+                                    'operationType',
+                                    fn($typeQuery) =>
+                                    $typeQuery->where(
+                                        'name',
+                                        'LIKE',
+                                        $like
+                                    )
+                                );
+                        });
+                    }
+                }
+            )
+
+            // Hospital Filter
             ->when(
                 $filters['hospital_id'] ?? null,
                 fn($query, $hospitalId) =>
-                $query->where(
-                    'hospital_id',
-                    $hospitalId
-                )
+                $query->where('hospital_id', $hospitalId)
             )
+
+            // Date Filter
             ->when(
                 $filters['date'] ?? null,
                 fn($query, $date) =>
-                $query->whereDate(
-                    'operation_date',
-                    $date
-                )
+                $query->whereDate('operation_date', $date)
             )
+
+            // Operation Type Filter
+            ->when(
+                $filters['operation_type_id'] ?? null,
+                fn($query, $id) =>
+                $query->where('operation_type_id', $id)
+            )
+
+            // Eager Loading
             ->with(self::RELATIONS)
             ->withCount('items')
+
+            // Sorting
             ->latest('operation_date')
+            ->latest('id')
+
+            // Pagination
             ->paginate(
                 min(
                     100,
@@ -165,7 +252,6 @@ class OperationService
                 )
             );
     }
-
     public function findPatientOperation(
         array $data
     ): Operation {
