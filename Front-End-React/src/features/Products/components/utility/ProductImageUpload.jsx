@@ -151,10 +151,10 @@ export default function ProductImageUpload({
 
             <Text
               as="p"
-              size="2"
-              color="gray"
+              // size="2"
+              // color="gray"
               mt="1"
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 text-xs sm:text-sm text-slate-600"
             >
               {showIcon && <ImageDown size={16} />}
               {/* Upload an image for your product. */}
@@ -244,13 +244,13 @@ export default function ProductImageUpload({
                 )}
               </div>
 
-              <Text as="div" size="3" weight="medium">
+              <Text as="div" className="text-sm sm:text-xl" weight="medium">
                 {isDragActive
                   ? "Drop your image here"
                   : "Drag and drop your image"}
               </Text>
 
-              <Text as="p" size="2" color="gray" mt="2">
+              <Text as="p" className="text-xs sm:text-sm" color="gray" mt="2">
                 or select an image from your computer
               </Text>
 
@@ -267,7 +267,7 @@ export default function ProductImageUpload({
                 Choose Image
               </button>
 
-              <Text as="p" size="1" color="gray" mt="4">
+              <Text as="p" className="text-[10px] sm:text-xs" color="gray" mt="4">
                 JPG, PNG or WebP · Maximum 5 MB
               </Text>
             </div>

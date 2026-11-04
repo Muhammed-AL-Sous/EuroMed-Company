@@ -539,6 +539,7 @@ const ProductsDashboardPage = () => {
           w-full
           flex-wrap
           p-4
+          gap-2
           md:flex-row
           md:items-center
           md:justify-center"
@@ -546,7 +547,6 @@ const ProductsDashboardPage = () => {
         {/* ==================================================
             Search
         ================================================== */}
-
         <div className="relative flex-1 md:min-w-md xl:min-w-auto">
           <Search
             className="
@@ -606,31 +606,21 @@ const ProductsDashboardPage = () => {
             </button>
           )}
         </div>
+
         {/* ==================================================
           Filters
       ================================================== */}
+        {/* Subcategory */}
 
-        <div
-          className="
-          flex
-          flex-wrap
-          flex-col
-          gap-3
-          p-4
-          md:flex-row
-        "
+        <Select.Root
+          value={subCategoryId || "all"}
+          onValueChange={(value) =>
+            handleSubCategoryChange(value === "all" ? "" : value)
+          }
         >
-          {/* Subcategory */}
-
-          <Select.Root
-            value={subCategoryId || "all"}
-            onValueChange={(value) =>
-              handleSubCategoryChange(value === "all" ? "" : value)
-            }
-          >
-            <Select.Trigger
-              aria-label="Filter by subcategory"
-              className="
+          <Select.Trigger
+            aria-label="Filter by subcategory"
+            className="
           inline-flex
           min-w-55
           items-center
@@ -652,19 +642,19 @@ const ProductsDashboardPage = () => {
           focus:ring-sky-500
           data-placeholder:text-slate-500
         "
-            >
-              <Select.Value placeholder="All Subcategories" />
+          >
+            <Select.Value placeholder="All Subcategories" />
 
-              <Select.Icon>
-                <ChevronDown size={18} className="text-slate-500" />
-              </Select.Icon>
-            </Select.Trigger>
+            <Select.Icon>
+              <ChevronDown size={18} className="text-slate-500" />
+            </Select.Icon>
+          </Select.Trigger>
 
-            <Select.Portal>
-              <Select.Content
-                position="popper"
-                sideOffset={6}
-                className="
+          <Select.Portal>
+            <Select.Content
+              position="popper"
+              sideOffset={6}
+              className="
             z-50
             max-h-64
             min-w-55
@@ -678,11 +668,11 @@ const ProductsDashboardPage = () => {
             fade-in-0
             zoom-in-95
           "
-              >
-                <Select.Viewport className="p-1.5">
-                  <Select.Item
-                    value="all"
-                    className="
+            >
+              <Select.Viewport className="p-1.5">
+                <Select.Item
+                  value="all"
+                  className="
                 relative
                 flex
                 cursor-pointer
@@ -700,48 +690,48 @@ const ProductsDashboardPage = () => {
               data-[state=checked]:bg-sky-50
                 data-[state=checked]:font-medium
               "
+                >
+                  <Select.ItemText>All Subcategories</Select.ItemText>
+
+                  <Select.ItemIndicator className="absolute right-3">
+                    <Check size={16} className="text-sky-600" />
+                  </Select.ItemIndicator>
+                </Select.Item>
+
+                {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
+
+                {(Array.isArray(subCategoriesResponse)
+                  ? subCategoriesResponse
+                  : []
+                ).map((subcategory) => (
+                  <Select.Item
+                    key={subcategory.id}
+                    value={String(subcategory.id)}
+                    className="relative flex cursor-pointer select-none items-center rounded-lg py-2.5 pl-3 pr-9 text-sm text-slate-700 outline-none data-highlighted:bg-sky-50 data-highlighted:text-sky-700 data-[state=checked]:bg-sky-50 data-[state=checked]:font-medium"
                   >
-                    <Select.ItemText>All Subcategories</Select.ItemText>
+                    <Select.ItemText>{subcategory.name}</Select.ItemText>
 
                     <Select.ItemIndicator className="absolute right-3">
                       <Check size={16} className="text-sky-600" />
                     </Select.ItemIndicator>
                   </Select.Item>
+                ))}
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
 
-                  {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
+        {/* Manufacturer */}
 
-                  {(Array.isArray(subCategoriesResponse)
-                    ? subCategoriesResponse
-                    : []
-                  ).map((subcategory) => (
-                    <Select.Item
-                      key={subcategory.id}
-                      value={String(subcategory.id)}
-                      className="relative flex cursor-pointer select-none items-center rounded-lg py-2.5 pl-3 pr-9 text-sm text-slate-700 outline-none data-highlighted:bg-sky-50 data-highlighted:text-sky-700 data-[state=checked]:bg-sky-50 data-[state=checked]:font-medium"
-                    >
-                      <Select.ItemText>{subcategory.name}</Select.ItemText>
-
-                      <Select.ItemIndicator className="absolute right-3">
-                        <Check size={16} className="text-sky-600" />
-                      </Select.ItemIndicator>
-                    </Select.Item>
-                  ))}
-                </Select.Viewport>
-              </Select.Content>
-            </Select.Portal>
-          </Select.Root>
-
-          {/* Manufacturer */}
-
-          <Select.Root
-            value={manufacturerId || "all"}
-            onValueChange={(value) =>
-              handleManufacturerChange(value === "all" ? "" : value)
-            }
-          >
-            <Select.Trigger
-              aria-label="Filter by manufacturer"
-              className="
+        <Select.Root
+          value={manufacturerId || "all"}
+          onValueChange={(value) =>
+            handleManufacturerChange(value === "all" ? "" : value)
+          }
+        >
+          <Select.Trigger
+            aria-label="Filter by manufacturer"
+            className="
           inline-flex
           min-w-55
           items-center
@@ -763,19 +753,19 @@ const ProductsDashboardPage = () => {
           focus:ring-sky-500
           data-placeholder:text-slate-500
         "
-            >
-              <Select.Value placeholder="All Manufacturers" />
+          >
+            <Select.Value placeholder="All Manufacturers" />
 
-              <Select.Icon>
-                <ChevronDown size={18} className="text-slate-500" />
-              </Select.Icon>
-            </Select.Trigger>
+            <Select.Icon>
+              <ChevronDown size={18} className="text-slate-500" />
+            </Select.Icon>
+          </Select.Trigger>
 
-            <Select.Portal>
-              <Select.Content
-                position="popper"
-                sideOffset={6}
-                className="
+          <Select.Portal>
+            <Select.Content
+              position="popper"
+              sideOffset={6}
+              className="
             z-50
             max-h-64
             min-w-55
@@ -789,11 +779,11 @@ const ProductsDashboardPage = () => {
             fade-in-0
             zoom-in-95
           "
-              >
-                <Select.Viewport className="p-1.5">
-                  <Select.Item
-                    value="all"
-                    className="
+            >
+              <Select.Viewport className="p-1.5">
+                <Select.Item
+                  value="all"
+                  className="
                 relative
                 flex
                 cursor-pointer
@@ -811,24 +801,24 @@ const ProductsDashboardPage = () => {
               data-[state=checked]:bg-sky-50
                 data-[state=checked]:font-medium
               "
-                  >
-                    <Select.ItemText>All Manufacturers</Select.ItemText>
+                >
+                  <Select.ItemText>All Manufacturers</Select.ItemText>
 
-                    <Select.ItemIndicator className="absolute right-3">
-                      <Check size={16} className="text-sky-600" />
-                    </Select.ItemIndicator>
-                  </Select.Item>
+                  <Select.ItemIndicator className="absolute right-3">
+                    <Check size={16} className="text-sky-600" />
+                  </Select.ItemIndicator>
+                </Select.Item>
 
-                  {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
+                {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
-                  {(Array.isArray(manufacturersResponse)
-                    ? manufacturersResponse
-                    : []
-                  ).map((manufacturer) => (
-                    <Select.Item
-                      key={manufacturer.id}
-                      value={String(manufacturer.id)}
-                      className="
+                {(Array.isArray(manufacturersResponse)
+                  ? manufacturersResponse
+                  : []
+                ).map((manufacturer) => (
+                  <Select.Item
+                    key={manufacturer.id}
+                    value={String(manufacturer.id)}
+                    className="
                   relative
                   flex
                   cursor-pointer
@@ -846,25 +836,25 @@ const ProductsDashboardPage = () => {
                 data-[state=checked]:bg-sky-50
                   data-[state=checked]:font-medium
                 "
-                    >
-                      <Select.ItemText>{manufacturer.name}</Select.ItemText>
+                  >
+                    <Select.ItemText>{manufacturer.name}</Select.ItemText>
 
-                      <Select.ItemIndicator className="absolute right-3">
-                        <Check size={16} className="text-sky-600" />
-                      </Select.ItemIndicator>
-                    </Select.Item>
-                  ))}
-                </Select.Viewport>
-              </Select.Content>
-            </Select.Portal>
-          </Select.Root>
-          {/* Clear Filters */}
+                    <Select.ItemIndicator className="absolute right-3">
+                      <Check size={16} className="text-sky-600" />
+                    </Select.ItemIndicator>
+                  </Select.Item>
+                ))}
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
+        {/* Clear Filters */}
 
-          {hasActiveFilters && (
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="
               flex
               items-center
               justify-center
@@ -881,11 +871,10 @@ const ProductsDashboardPage = () => {
               hover:bg-red-50
               cursor-pointer
             "
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {/* ==================================================

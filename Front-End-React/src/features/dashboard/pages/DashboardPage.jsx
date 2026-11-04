@@ -180,12 +180,12 @@ export default function DashboardPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50 text-slate-600">
               <tr>
-                <th className="px-5 py-3 font-semibold">Invoice</th>
-                <th className="px-5 py-3 font-semibold">Doctor</th>
-                <th className="px-5 py-3 font-semibold">Patient</th>
-                <th className="px-5 py-3 font-semibold">Hospital</th>
-                <th className="px-5 py-3 font-semibold">Date</th>
-                <th className="px-5 py-3 font-semibold">Action</th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">Invoice</th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">Doctor</th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">Patient</th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">Hospital</th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">Date</th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">Action</th>
               </tr>
             </thead>
 
@@ -205,19 +205,19 @@ export default function DashboardPage() {
                     key={operation.id}
                     className="transition-colors hover:bg-sky-50"
                   >
-                    <td className="px-5 py-4">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       {operation.invoice_number || `#${operation.id}`}
                     </td>
 
-                    <td className="px-5 py-4">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       {operation.doctor_name || "—"}
                     </td>
 
-                    <td className="px-5 py-4">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       {operation.patient_name || "—"}
                     </td>
 
-                    <td className="px-5 py-4">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       {operation.hospital_name || "—"}
                     </td>
 

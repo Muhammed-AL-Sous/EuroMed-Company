@@ -151,7 +151,7 @@ const OperationTable = ({
 
                   {/* Doctor */}
                   <td
-                    className={`${bodyCell} ${lastRow} border-r ${hoverClass} sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r ${hoverClass} whitespace-nowrap`}
                   >
                     {getRelationName(
                       operation.doctor,
@@ -162,7 +162,7 @@ const OperationTable = ({
 
                   {/* Patient */}
                   <td
-                    className={`${bodyCell} ${lastRow} border-r ${hoverClass} sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r ${hoverClass} whitespace-nowrap`}
                   >
                     {getRelationName(
                       operation.patient,
@@ -173,7 +173,7 @@ const OperationTable = ({
 
                   {/* Hospital */}
                   <td
-                    className={`${bodyCell} ${lastRow} border-r ${hoverClass} sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r ${hoverClass} whitespace-nowrap`}
                   >
                     {getRelationName(
                       operation.hospital,
@@ -184,7 +184,7 @@ const OperationTable = ({
 
                   {/* Operation Type */}
                   <td
-                    className={`${bodyCell} ${lastRow} border-r ${hoverClass} sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r ${hoverClass} whitespace-nowrap`}
                   >
                     {getRelationName(
                       operation.operation_type,

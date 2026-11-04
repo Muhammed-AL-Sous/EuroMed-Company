@@ -1,27 +1,18 @@
-// React Hooks
-import { useState } from "react";
-
-// React Redux
+import { useState, useRef, useLayoutEffect } from "react";
 import { useSelector } from "react-redux";
-
-// Auth Slice
-import { selectCurrentUser } from "../../../auth/authSlice";
-
-// React Router
 import { Outlet, useLocation } from "react-router";
+import { motion, AnimatePresence } from "motion/react";
 
-// Roles Config
+import { selectCurrentUser } from "../../../auth/authSlice";
 import { ROLES_CONFIG } from "../../../../routes/roles.config";
 
-// Components
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNavbar from "./DashboardNavbar";
 
-// Motion
-import { motion, AnimatePresence } from "motion/react";
-
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const mainRef = useRef(null);
 
   const user = useSelector(selectCurrentUser);
   const location = useLocation();
@@ -29,6 +20,17 @@ const DashboardLayout = () => {
   const roleName = user?.role?.role_name;
   const roleConfig = roleName ? ROLES_CONFIG[roleName] : null;
   const sidebarLinks = roleConfig?.sidebar ?? [];
+
+  // Scroll to top on route change
+  useLayoutEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "instant",
+      });
+    }
+  }, [location.pathname]);
 
   return (
     <div className="flex h-dvh w-full overflow-hidden bg-slate-100">
@@ -39,12 +41,15 @@ const DashboardLayout = () => {
       />
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <main className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-6 sm:p-10">
-          {/* Navbar ثابت خارج الأنيميشن */}
+        <main
+          ref={mainRef}
+          className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-6 sm:p-10"
+          style={{ overflowAnchor: "none" }}
+        >
+          {/* Navbar outside page animation */}
           <DashboardNavbar
             user={user}
             toggleSidebar={() => setIsSidebarOpen(true)}
-           
           />
 
           <AnimatePresence mode="wait">
@@ -53,7 +58,10 @@ const DashboardLayout = () => {
               initial={{ opacity: 0, y: -15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 15 }}
-              transition={{ duration: 0.3, ease: "circOut" }}
+              transition={{
+                duration: 0.3,
+                ease: "circOut",
+              }}
               className="w-full space-y-8"
             >
               <Outlet />

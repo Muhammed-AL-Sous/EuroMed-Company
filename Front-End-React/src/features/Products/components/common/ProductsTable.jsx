@@ -42,25 +42,25 @@ const ProductsTable = ({ products = [], onDelete, onEdit }) => {
               return (
                 <tr key={product.id} className="group">
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {product.code}
                   </td>
 
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {product.name}
                   </td>
 
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {product.subcategory.name}
                   </td>
 
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {product.manufacturer.name}
                   </td>

@@ -467,7 +467,13 @@ const OperationDetailsPage = () => {
         />
 
         <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-5 border-t border-slate-100 pt-5 sm:grid-cols-2 lg:grid-cols-4">
-          <InfoField icon={Hash} label="Operation ID" value={operation.id} />
+          {/* <InfoField icon={Hash} label="Operation ID" value={operation.id} /> */}
+
+          <InfoField
+            icon={Hash}
+            label="Operation Code"
+            value={operation.patient_access_code}
+          />
 
           <InfoField
             icon={CalendarDays}
@@ -514,7 +520,7 @@ const OperationDetailsPage = () => {
               value={patient?.name}
             />
 
-            <InfoField icon={Hash} label="Patient ID" value={patient?.id} />
+            {/* <InfoField icon={Hash} label="Patient ID" value={patient?.id} /> */}
 
             <InfoField
               icon={Phone}
@@ -547,7 +553,7 @@ const OperationDetailsPage = () => {
               value={doctor?.name}
             />
 
-            <InfoField icon={Hash} label="Doctor ID" value={doctor?.id} />
+            {/* <InfoField icon={Hash} label="Doctor ID" value={doctor?.id} /> */}
           </div>
         </DetailsCard>
       </div>
@@ -589,11 +595,11 @@ const OperationDetailsPage = () => {
               value={operationType?.name}
             />
 
-            <InfoField
+            {/* <InfoField
               icon={Hash}
               label="Operation Type Code"
               value={operationType?.code}
-            />
+            /> */}
 
             <div className="sm:col-span-2">
               <InfoField

@@ -674,12 +674,12 @@ const OperationsPage = () => {
           </Text>
 
           {canImportOperations && (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-3">
               <button
                 type="button"
                 onClick={handleDownloadExcelTemplate}
                 disabled={isDownloadingTemplate || isImporting}
-                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-sky-200 bg-white px-4 py-2.5 text-sm font-semibold text-sky-700 transition hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex cursor-pointer items-center justify-center gap-1 rounded-xl border border-sky-200 bg-white px-2.5 py-2.5 text-xs sm:text-sm font-semibold text-sky-700 transition hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isDownloadingTemplate ? (
                   <LoaderCircle className="h-4 w-4 animate-spin" />
@@ -688,7 +688,7 @@ const OperationsPage = () => {
                 )}
                 {isDownloadingTemplate
                   ? "Downloading..."
-                  : "Download Excel Template"}
+                  : "Download Excel"}
               </button>
 
               <input
@@ -704,7 +704,7 @@ const OperationsPage = () => {
                 type="button"
                 onClick={() => excelInputRef.current?.click()}
                 disabled={isImporting || isDownloadingTemplate}
-                className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex cursor-pointer items-center justify-center gap-1 rounded-xl bg-sky-600 px-2.5 py-2.5 text-xs sm:text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isImporting ? (
                   <LoaderCircle className="h-4 w-4 animate-spin" />
