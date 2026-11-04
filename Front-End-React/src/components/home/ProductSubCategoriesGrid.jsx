@@ -24,13 +24,13 @@ const ProductSubCategoriesGrid = ({ subCategories = [] }) => {
           </div>
 
           {/* Catalog Link */}
-          <div className="w-full flex justify-end mt-5">
+          <div className="group w-full flex justify-end mt-5">
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 font-bold text-sky-600 hover:text-sky-700 hover:underline text-sm"
+              className=" inline-flex items-center gap-1 font-bold text-sky-600 hover:text-sky-700 hover:underline text-xs sm:text-sm"
             >
               Browse Full Product Catalog
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 group-hover:animate-left-to-right" />
             </Link>
           </div>
         </div>
@@ -91,6 +91,9 @@ const ProductSubCategoriesGrid = ({ subCategories = [] }) => {
                           h-16
                           rounded-xl
                           bg-sky-50
+                          group-hover:bg-sky-600/50
+                          transition-colors
+                          duration-300
                           text-sky-600
                           flex
                           items-center
@@ -138,15 +141,7 @@ const ProductSubCategoriesGrid = ({ subCategories = [] }) => {
 
                       {/* Description */}
                       {subCategory.description && (
-                        <p
-                          className="
-                          text-slate-500
-                          text-xs
-                          sm:text-sm
-                          mt-2
-                          leading-relaxed
-                        "
-                        >
+                        <p className="text-slate-600 leading-relaxed text-xs mt-2">
                           {subCategory.description}
                         </p>
                       )}

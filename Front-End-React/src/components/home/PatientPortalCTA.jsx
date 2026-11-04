@@ -130,22 +130,27 @@ const PatientPortalCTA = () => {
               </div>
 
               {/* Title */}
-              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-tight">
                 Your Operation Details
               </h2>
 
               {/* Description */}
-              <p className="text-slate-300 text-base leading-relaxed max-w-xl">
+              <p className="text-slate-300 text-xs sm:text-base leading-relaxed max-w-xl">
                 Enter Your Unique Operation Code and Surgery Date To Securely
                 Access The Full List of Medical Materials, Implant Serial
                 Numbers, and Manufacturer Lot Codes Used in Your Procedure.
               </p>
 
               {/* Demo Information */}
-              <div className="pt-2 text-xs text-sky-300/80 flex items-center gap-2 font-mono">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                Sample Demo Code : <strong className="text-white">A0001</strong>{" "}
-                | Date : <strong className="text-white">{dateNow}</strong>
+              <div className="pt-2 text-xs text-sky-300/80 flex items-center flex-col sm:flex-row gap-2 font-mono">
+                <span>
+                  Sample Demo Code :{" "}
+                  <strong className="text-white">A0001</strong>
+                </span>
+                <span className="hidden sm:inline">|</span>
+                <span>
+                  Date : <strong className="text-white">{dateNow}</strong>
+                </span>
               </div>
             </div>
 
@@ -173,7 +178,7 @@ const PatientPortalCTA = () => {
                       aria-describedby={
                         errors.errorsCode ? "operation-code-error" : undefined
                       }
-                      className={`w-full bg-slate-800 text-white pl-11 pr-4 py-3 rounded-xl border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-sm font-mono tracking-wider uppercase font-bold ${
+                      className={`w-full bg-slate-800 text-white pl-11 pr-4 py-3 rounded-xl border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-xs md:text-sm font-mono tracking-wider uppercase font-bold ${
                         errors.errorsCode
                           ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
                           : "border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
@@ -184,7 +189,7 @@ const PatientPortalCTA = () => {
                       {errors.errorsCode && (
                         <p
                           id="operation-code-error"
-                          className="px-1 text-xs font-semibold text-red-500"
+                          className="px-1 text-[10px] sm:text-xs font-semibold text-red-500"
                         >
                           {errors.errorsCode}
                         </p>
@@ -209,7 +214,7 @@ const PatientPortalCTA = () => {
                       aria-describedby={
                         errors.errorsDate ? "operation-date-error" : undefined
                       }
-                      className={`w-full bg-slate-800 text-white pl-11 pr-4 py-3 rounded-xl border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-sm font-mono font-medium ${
+                      className={`w-full bg-slate-800 text-white pl-11 pr-4 py-3 rounded-xl border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-xs md:text-sm font-mono font-medium ${
                         errors.errorsDate
                           ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
                           : "border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
@@ -220,7 +225,7 @@ const PatientPortalCTA = () => {
                       {errors.errorsDate && (
                         <p
                           id="operation-date-error"
-                          className="px-1 text-xs font-semibold text-red-500"
+                          className="px-1 text-[10px] sm:text-xs font-semibold text-red-500"
                         >
                           {errors.errorsDate}
                         </p>
@@ -231,7 +236,7 @@ const PatientPortalCTA = () => {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 px-6 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-base transition-all shadow-lg shadow-sky-500/25 flex items-center justify-center gap-2 group mt-2"
+                  className="w-full cursor-pointer py-3 px-6 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-[11.5px] sm:text-base transition-all shadow-lg shadow-sky-500/25 flex items-center justify-center gap-2 group mt-2"
                 >
                   View My Operation Details
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

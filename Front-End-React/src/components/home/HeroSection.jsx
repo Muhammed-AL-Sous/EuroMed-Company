@@ -62,7 +62,7 @@ const HeroSection = () => {
               </div>
 
               {/* Trust Highlights */}
-              <div className="pt-6 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs text-slate-400">
+              <div className="pt-6 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-3 gap-4 text-[10px] sm:text-xs text-slate-400">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>100% Verified Lot Traceability</span>
@@ -91,13 +91,13 @@ const HeroSection = () => {
                 {/* Floating Overlay Card 1 */}
                 <div className="absolute bottom-6 left-6 right-6 bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-sky-500/30 shadow-xl flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-sky-400 font-bold uppercase tracking-wider">
+                    <div className="text-[11px] sm:text-xs text-sky-400 font-bold uppercase tracking-wider">
                       Featured Specialty
                     </div>
-                    <div className="text-sm font-bold text-white mt-0.5">
+                    <div className="text-[10.5px] sm:text-xs font-semibold text-white mt-0.5">
                       Total Knee & Hip Arthroplasty
                     </div>
-                    <div className="text-xs text-slate-400 mt-0.5">
+                    <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5">
                       Maxx, Zimmer, Normmed Systems
                     </div>
                   </div>

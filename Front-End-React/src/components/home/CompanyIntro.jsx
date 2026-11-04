@@ -68,7 +68,7 @@ const CompanyIntro = () => {
                       <h4 className="font-bold text-slate-900 text-base">
                         EuroMed HQ Erbil
                       </h4>
-                      <p className="text-xs text-slate-500 font-medium">
+                      <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
                         Koya Road, Hewa City, Zone A, Building 142
                       </p>
                     </div>

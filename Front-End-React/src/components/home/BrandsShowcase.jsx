@@ -17,7 +17,7 @@ const BrandsShowcase = () => {
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-3">
             Authorized Partner Brands
           </h2>
-          <p className="text-slate-600 text-base mt-2">
+          <p className="text-slate-600 text-sm sm:text-base mt-2">
             EuroMed is an Authorized Distributor For Leading International
             Manufacturers of Total Joint Arthroplasty, Trauma Plates, and
             Specialized Surgical Systems.
