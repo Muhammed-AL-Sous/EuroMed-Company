@@ -15,13 +15,13 @@ const ContactPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-xl relative overflow-hidden">
           <div className="mx-auto text-center max-w-5xl space-y-4">
-            <span className="inline-block text-xs font-bold tracking-widest uppercase text-sky-400 bg-sky-500/20 px-3.5 py-1.5 rounded-full border border-sky-400/30">
+            <span className="inline-block text-[10px] sm:text-xs font-bold tracking-widest uppercase text-sky-400 bg-sky-500/20 px-3.5 py-1.5 rounded-full border border-sky-400/30">
               Contact EuroMed
             </span>
-            <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
               Get in Touch With Our Erbil Office
             </h1>
-            <p className="text-slate-300 text-base sm:text-lg leading-relaxed tracking-wide">
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed tracking-wide">
               Whether You Are An Orthopedic Surgeon, Hospital Purchasing
               Manager, Or Patient Seeking Operation Verification Assistance, Our
               Erbil Team is Ready To Assist You.
@@ -34,7 +34,7 @@ const ContactPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Contact Details */}
           <div className="lg:col-span-5 bg-white p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
-            <h3 className="text-xl font-bold text-slate-900">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-700">
               Headquarters Information
             </h3>
 
@@ -44,10 +44,10 @@ const ContactPage = () => {
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="font-bold text-slate-900 text-[14px]">
+                  <div className="font-bold text-slate-800 text-[15px]">
                     Physical Address
                   </div>
-                  <div className="text-slate-600 text-[11.5px] font-semibold">
+                  <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                     Koya Road, Hewa City
                     <br />
                     Zone A, Building 142
@@ -62,13 +62,13 @@ const ContactPage = () => {
                   <Phone className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="font-bold text-slate-900 text-[14px]">
+                  <div className="font-bold text-slate-800 text-[15px]">
                     Direct Phone Lines
                   </div>
-                  <div className="text-slate-600 text-[11.5px] font-semibold">
+                  <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                     +964 750 376 9545
                   </div>
-                  <div className="text-slate-600 text-[11.5px] font-semibold">
+                  <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                     +964 750 000 0000
                   </div>
                 </div>
@@ -79,13 +79,13 @@ const ContactPage = () => {
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="font-bold text-slate-900 text-[14px]">
+                  <div className="font-bold text-slate-800 text-[15px]">
                     Email Address
                   </div>
-                  <div className="text-slate-600 text-[11.5px] font-semibold">
+                  <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                     info@euromed.iq
                   </div>
-                  <div className="text-slate-600 text-[11.5px] font-semibold">
+                  <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                     Euromed.iraq@gmail.com
                   </div>
                 </div>
@@ -96,13 +96,13 @@ const ContactPage = () => {
                   <Clock className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="font-bold text-slate-900 text-[14px]">
+                  <div className="font-bold text-slate-800 text-[15px]">
                     Operating Hours
                   </div>
-                  <div className="text-slate-600 text-[11.5px] font-semibold">
+                  <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                     Saturday – Thursday: 09:00 AM – 04:00 PM
                   </div>
-                  <div className="text-slate-600 text-[11.5px] font-semibold">
+                  <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                     Friday: Emergency Surgical Dispatch Only
                   </div>
                 </div>
@@ -112,7 +112,7 @@ const ContactPage = () => {
 
           {/* Contact Form */}
           <div className="lg:col-span-7 bg-white p-8 rounded-3xl border border-slate-200 shadow-xs">
-            <h3 className="text-xl font-bold text-slate-900 mb-6">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-700 mb-6">
               Send Us a Direct Message
             </h3>
 

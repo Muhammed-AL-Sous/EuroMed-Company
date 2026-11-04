@@ -833,14 +833,14 @@ const OperationDetailsPage = () => {
       <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
         {/* Intro banner */}
         <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 text-center text-white shadow-sm sm:p-9">
-          <span className="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/15 px-3 py-1.5 text-xs font-semibold text-sky-300">
+          <span className="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/15 px-3 py-1.5 text-[10px] sm:text-xs font-bold text-sky-300">
             <ShieldCheck size={14} aria-hidden="true" />
             Secure Verification Portal
           </span>
-          <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
+          <h1 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ">
             Patient Operation &amp; Material Portal
           </h1>
-          <p className="mx-auto mt-3 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base">
+          <p className="mx-auto mt-3 max-w-3xl text-xs sm:text-sm leading-6 text-slate-300">
             Verify the official medical hardware, manufacturer lot codes, and
             surgical materials used in your operation.
           </p>

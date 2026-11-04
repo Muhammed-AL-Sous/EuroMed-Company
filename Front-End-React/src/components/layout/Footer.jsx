@@ -1,11 +1,11 @@
 import { Building2, Mail, Phone, ShieldCheck } from "lucide-react";
 import { Link as RouterLink } from "react-router";
-
+import { Em } from "@radix-ui/themes";
 const Footer = () => {
   return (
     <footer className="bg-slate-950 text-slate-400 border-t border-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 pt-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10">
           {/* Company Bio */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
@@ -50,34 +50,22 @@ const Footer = () => {
                 </RouterLink>
               </li>
               <li className="hover:text-white hover:translate-x-1 duration-300">
-                <RouterLink
-                  to="/products"
-                  className="hover:text-white"
-                >
+                <RouterLink to="/products" className="hover:text-white">
                   Orthopedic Products
                 </RouterLink>
               </li>
               <li className="hover:text-white hover:translate-x-1 duration-300">
-                <RouterLink
-                  to="/brands"
-                  className="hover:text-white"
-                >
+                <RouterLink to="/brands" className="hover:text-white">
                   Partner Brands
                 </RouterLink>
               </li>
               <li className="hover:text-white hover:translate-x-1 duration-300">
-                <RouterLink
-                  to="/about"
-                  className="hover:text-white"
-                >
+                <RouterLink to="/about" className="hover:text-white">
                   About EuroMed
                 </RouterLink>
               </li>
               <li className="hover:text-white hover:translate-x-1 duration-300">
-                <RouterLink
-                  to="/contact"
-                  className="hover:text-white"
-                >
+                <RouterLink to="/contact" className="hover:text-white">
                   Contact Us
                 </RouterLink>
               </li>
@@ -145,16 +133,13 @@ const Footer = () => {
             © {new Date().getFullYear()} EuroMed Orthopedic & Surgical Supplies
             Ltd. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
-            <span className="hover:text-slate-400 duration-300 transition-colors cursor-pointer">
-              Privacy Policy
-            </span>
-            <span className="hover:text-slate-400 duration-300 transition-colors cursor-pointer">
-              Terms of Use
-            </span>
-            <span className="hover:text-slate-400 duration-300 transition-colors cursor-pointer">
-              Medical Compliance
-            </span>
+          <div
+            className="hover:text-slate-400 duration-300 transition-colors
+           font-semibold text-xs cursor-pointer text-sky-600"
+          >
+            <a href="#">
+              <Em>Created By AL-Sous Forge Company</Em>
+            </a>
           </div>
         </div>
       </div>
