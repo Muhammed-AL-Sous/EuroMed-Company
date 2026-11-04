@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 
 // External Libraries
 // Radix UI
-import { Box, Card, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 
 // Lucide React Library
@@ -18,8 +18,7 @@ import {
   EyeOff,
   Save,
 } from "lucide-react";
-import { UserRound } from "lucide-react";
-import SelectField from "../../../components/utility/SelectField";
+
 // Notify Sonner
 import { notifySonner } from "../../../lib/notifySonner";
 
@@ -150,9 +149,9 @@ const CreateUserPage = () => {
   return (
     <div>
       {/* ============= Header ============= */}
-      <div className="flex gap-4 items-center text-sky-600">
+      <div className="flex gap-4 items-center font-bold text-lg sm:text-xl md:text-2xl text-sky-600">
         <Church size={55} />
-        <Text className="font-bold text-2xl">Create a New User</Text>
+        <Em>Create a New User</Em>
       </div>
       {/* ============= Section ============= */}
       <Box className="mx-auto border-none outline-none" maxWidth="900px">

@@ -53,7 +53,7 @@ const ManufacturersTable = ({ manufacturers = [], onDelete, onEdit }) => {
                     {manufacturer.origin}
                   </td>
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {manufacturer.logo_text}
                   </td>
@@ -88,7 +88,7 @@ const ManufacturersTable = ({ manufacturers = [], onDelete, onEdit }) => {
                   </td>
 
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {manufacturer.description}
                   </td>

@@ -10,7 +10,7 @@ import { notifySonner } from "../../../lib/notifySonner";
 
 // (Radix)
 import { Form } from "radix-ui";
-import { Box, Card, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
 import * as Select from "@radix-ui/react-select";
 
 // Icons
@@ -164,9 +164,9 @@ const CreateProductPage = () => {
   return (
     <div>
       {/* ============= Header ============= */}
-      <div className="flex gap-4 items-center text-sky-600">
+      <div className="flex gap-4 items-center font-bold text-lg sm:text-xl md:text-2xl text-sky-600">
         <LayersMinus size={55} />
-        <Text className="font-bold text-2xl ">Create a New Product</Text>
+        <Em>Create a New Product</Em>
       </div>
       {/* ============= Section ============= */}
       <Box className="mx-auto border-none outline-none" maxWidth="900px">

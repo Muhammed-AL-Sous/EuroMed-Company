@@ -401,7 +401,8 @@ const ManufacturersPage = () => {
               py-2.5
               pl-11
               pr-10
-              text-sm
+            sm:text-sm
+              text-xs
               text-slate-900
               outline-none
               transition

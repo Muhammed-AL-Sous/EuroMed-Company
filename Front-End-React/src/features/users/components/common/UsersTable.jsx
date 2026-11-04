@@ -40,18 +40,18 @@ const UsersTable = ({ users = [], onDelete, onEdit }) => {
               return (
                 <tr key={user.id} className="group">
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {user.name}
                   </td>
 
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {user.email}
                   </td>
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {user.role.role_name}
                   </td>

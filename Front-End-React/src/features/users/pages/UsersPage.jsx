@@ -526,7 +526,7 @@ const UsersPage = () => {
             value={searchInput}
             onChange={handleSearchChange}
             placeholder="Search for a user by name..."
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-11 pr-10 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-11 pr-10 text-xs sm:text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
           />
 
           {searchInput && (

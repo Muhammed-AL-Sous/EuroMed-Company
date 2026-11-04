@@ -19,7 +19,7 @@ const PatientsTable = ({ Patients = [], onDelete, onEdit }) => {
               <th className={`${headerCell} border-r`}>Name</th>
               <th className={`${headerCell} border-r`}>Phone</th>
               <th className={`${headerCell} border-r`}>Age</th>
-              <th className={`${headerCell} border-r`}>Date Of Birth</th>
+              <th className={`${headerCell} border-r whitespace-nowrap`}>Date Of Birth</th>
               <th className={`${headerCell} border-r`}>Gender</th>
               <th className={headerCell}>Tools</th>
             </tr>
@@ -42,25 +42,25 @@ const PatientsTable = ({ Patients = [], onDelete, onEdit }) => {
               return (
                 <tr key={Patient.id} className="group">
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {Patient.name}
                   </td>
 
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {Patient.phone}
                   </td>
 
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {Patient.age} Years
                   </td>
 
                   <td
-                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 sm:whitespace-nowrap`}
+                    className={`${bodyCell} ${lastRow} border-r group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >
                     {Patient.date_of_birth
                       ? Patient.date_of_birth.split("-").reverse().join("-")

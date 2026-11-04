@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 // External Library
-import { Box, Card, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 import {
   Check,
@@ -154,9 +154,9 @@ const CreateDoctorProfilePage = () => {
   return (
     <div>
       {/* ============= Header ============= */}
-      <div className="flex gap-4 items-center text-sky-600">
+      <div className="flex gap-4 items-center font-bold text-lg sm:text-xl md:text-2xl text-sky-600">
         <Church size={55} />
-        <Text className="font-bold text-2xl">Create a New Doctor Profile</Text>
+        <Em>Create a New Doctor Profile</Em>
       </div>
       {/* ============= Section ============= */}
       <Box className="mx-auto border-none outline-none" maxWidth="900px">
