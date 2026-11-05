@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   ClipboardList,
   Download,
-  FileText,
   Hash,
   KeyRound,
   Layers3,
@@ -71,24 +70,24 @@ const showValue = (value) => {
   return String(value);
 };
 
-const formatPrice = (value) => {
-  if (value === null || value === undefined || value === "") return "—";
-  const amount = Number(value);
-  if (!Number.isFinite(amount)) return showValue(value);
-  return `$${amount.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-};
+// const formatPrice = (value) => {
+//   if (value === null || value === undefined || value === "") return "—";
+//   const amount = Number(value);
+//   if (!Number.isFinite(amount)) return showValue(value);
+//   return `$${amount.toLocaleString("en-US", {
+//     minimumFractionDigits: 2,
+//     maximumFractionDigits: 2,
+//   })}`;
+// };
 
-const resolveImageUrl = (value) => {
-  if (typeof value !== "string" || !value.trim()) return null;
-  const raw = value.trim();
-  // Supports both normal URLs and "[title](https://...)" strings.
-  const markdownMatch = raw.match(/^\[[^\]]*\]\((https?:\/\/[^)]+)\)$/i);
-  const url = markdownMatch ? markdownMatch[1] : raw.replace(/^\[|\]$/g, "");
-  return /^(https?:\/\/|\/)(?!\/\/\/)/i.test(url) ? url : null;
-};
+// const resolveImageUrl = (value) => {
+//   if (typeof value !== "string" || !value.trim()) return null;
+//   const raw = value.trim();
+//   // Supports both normal URLs and "[title](https://...)" strings.
+//   const markdownMatch = raw.match(/^\[[^\]]*\]\((https?:\/\/[^)]+)\)$/i);
+//   const url = markdownMatch ? markdownMatch[1] : raw.replace(/^\[|\]$/g, "");
+//   return /^(https?:\/\/|\/)(?!\/\/\/)/i.test(url) ? url : null;
+// };
 
 const getErrorMessage = (error) =>
   error?.data?.message ||
@@ -140,7 +139,7 @@ const InfoField = ({ icon: Icon, label, value, mono = false }) => (
       <span>{label}</span>
     </div>
     <p
-      className={`break-words text-sm font-semibold text-slate-800 ${mono ? "font-mono" : ""}`}
+      className={`wrap-break-word text-sm font-semibold text-slate-800 ${mono ? "font-mono" : ""}`}
     >
       {showValue(value)}
     </p>
@@ -160,7 +159,7 @@ const Notes = ({ label, children, tone = "neutral" }) => (
     >
       {label}
     </p>
-    <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-slate-700">
+    <p className="mt-2 whitespace-pre-wrap wrap-break-word text-sm leading-6 text-slate-700">
       {showValue(children)}
     </p>
   </div>
@@ -308,7 +307,7 @@ const OperationReport = ({ operation, reportRef }) => {
               <CheckCircle2 size={16} aria-hidden="true" />
               Verified EuroMed Official Record
             </div>
-            <h2 className="mt-2 break-words text-xl font-bold sm:text-2xl">
+            <h2 className="mt-2 wrap-break-word text-xl font-bold sm:text-2xl">
               Operation:{" "}
               <span className="font-mono text-sky-300">
                 {showValue(operation.patient_access_code)}
