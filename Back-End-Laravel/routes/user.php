@@ -3,6 +3,7 @@
 use App\Http\Controllers\OperationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\ManufacturerController;
@@ -155,3 +156,5 @@ Route::apiResource('manufacturers', ManufacturerController::class)->only(['index
 Route::apiResource('products', ProductController::class)->only(['index', 'show']);
 Route::apiResource('operation-types', OperationTypeController::class)->only(['index', 'show']);
 Route::apiResource('doctors', DoctorController::class)->only(['index', 'show']);
+
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:3,1');

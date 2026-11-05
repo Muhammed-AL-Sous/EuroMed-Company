@@ -1,13 +1,54 @@
 import { Clock, Mail, MapPin, Phone, Send } from "lucide-react";
 import { useState } from "react";
 import LocationMap from "./../components/common/LocationMap";
+import { useSendContactMessageMutation } from "../features/contacts/ContactApiSlice";
+
+const INITIAL_FORM = {
+  name: "",
+  phone: "",
+  email: "",
+  subject: "Product Inquiry / Hospital Supply",
+  message: "",
+};
 
 const ContactPage = () => {
+  const [form, setForm] = useState(INITIAL_FORM);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSubmitted(true);
+  const [sendContactMessage, { isLoading: isSending }] =
+    useSendContactMessageMutation();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setForm((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setErrorMessage("");
+
+    try {
+      await sendContactMessage(form).unwrap();
+
+      setSubmitted(true);
+      setForm(INITIAL_FORM);
+    } catch (error) {
+      if (error?.status === 429) {
+        setErrorMessage("Too many requests. Please try again later.");
+        return;
+      }
+
+      setErrorMessage(
+        error?.data?.message ||
+          "Unable to send your message. Please try again.",
+      );
+    }
   };
 
   return (
@@ -122,78 +163,144 @@ const ContactPage = () => {
                   Thank You For Contacting EuroMed !
                 </div>
                 <div>
-                  Your Inquiry Has Been Received. Our Medical Sales Specialist
-                  in Erbil Will Contact You Shortly.
+                  Your message has been received successfully. Our team will
+                  review your request and get back to you as soon as possible.
                 </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">
+                    <label
+                      htmlFor="contact-name"
+                      className="block text-sm font-semibold text-slate-700 mb-1"
+                    >
                       Your Name
                     </label>
                     <input
+                      id="contact-name"
+                      name="name"
                       type="text"
+                      value={form.name}
+                      onChange={handleChange}
                       placeholder="Dr. Karwan Erfani"
-                      className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm"
+                      maxLength={100}
                       required
+                      disabled={isSending}
+                      className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm"
                     />
                   </div>
+
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">
+                    <label
+                      htmlFor="contact-phone"
+                      className="block text-sm font-semibold text-slate-700 mb-1"
+                    >
                       Phone Number
                     </label>
                     <input
+                      id="contact-phone"
+                      name="phone"
                       type="tel"
+                      value={form.phone}
+                      onChange={handleChange}
                       placeholder="+964 750 000 0000"
-                      className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm"
+                      maxLength={30}
                       required
+                      disabled={isSending}
+                      className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1">
+                  <label
+                    htmlFor="contact-email"
+                    className="block text-sm font-semibold text-slate-700 mb-1"
+                  >
                     Email Address
                   </label>
                   <input
+                    id="contact-email"
+                    name="email"
                     type="email"
+                    value={form.email}
+                    onChange={handleChange}
                     placeholder="doctor@hospital.iq"
-                    className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm"
+                    maxLength={254}
                     required
+                    disabled={isSending}
+                    className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1">
+                  <label
+                    htmlFor="contact-subject"
+                    className="block text-sm font-semibold text-slate-700 mb-1"
+                  >
                     Subject / Inquiry Type
                   </label>
-                  <select className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm font-medium">
-                    <option>Product Inquiry / Hospital Supply</option>
-                    <option>Patient Operation Verification Assistance</option>
-                    <option>Distribution & Brand Partnership</option>
-                    <option>General Question</option>
+                  <select
+                    id="contact-subject"
+                    name="subject"
+                    value={form.subject}
+                    onChange={handleChange}
+                    disabled={isSending}
+                    required
+                    className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm font-medium"
+                  >
+                    <option value="Product Inquiry / Hospital Supply">
+                      Product Inquiry / Hospital Supply
+                    </option>
+                    <option value="Patient Operation Verification Assistance">
+                      Patient Operation Verification Assistance
+                    </option>
+                    <option value="Distribution & Brand Partnership">
+                      Distribution & Brand Partnership
+                    </option>
+                    <option value="General Question">General Question</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1">
+                  <label
+                    htmlFor="contact-message"
+                    className="block text-sm font-semibold text-slate-700 mb-1"
+                  >
                     Message
                   </label>
                   <textarea
+                    id="contact-message"
+                    name="message"
                     rows={4}
+                    value={form.message}
+                    onChange={handleChange}
+                    minLength={10}
+                    maxLength={5000}
                     placeholder="Provide Details About Your Surgical Material or Hospital Needs ..."
-                    className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm"
                     required
+                    disabled={isSending}
+                    className="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm"
                   />
                 </div>
 
+                {errorMessage && (
+                  <div
+                    role="alert"
+                    className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+                  >
+                    {errorMessage}
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-xl cursor-pointer bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm duration-400 transition-colors flex items-center justify-center gap-2"
+                  disabled={isSending}
+                  className="w-full py-3.5 rounded-xl cursor-pointer bg-slate-900 hover:bg-slate-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm transition-colors flex items-center justify-center gap-2"
                 >
-                  <Send className="w-4 h-4 text-sky-400" /> Send Message
+                  <Send className="w-4 h-4 text-sky-400" />
+                  {isSending ? "Sending Message..." : "Send Message"}
                 </button>
               </form>
             )}
