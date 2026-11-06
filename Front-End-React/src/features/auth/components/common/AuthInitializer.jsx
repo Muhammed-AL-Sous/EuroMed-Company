@@ -13,6 +13,7 @@ import {
   setAuthReady,
 } from "../../authSlice";
 
+import SiteLoader from "./../../../../components/common/SiteLoader";
 export default function AuthInitializer({ children }) {
   const dispatch = useDispatch();
 
@@ -84,31 +85,33 @@ export default function AuthInitializer({ children }) {
   // Initial Loading
   // ==================================================
   if (!isSuccess && !isError) {
-    return null;
+    return <SiteLoader fullScreen />;
   }
 
   // Do not treat server/network errors as unauthenticated.
   if (isError && userError?.status !== 401 && userError?.status !== 419) {
     return (
-      <div
-        role="alert"
-        className="flex min-h-screen flex-col items-center justify-center gap-4 p-6"
-      >
-        <p className="text-sm text-red-700">Unable to verify your session.</p>
-
-        <button
-          type="button"
-          onClick={() => refetch()}
-          className="rounded bg-sky-700 px-4 py-2 text-white"
+      <>
+        <div
+          role="alert"
+          className="flex min-h-screen flex-col items-center justify-center gap-4 p-6"
         >
-          Retry
-        </button>
-      </div>
+          <p className="text-sm text-red-700">Unable to verify your session.</p>
+
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="rounded bg-sky-700 px-4 py-2 text-white"
+          >
+            Retry
+          </button>
+        </div>
+      </>
     );
   }
 
   if (!authReady) {
-    return null;
+    return <SiteLoader fullScreen />;
   }
 
   return children;

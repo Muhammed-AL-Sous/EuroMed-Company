@@ -55,7 +55,7 @@ const useProductsPageLogic = () => {
   // --------------------------------------------------
 
   const {
-    data: productsResponse,
+    currentData: productsResponse,
     isLoading,
     isFetching,
   } = useGetProductsQuery({

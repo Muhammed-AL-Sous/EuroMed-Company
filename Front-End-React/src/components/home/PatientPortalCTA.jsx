@@ -1,6 +1,7 @@
 import { ArrowRight, Calendar, KeyRound, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
+import { motion } from "motion/react";
 
 const PatientPortalCTA = () => {
   const [code, setCode] = useState("");
@@ -117,134 +118,141 @@ const PatientPortalCTA = () => {
   return (
     <section className="py-16 bg-linear-to-br from-slate-900 via-slate-900 to-sky-950 text-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="bg-slate-800/80 backdrop-blur-md rounded-3xl p-8 sm:p-12 border border-sky-500/30 shadow-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* =========================
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="bg-slate-800/80 backdrop-blur-md rounded-3xl p-8 sm:p-12 border border-sky-500/30 shadow-2xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              {/* =========================
                 Left Column
             ========================= */}
-            <div className="lg:col-span-7 space-y-4">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/20 text-sky-300 text-xs font-bold uppercase tracking-wider border border-sky-400/30">
-                <ShieldCheck className="w-4 h-4 text-sky-400" /> Patient
-                Operation Portal
+              <div className="lg:col-span-7 space-y-4">
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/20 text-sky-300 text-xs font-bold uppercase tracking-wider border border-sky-400/30">
+                  <ShieldCheck className="w-4 h-4 text-sky-400" /> Patient
+                  Operation Portal
+                </div>
+
+                {/* Title */}
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-tight">
+                  Your Operation Details
+                </h2>
+
+                {/* Description */}
+                <p className="text-slate-300 text-xs sm:text-base leading-relaxed max-w-xl">
+                  Enter Your Unique Operation Code and Surgery Date To Securely
+                  Access The Full List of Medical Materials, Implant Serial
+                  Numbers, and Manufacturer Lot Codes Used in Your Procedure.
+                </p>
+
+                {/* Demo Information */}
+                <div className="pt-2 text-xs text-sky-300/80 flex items-center flex-col sm:flex-row gap-2 font-mono">
+                  <span>
+                    Sample Demo Code :{" "}
+                    <strong className="text-white">A0001</strong>
+                  </span>
+                  <span className="hidden sm:inline">|</span>
+                  <span>
+                    Date : <strong className="text-white">{dateNow}</strong>
+                  </span>
+                </div>
               </div>
 
-              {/* Title */}
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-tight">
-                Your Operation Details
-              </h2>
-
-              {/* Description */}
-              <p className="text-slate-300 text-xs sm:text-base leading-relaxed max-w-xl">
-                Enter Your Unique Operation Code and Surgery Date To Securely
-                Access The Full List of Medical Materials, Implant Serial
-                Numbers, and Manufacturer Lot Codes Used in Your Procedure.
-              </p>
-
-              {/* Demo Information */}
-              <div className="pt-2 text-xs text-sky-300/80 flex items-center flex-col sm:flex-row gap-2 font-mono">
-                <span>
-                  Sample Demo Code :{" "}
-                  <strong className="text-white">A0001</strong>
-                </span>
-                <span className="hidden sm:inline">|</span>
-                <span>
-                  Date : <strong className="text-white">{dateNow}</strong>
-                </span>
-              </div>
-            </div>
-
-            {/* =========================
+              {/* =========================
                 Right Column
             ========================= */}
-            <div className="lg:col-span-5 bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-700 shadow-xl">
-              <form onSubmit={handleQuickSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                    Operation Code
-                  </label>
-                  <div className="relative">
-                    <KeyRound className="w-5 h-5 text-slate-400 absolute left-3.5 top-3" />
-                    <input
-                      id="operation-code"
-                      name="operationCode"
-                      type="text"
-                      value={code}
-                      onChange={handleCodeChange}
-                      placeholder="For Example: A0001"
-                      autoComplete="off"
-                      spellCheck={false}
-                      aria-invalid={Boolean(errors.errorsCode)}
-                      aria-describedby={
-                        errors.errorsCode ? "operation-code-error" : undefined
-                      }
-                      className={`w-full bg-slate-800 text-white pl-11 pr-4 py-3 rounded-xl border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-xs md:text-sm font-mono tracking-wider uppercase font-bold ${
-                        errors.errorsCode
-                          ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
-                          : "border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                      }`}
-                    />
-                    {/* Error */}
-                    <div className="pt-2">
-                      {errors.errorsCode && (
-                        <p
-                          id="operation-code-error"
-                          className="px-1 text-[10px] sm:text-xs font-semibold text-red-500"
-                        >
-                          {errors.errorsCode}
-                        </p>
-                      )}
+              <div className="lg:col-span-5 bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-700 shadow-xl">
+                <form onSubmit={handleQuickSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                      Operation Code
+                    </label>
+                    <div className="relative">
+                      <KeyRound className="w-5 h-5 text-slate-400 absolute left-3.5 top-3" />
+                      <input
+                        id="operation-code"
+                        name="operationCode"
+                        type="text"
+                        value={code}
+                        onChange={handleCodeChange}
+                        placeholder="For Example: A0001"
+                        autoComplete="off"
+                        spellCheck={false}
+                        aria-invalid={Boolean(errors.errorsCode)}
+                        aria-describedby={
+                          errors.errorsCode ? "operation-code-error" : undefined
+                        }
+                        className={`w-full bg-slate-800 text-white pl-11 pr-4 py-3 rounded-xl border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-xs md:text-sm font-mono tracking-wider uppercase font-bold ${
+                          errors.errorsCode
+                            ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                            : "border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                        }`}
+                      />
+                      {/* Error */}
+                      <div className="pt-2">
+                        {errors.errorsCode && (
+                          <p
+                            id="operation-code-error"
+                            className="px-1 text-[10px] sm:text-xs font-semibold text-red-500"
+                          >
+                            {errors.errorsCode}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                    Operation Date
-                  </label>
-                  <div className="relative">
-                    <Calendar className="w-5 h-5 text-slate-400 absolute left-3.5 top-3" />
-                    <input
-                      id="operation-date"
-                      name="operationDate"
-                      type="date"
-                      value={date}
-                      onChange={handleDateChange}
-                      aria-invalid={Boolean(errors.errorsDate)}
-                      aria-describedby={
-                        errors.errorsDate ? "operation-date-error" : undefined
-                      }
-                      className={`w-full bg-slate-800 text-white pl-11 pr-4 py-3 rounded-xl border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-xs md:text-sm font-mono font-medium ${
-                        errors.errorsDate
-                          ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
-                          : "border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                      }`}
-                    />
-                    {/* Error */}
-                    <div className="pt-2">
-                      {errors.errorsDate && (
-                        <p
-                          id="operation-date-error"
-                          className="px-1 text-[10px] sm:text-xs font-semibold text-red-500"
-                        >
-                          {errors.errorsDate}
-                        </p>
-                      )}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                      Operation Date
+                    </label>
+                    <div className="relative">
+                      <Calendar className="w-5 h-5 text-slate-400 absolute left-3.5 top-3" />
+                      <input
+                        id="operation-date"
+                        name="operationDate"
+                        type="date"
+                        value={date}
+                        onChange={handleDateChange}
+                        aria-invalid={Boolean(errors.errorsDate)}
+                        aria-describedby={
+                          errors.errorsDate ? "operation-date-error" : undefined
+                        }
+                        className={`w-full bg-slate-800 text-white pl-11 pr-4 py-3 rounded-xl border border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-xs md:text-sm font-mono font-medium ${
+                          errors.errorsDate
+                            ? "border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                            : "border-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                        }`}
+                      />
+                      {/* Error */}
+                      <div className="pt-2">
+                        {errors.errorsDate && (
+                          <p
+                            id="operation-date-error"
+                            className="px-1 text-[10px] sm:text-xs font-semibold text-red-500"
+                          >
+                            {errors.errorsDate}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <button
-                  type="submit"
-                  className="w-full cursor-pointer py-3 px-6 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-[11.5px] sm:text-base transition-all shadow-lg shadow-sky-500/25 flex items-center justify-center gap-2 group mt-2"
-                >
-                  View My Operation Details
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    className="w-full cursor-pointer py-3 px-6 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-[11.5px] sm:text-base transition-all shadow-lg shadow-sky-500/25 flex items-center justify-center gap-2 group mt-2"
+                  >
+                    View My Operation Details
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

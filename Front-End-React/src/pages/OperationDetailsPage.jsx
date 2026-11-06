@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 import { useReactToPrint } from "react-to-print";
-
+import { motion } from "motion/react";
 import {
   AlertCircle,
   Building2,
@@ -828,167 +828,173 @@ const OperationDetailsPage = () => {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 py-8 sm:py-12">
-      <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-        {/* Intro banner */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 text-center text-white shadow-sm sm:p-9">
-          <span className="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/15 px-3 py-1.5 text-[10px] sm:text-xs font-bold text-sky-300">
-            <ShieldCheck size={14} aria-hidden="true" />
-            Secure Verification Portal
-          </span>
-          <h1 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ">
-            Patient Operation &amp; Material Portal
-          </h1>
-          <p className="mx-auto mt-3 max-w-3xl text-xs sm:text-sm leading-6 text-slate-300">
-            Verify the official medical hardware, manufacturer lot codes, and
-            surgical materials used in your operation.
-          </p>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <main className="min-h-screen bg-slate-50 py-8 sm:py-12">
+        <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
+          {/* Intro banner */}
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 text-center text-white shadow-sm sm:p-9">
+            <span className="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/15 px-3 py-1.5 text-[10px] sm:text-xs font-bold text-sky-300">
+              <ShieldCheck size={14} aria-hidden="true" />
+              Secure Verification Portal
+            </span>
+            <h1 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ">
+              Patient Operation &amp; Material Portal
+            </h1>
+            <p className="mx-auto mt-3 max-w-3xl text-xs sm:text-sm leading-6 text-slate-300">
+              Verify the official medical hardware, manufacturer lot codes, and
+              surgical materials used in your operation.
+            </p>
+          </div>
 
-        {/* Code + date verification (never included in print/PDF). */}
-        <DetailsCard>
-          <SectionHeader
-            icon={Search}
-            title="Verify Your Operation"
-            subtitle="Enter the operation code and date to view your medical record."
-          />
-          <form
-            onSubmit={handleVerify}
-            className="mt-5 grid grid-cols-1 items-end gap-4 border-t border-slate-100 pt-5 md:grid-cols-12"
-          >
-            <div className="md:col-span-5">
-              <label
-                htmlFor="operation-code"
-                className="mb-2 block text-sm font-medium text-slate-700"
-              >
-                Operation Code
-              </label>
-              <div className="relative">
-                <KeyRound
-                  size={18}
-                  aria-hidden="true"
-                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                />
-                <input
-                  id="operation-code"
-                  type="text"
-                  required
-                  autoComplete="off"
-                  placeholder="A0001"
-                  value={code}
-                  onChange={(event) =>
-                    setCode(event.target.value.toUpperCase())
-                  }
-                  disabled={isLoading}
-                  className={`${INPUT_CLASS} pl-10 font-mono`}
-                />
-              </div>
-            </div>
-            <div className="md:col-span-4">
-              <label
-                htmlFor="operation-date"
-                className="mb-2 block text-sm font-medium text-slate-700"
-              >
-                Operation Date
-              </label>
-              <div className="relative">
-                <CalendarDays
-                  size={18}
-                  aria-hidden="true"
-                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                />
-                <input
-                  id="operation-date"
-                  type="date"
-                  required
-                  value={date}
-                  onChange={(event) => setDate(event.target.value)}
-                  disabled={isLoading}
-                  className={`${INPUT_CLASS} pl-10`}
-                />
-              </div>
-            </div>
-            <div className="md:col-span-3">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isLoading ? (
-                  <LoaderCircle size={17} className="animate-spin" />
-                ) : (
-                  <Search size={17} />
-                )}
-                {isLoading ? "Verifying..." : "View Details"}
-              </button>
-            </div>
-          </form>
-
-          {errorMessage && (
-            <div
-              role="alert"
-              className="mt-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+          {/* Code + date verification (never included in print/PDF). */}
+          <DetailsCard>
+            <SectionHeader
+              icon={Search}
+              title="Verify Your Operation"
+              subtitle="Enter the operation code and date to view your medical record."
+            />
+            <form
+              onSubmit={handleVerify}
+              className="mt-5 grid grid-cols-1 items-end gap-4 border-t border-slate-100 pt-5 md:grid-cols-12"
             >
-              <AlertCircle
-                size={18}
-                aria-hidden="true"
-                className="mt-0.5 shrink-0"
-              />
-              <p>{errorMessage}</p>
-            </div>
-          )}
-        </DetailsCard>
-
-        {operationData && (
-          <>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold text-emerald-700">
-                  Verification successful
-                </p>
-                <h2 className="mt-1 text-lg font-bold text-slate-800">
-                  Operation Details
-                </h2>
+              <div className="md:col-span-5">
+                <label
+                  htmlFor="operation-code"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
+                  Operation Code
+                </label>
+                <div className="relative">
+                  <KeyRound
+                    size={18}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
+                  <input
+                    id="operation-code"
+                    type="text"
+                    required
+                    autoComplete="off"
+                    placeholder="A0001"
+                    value={code}
+                    onChange={(event) =>
+                      setCode(event.target.value.toUpperCase())
+                    }
+                    disabled={isLoading}
+                    className={`${INPUT_CLASS} pl-10 font-mono`}
+                  />
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => handlePrint()}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              <div className="md:col-span-4">
+                <label
+                  htmlFor="operation-date"
+                  className="mb-2 block text-sm font-medium text-slate-700"
                 >
-                  <Printer size={17} />
-                  Print Certificate
-                </button>
+                  Operation Date
+                </label>
+                <div className="relative">
+                  <CalendarDays
+                    size={18}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
+                  <input
+                    id="operation-date"
+                    type="date"
+                    required
+                    value={date}
+                    onChange={(event) => setDate(event.target.value)}
+                    disabled={isLoading}
+                    className={`${INPUT_CLASS} pl-10`}
+                  />
+                </div>
+              </div>
+              <div className="md:col-span-3">
                 <button
-                  type="button"
-                  disabled={isDownloading}
-                  onClick={handleDownloadPdf}
-                  className="inline-flex items-center gap-2 rounded-lg bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  type="submit"
+                  disabled={isLoading}
+                  className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isDownloading ? (
+                  {isLoading ? (
                     <LoaderCircle size={17} className="animate-spin" />
                   ) : (
-                    <Download size={17} />
+                    <Search size={17} />
                   )}
-                  {isDownloading ? "Generating..." : "Download PDF"}
+                  {isLoading ? "Verifying..." : "View Details"}
                 </button>
               </div>
-            </div>
-            <OperationReport
-              reportRef={printRef}
-              className="
+            </form>
+
+            {errorMessage && (
+              <div
+                role="alert"
+                className="mt-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+              >
+                <AlertCircle
+                  size={18}
+                  aria-hidden="true"
+                  className="mt-0.5 shrink-0"
+                />
+                <p>{errorMessage}</p>
+              </div>
+            )}
+          </DetailsCard>
+
+          {operationData && (
+            <>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold text-emerald-700">
+                    Verification successful
+                  </p>
+                  <h2 className="mt-1 text-lg font-bold text-slate-800">
+                    Operation Details
+                  </h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handlePrint()}
+                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  >
+                    <Printer size={17} />
+                    Print Certificate
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isDownloading}
+                    onClick={handleDownloadPdf}
+                    className="inline-flex items-center gap-2 rounded-lg bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isDownloading ? (
+                      <LoaderCircle size={17} className="animate-spin" />
+                    ) : (
+                      <Download size={17} />
+                    )}
+                    {isDownloading ? "Generating..." : "Download PDF"}
+                  </button>
+                </div>
+              </div>
+              <OperationReport
+                reportRef={printRef}
+                className="
     operation-report
     space-y-5 bg-slate-50 p-1
     print:space-y-2
     print:bg-white
     print:p-0
   "
-              operation={operationData}
-            />
-          </>
-        )}
-      </div>
-    </main>
+                operation={operationData}
+              />
+            </>
+          )}
+        </div>
+      </main>
+    </motion.div>
   );
 };
 

@@ -8,6 +8,7 @@ import ScrollToTop from "../utility/ScrollToTop";
 const PublicLayout = () => {
   return (
     <div>
+     
       <ScrollToTop />
       <Navbar />
 

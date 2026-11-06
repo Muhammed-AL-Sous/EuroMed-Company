@@ -6,6 +6,7 @@ import Pagination from "../components/utility/Pagination";
 
 // Products Logic
 import useProductsPageLogic from "../logic/useProductsPageLogic";
+import SiteLoader from "../components/common/SiteLoader";
 
 const ProductsPage = () => {
   const {
@@ -137,14 +138,27 @@ const ProductsPage = () => {
         {/* ==================================================
             Loading
         ================================================== */}
-        {isLoading ? (
-          <div className="py-20 text-center">
-            <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        {isLoading || isFetching ? (
+          // <div
+          //   className="flex min-h-87.5 flex-col items-center justify-center gap-4"
+          //   role="status"
+          //   aria-live="polite"
+          // >
+          //   <div className="relative flex items-center justify-center">
+          //     <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-sky-600" />
+          //   </div>
 
-            <p className="text-slate-500 text-sm font-medium">
-              Loading EuroMed Products ...
-            </p>
-          </div>
+          //   <div className="space-y-1 text-center">
+          //     <p className="text-sm font-semibold text-slate-700">
+          //       Loading Products...
+          //     </p>
+
+          //     <p className="text-xs text-slate-400">
+          //       Please wait while we update the catalog.
+          //     </p>
+          //   </div>
+          // </div>
+          <SiteLoader />
         ) : products.length === 0 ? (
           /* ==================================================
               Empty State
@@ -179,16 +193,6 @@ const ProductsPage = () => {
 
           <div className="relative">
             {/* Fetching Indicator */}
-
-            {isFetching && !isLoading && (
-              <div className="py-20 text-center">
-                <div className="w-10 h-10 border-4 border-sky-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-
-                <p className="text-slate-500 text-sm font-medium">
-                  Loading EuroMed Products ...
-                </p>
-              </div>
-            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
               {products.map((product) => (

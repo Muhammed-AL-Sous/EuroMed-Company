@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-
+import useInitialLoader from "../../../hooks/useInitialLoader";
 import {
   Activity,
   CalendarDays,
@@ -14,6 +14,7 @@ import {
 import DashboardCharts from "../components/common/DashboardCharts";
 
 import { useGetDashboardOverviewQuery } from "../DashboardApiSlice";
+import SiteLoader from "../../../components/common/SiteLoader";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -54,12 +55,10 @@ export default function DashboardPage() {
       refetchOnMountOrArgChange: true,
     });
 
+  useInitialLoader(!isLoading);
+
   if (isLoading) {
-    return (
-      <div className="flex min-h-80 items-center justify-center">
-        <p className="text-slate-500">Loading dashboard...</p>
-      </div>
-    );
+    return <SiteLoader message="Loading dashboard data..." />;
   }
 
   if (isError || !data) {
@@ -180,12 +179,24 @@ export default function DashboardPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50 text-slate-600">
               <tr>
-                <th className="px-5 py-3 font-semibold whitespace-nowrap">Invoice</th>
-                <th className="px-5 py-3 font-semibold whitespace-nowrap">Doctor</th>
-                <th className="px-5 py-3 font-semibold whitespace-nowrap">Patient</th>
-                <th className="px-5 py-3 font-semibold whitespace-nowrap">Hospital</th>
-                <th className="px-5 py-3 font-semibold whitespace-nowrap">Date</th>
-                <th className="px-5 py-3 font-semibold whitespace-nowrap">Action</th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">
+                  Invoice
+                </th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">
+                  Doctor
+                </th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">
+                  Patient
+                </th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">
+                  Hospital
+                </th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">
+                  Date
+                </th>
+                <th className="px-5 py-3 font-semibold whitespace-nowrap">
+                  Action
+                </th>
               </tr>
             </thead>
 

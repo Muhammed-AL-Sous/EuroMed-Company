@@ -686,9 +686,7 @@ const OperationsPage = () => {
                 ) : (
                   <Download className="h-4 w-4" />
                 )}
-                {isDownloadingTemplate
-                  ? "Downloading..."
-                  : "Download Excel"}
+                {isDownloadingTemplate ? "Downloading..." : "Download Excel"}
               </button>
 
               <input

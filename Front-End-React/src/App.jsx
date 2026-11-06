@@ -6,6 +6,9 @@ import AuthInitializer from "./features/auth/components/common/AuthInitializer";
 import { Toaster } from "sonner";
 import { Provider } from "react-redux";
 
+// Components
+import SiteLoader from "./components/common/SiteLoader";
+
 const App = () => {
   return (
     <Provider store={store}>
@@ -18,9 +21,11 @@ const App = () => {
         />,
         document.body,
       )}
-
       <AuthInitializer>
-        <RouterProvider router={router} />
+        <RouterProvider
+          router={router}
+          fallbackElement={<SiteLoader fullScreen />}
+        />
       </AuthInitializer>
     </Provider>
   );

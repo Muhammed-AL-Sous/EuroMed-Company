@@ -115,25 +115,38 @@ const CompanyIntro = () => {
 
           {/* Stats Grid */}
 
-          <div className="mt-16 pt-12 border-t border-slate-100 grid grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="mt-16 pt-12 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 auto-rows-fr gap-6">
             {stats.map((stat, idx) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, scale: 0.7 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.2, delay: idx * 0.3 }}
+                transition={{
+                  duration: 0.2,
+                  delay: idx * 0.3,
+                }}
+                className="h-full"
               >
                 <div
-                  key={idx}
-                  className="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center hover:border-sky-200 transition-colors"
+                  className="
+          h-full min-h-40
+          flex flex-col items-center justify-center
+          bg-slate-50 p-6 rounded-2xl
+          border border-slate-100
+          text-center
+          hover:border-sky-200
+          transition-colors
+        "
                 >
                   <div className="text-3xl sm:text-4xl font-black text-sky-600 font-mono mb-1">
                     {stat.value}
                   </div>
+
                   <div className="text-sm font-bold text-slate-900">
                     {stat.label}
                   </div>
+
                   <div className="text-xs text-slate-500 mt-1">
                     {stat.description}
                   </div>
