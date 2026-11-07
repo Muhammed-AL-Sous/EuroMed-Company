@@ -10,7 +10,7 @@ import { motion } from "motion/react";
 const HomePage = () => {
   const { data } = useGetSubCategoriesQuery();
   const subcategories = data?.subcategories ?? [];
-  
+
   return (
     <div className="space-y-0">
       <HeroSection />

@@ -157,7 +157,7 @@ const collectImportErrors = (error) => {
 
 const OperationsPage = () => {
   const location = useLocation();
-
+  const topRef = useRef(null);
   const role = location.pathname.split("/")[1];
 
   const scope = ["admin", "staff", "doctor"].includes(role) ? role : "admin";
@@ -652,11 +652,15 @@ const OperationsPage = () => {
   // ==================================================
 
   const handlePageChange = (newPage) => {
+    if (newPage === page) return;
+
     setPage(newPage);
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
+    requestAnimationFrame(() => {
+      topRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     });
   };
 
@@ -666,6 +670,7 @@ const OperationsPage = () => {
 
   return (
     <Card variant="ghost">
+      <div ref={topRef} className="scroll-mt-24" />
       {/* Header */}
       <div className="flex flex-col gap-4 p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">

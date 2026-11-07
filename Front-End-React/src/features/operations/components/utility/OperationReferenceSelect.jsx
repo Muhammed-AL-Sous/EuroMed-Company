@@ -55,12 +55,17 @@ const OperationReferenceSelect = ({
   // Query the API only while this particular dropdown is open.
   // The hook is still called unconditionally (React hooks rule).
   const {
-    data: fetchedOptions = [],
+    currentData: fetchedOptions = [],
     isFetching,
     isError,
   } = useGetOperationFormOptionsQuery(
-    { type, search: debouncedSearch },
-    { skip: !isOpen || disabled },
+    {
+      type,
+      search: debouncedSearch,
+    },
+    {
+      skip: !isOpen || disabled,
+    },
   );
 
   // Find the selected object from parent state, even when it isn't
@@ -75,34 +80,20 @@ const OperationReferenceSelect = ({
   const options = useMemo(() => {
     const unique = new Map();
 
-    // Include existing selection only when not searching, to avoid
-    // mixing a nonmatching selection with search results.
+    // Keep the selected entity when the search is empty
     if (!search.trim() && selectedEntity?.id != null) {
       unique.set(String(selectedEntity.id), selectedEntity);
     }
 
+    // Use the API results directly
     for (const option of Array.isArray(fetchedOptions) ? fetchedOptions : []) {
-      if (option?.id != null) unique.set(String(option.id), option);
+      if (option?.id != null) {
+        unique.set(String(option.id), option);
+      }
     }
 
-    const term = search.trim().toLocaleLowerCase();
-    const records = Array.from(unique.values());
-
-    if (!term) return records;
-
-    // Instant local filtering while waiting for debounced server search.
-    // The API also searches across records not yet loaded on this page.
-    return records.filter((option) => {
-      const searchableText = [
-        getOptionName(option),
-        getOptionDetails(option, type),
-      ]
-        .join(" ")
-        .toLocaleLowerCase();
-
-      return searchableText.includes(term);
-    });
-  }, [fetchedOptions, search, selectedEntity, type]);
+    return Array.from(unique.values());
+  }, [fetchedOptions, search, selectedEntity]);
 
   const openDropdown = () => {
     if (disabled) return;
@@ -139,28 +130,38 @@ const OperationReferenceSelect = ({
 
     if (event.key === "ArrowDown") {
       event.preventDefault();
+
       setActiveIndex((index) =>
-        options.length ? (index + 1) % options.length : -1,
+        visibleOptions.length ? (index + 1) % visibleOptions.length : -1,
       );
     }
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
+
       setActiveIndex((index) =>
-        options.length ? (index <= 0 ? options.length - 1 : index - 1) : -1,
+        visibleOptions.length
+          ? index <= 0
+            ? visibleOptions.length - 1
+            : index - 1
+          : -1,
       );
     }
 
     if (event.key === "Enter") {
-      event.preventDefault(); // Do not submit the entire edit form.
+      event.preventDefault();
+
       const option =
-        options[activeIndex] ?? (options.length === 1 ? options[0] : null);
-      if (option) handleChoose(option);
+        visibleOptions[activeIndex] ??
+        (visibleOptions.length === 1 ? visibleOptions[0] : null);
+
+      if (option) {
+        handleChoose(option);
+      }
     }
   };
-
   const waitingForDebounce = search.trim() !== debouncedSearch;
-
+  const visibleOptions = waitingForDebounce ? [] : options;
   return (
     <div
       className="min-w-0 space-y-1.5"
@@ -233,7 +234,7 @@ const OperationReferenceSelect = ({
           aria-label={`${label} results`}
           className="max-h-52 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-sm"
         >
-          {options.map((entity, index) => {
+          {visibleOptions.map((entity, index) => {
             const chosen = String(entity.id) === String(value);
             return (
               <button
@@ -271,7 +272,7 @@ const OperationReferenceSelect = ({
           {!isFetching &&
             !waitingForDebounce &&
             !isError &&
-            options.length === 0 && (
+            visibleOptions.length === 0 && (
               <p className="px-3 py-3 text-sm text-slate-500">
                 No matching {label.toLowerCase()} found.
               </p>

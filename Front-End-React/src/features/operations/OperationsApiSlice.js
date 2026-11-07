@@ -20,6 +20,10 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
           product: "/products",
         };
 
+        if (!routes[type]) {
+          throw new Error(`Unsupported operation option type: ${type}`);
+        }
+
         return {
           url: routes[type],
           method: "GET",
@@ -39,7 +43,6 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
         return [];
       },
     }),
-
     // ==================================================
     // Get Operations
     // ==================================================

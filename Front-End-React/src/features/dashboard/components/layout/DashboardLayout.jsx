@@ -2,7 +2,7 @@ import { Suspense, useState, useRef, useLayoutEffect } from "react";
 import { useSelector } from "react-redux";
 import { Outlet, useLocation } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import SiteLoader from "../../../../components/common/SiteLoader";
+// import SiteLoader from "../../../../components/common/SiteLoader";
 import { selectCurrentUser } from "../../../auth/authSlice";
 import { ROLES_CONFIG } from "../../../../routes/roles.config";
 import DashboardSidebar from "./DashboardSidebar";
@@ -63,7 +63,7 @@ const DashboardLayout = () => {
               }}
               className="w-full space-y-8"
             >
-              <Suspense fallback={<SiteLoader message="Loading page..." />}>
+              <Suspense>
                 <Outlet />
               </Suspense>
             </motion.div>

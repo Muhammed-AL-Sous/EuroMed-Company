@@ -2,7 +2,7 @@
 // React & React Router
 // ==================================================
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 
 // ==================================================
@@ -69,7 +69,7 @@ const ProductsDashboardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedImage, setSelectedImage] = useState(null);
   const [removeExistingImage, setRemoveExistingImage] = useState(false);
-
+  const topRef = useRef(null);
   // ==================================================
   // URL Filters
   // ==================================================
@@ -271,7 +271,10 @@ const ProductsDashboardPage = () => {
   // ==================================================
 
   const hasActiveFilters =
-    Boolean(search) || Boolean(subCategoryId) || Boolean(manufacturerId);
+    Boolean(search) ||
+    Boolean(subCategoryId) ||
+    Boolean(manufacturerId) ||
+    Boolean(categoryId);
 
   // ==================================================
   // Delete Handlers
@@ -511,11 +514,15 @@ const ProductsDashboardPage = () => {
   // ==================================================
 
   const handlePageChange = (newPage) => {
+    if (newPage === page) return;
+
     setPage(newPage);
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
+    requestAnimationFrame(() => {
+      topRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     });
   };
 
@@ -525,6 +532,7 @@ const ProductsDashboardPage = () => {
 
   return (
     <Card variant="ghost">
+      <div ref={topRef} className="scroll-mt-24" />
       {/* ==================================================
           Header
       ================================================== */}
@@ -933,7 +941,10 @@ const ProductsDashboardPage = () => {
       ) : products.length === 0 ? (
         <EmptyState
           hasSearch={
-            hasSearch || Boolean(subCategoryId) || Boolean(manufacturerId)
+            hasSearch ||
+            Boolean(subCategoryId) ||
+            Boolean(manufacturerId) ||
+            Boolean(categoryId)
           }
           onReset={clearFilters}
         />

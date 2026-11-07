@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Search, ShieldAlert, SquarePen, Trash2, X } from "lucide-react";
 import { useSearchParams } from "react-router";
 import { Card, Text } from "@radix-ui/themes";
@@ -19,7 +19,7 @@ import { notifySonner } from "./../../../lib/notifySonner";
 
 const HospitalsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const topRef = useRef(null);
   // ==================================================
   // Search State
   // ==================================================
@@ -270,11 +270,15 @@ const HospitalsPage = () => {
   // ==================================================
 
   const handlePageChange = (newPage) => {
+    if (newPage === page) return;
+
     setPage(newPage);
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
+    requestAnimationFrame(() => {
+      topRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     });
   };
 
@@ -284,6 +288,7 @@ const HospitalsPage = () => {
 
   return (
     <Card variant="ghost">
+      <div ref={topRef} className="scroll-mt-24" />
       {/* ==================================================
           Header
       ================================================== */}

@@ -144,7 +144,7 @@ const useProductsPageLogic = () => {
     setPage(newPage);
 
     window.scrollTo({
-      top: 0,
+      top: 400,
       behavior: "smooth",
     });
   };

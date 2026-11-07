@@ -1,5 +1,4 @@
 import { Link, useLocation } from "react-router";
-import useInitialLoader from "../../../hooks/useInitialLoader";
 import {
   Activity,
   CalendarDays,
@@ -14,7 +13,7 @@ import {
 import DashboardCharts from "../components/common/DashboardCharts";
 
 import { useGetDashboardOverviewQuery } from "../DashboardApiSlice";
-import SiteLoader from "../../../components/common/SiteLoader";
+// import SiteLoader from "../../../components/common/SiteLoader";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -44,6 +43,36 @@ function StatCard({ title, value, icon: Icon }) {
   );
 }
 
+const LoadingState = ({ message = "Loading Dashboard..." }) => {
+  return (
+    <div
+      className="
+        flex
+        min-h-75
+        flex-col
+        items-center
+        justify-center
+        py-20
+      "
+    >
+      <div
+        className="
+          mb-4
+          h-10
+          w-10
+          animate-spin
+          rounded-full
+          border-4
+          border-sky-600
+          border-t-transparent
+        "
+      />
+
+      <p className="text-sm font-medium text-slate-500">{message}</p>
+    </div>
+  );
+};
+
 export default function DashboardPage() {
   const location = useLocation();
   const scope =
@@ -55,10 +84,8 @@ export default function DashboardPage() {
       refetchOnMountOrArgChange: true,
     });
 
-  useInitialLoader(!isLoading);
-
   if (isLoading) {
-    return <SiteLoader message="Loading dashboard data..." />;
+    return <LoadingState />;
   }
 
   if (isError || !data) {

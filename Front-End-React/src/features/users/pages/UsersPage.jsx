@@ -98,6 +98,7 @@ const UsersPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
+  const topRef = useRef(null);
 
   // ========= Refs ========= //
   const passwordRef = useRef(null);
@@ -248,11 +249,15 @@ const UsersPage = () => {
   // ==================================================
 
   const handlePageChange = (newPage) => {
+    if (newPage === page) return;
+
     setPage(newPage);
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
+    requestAnimationFrame(() => {
+      topRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     });
   };
 
@@ -507,6 +512,7 @@ const UsersPage = () => {
 
   return (
     <Card variant="ghost">
+      <div ref={topRef} className="scroll-mt-24" />
       {/* ==================================================
           Header
       ================================================== */}

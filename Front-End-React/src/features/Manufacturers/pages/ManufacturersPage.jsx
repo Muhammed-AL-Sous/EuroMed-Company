@@ -1,5 +1,5 @@
 // React & React Router
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router";
 
 // =========== External Library =========== //
@@ -30,7 +30,7 @@ import ManufacturersTable from "../components/common/ManufacturersTable";
 
 const ManufacturersPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const topRef = useRef(null);
   // ==================================================
   // Search State
   // ==================================================
@@ -336,11 +336,15 @@ const ManufacturersPage = () => {
   // ==================================================
 
   const handlePageChange = (newPage) => {
+    if (newPage === page) return;
+
     setPage(newPage);
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
+    requestAnimationFrame(() => {
+      topRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     });
   };
 
@@ -350,6 +354,7 @@ const ManufacturersPage = () => {
 
   return (
     <Card variant="ghost">
+      <div ref={topRef} className="scroll-mt-24" />
       {/* ==================================================
           Header
       ================================================== */}
