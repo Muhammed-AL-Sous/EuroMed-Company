@@ -41,9 +41,7 @@ export const ManufacturersApiSlice = baseApi.injectEndpoints({
         method: "POST",
         body: manufacturerData,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Manufacturers", id: "manufacturer_id" },
-      ],
+      invalidatesTags: () => [{ type: "Manufacturers", id: "manufacturer_id" }],
     }),
 
     updateManufacturer: builder.mutation({
@@ -53,8 +51,8 @@ export const ManufacturersApiSlice = baseApi.injectEndpoints({
         body: data,
       }),
 
-      invalidatesTags: (result, error, arg) => [
-        { type: "Manufacturers", id: arg.id },
+      invalidatesTags: (...[, , { id }]) => [
+        { type: "Manufacturers", id },
         { type: "Manufacturers", id: "manufacturer_id" },
       ],
     }),

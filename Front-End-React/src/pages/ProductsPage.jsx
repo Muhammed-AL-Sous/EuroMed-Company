@@ -5,7 +5,7 @@ import { Search, ShieldAlert, X } from "lucide-react";
 import Pagination from "../components/utility/Pagination";
 
 // Products Logic
-import useProductsPageLogic from "../logic/useProductsPageLogic";
+import useProductsPageLogic from "./useProductsPageLogic";
 import SiteLoader from "../components/common/SiteLoader";
 
 const ProductsPage = () => {
@@ -139,25 +139,6 @@ const ProductsPage = () => {
             Loading
         ================================================== */}
         {isLoading || isFetching ? (
-          // <div
-          //   className="flex min-h-87.5 flex-col items-center justify-center gap-4"
-          //   role="status"
-          //   aria-live="polite"
-          // >
-          //   <div className="relative flex items-center justify-center">
-          //     <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-sky-600" />
-          //   </div>
-
-          //   <div className="space-y-1 text-center">
-          //     <p className="text-sm font-semibold text-slate-700">
-          //       Loading Products...
-          //     </p>
-
-          //     <p className="text-xs text-slate-400">
-          //       Please wait while we update the catalog.
-          //     </p>
-          //   </div>
-          // </div>
           <SiteLoader />
         ) : products.length === 0 ? (
           /* ==================================================
@@ -298,10 +279,7 @@ const ProductsPage = () => {
               >
                 <X className="h-5 w-5" />
               </button>
-              {/* ================================================== 
-              Scroll Area يوجد فراغ أعلى وأسفل الـ 
-              scrollbar
-               ================================================== */}
+
               <div className="max-h-[75vh] overflow-hidden px-2 py-3">
                 <div className="custom-scrollbar max-h-[calc(75vh-24px)] overflow-y-auto pr-2">
                   <div className="space-y-6 p-6 sm:p-8">

@@ -1,15 +1,9 @@
-import { Navigate, Outlet, useLocation } from "react-router";
-import { useSelector } from "react-redux";
+import { Navigate, Outlet } from "react-router";
 
-import {
-  selectCurrentUser,
-  selectAuthReady,
-} from "../../features/auth/authSlice";
+import useProtectedRouteLogic from "./useProtectedRouteLogic.js";
 
 const ProtectedRoute = ({ allowedRoles }) => {
-  const user = useSelector(selectCurrentUser);
-  const authReady = useSelector(selectAuthReady);
-  const location = useLocation();
+  const { user, authReady, location, currentRole } = useProtectedRouteLogic();
 
   if (!authReady) {
     return null;
@@ -18,8 +12,6 @@ const ProtectedRoute = ({ allowedRoles }) => {
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-
-  const currentRole = user?.role?.role_name;
 
   if (allowedRoles?.length && !allowedRoles.includes(currentRole)) {
     if (import.meta.env.DEV) {

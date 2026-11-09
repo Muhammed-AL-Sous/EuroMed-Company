@@ -1,35 +1,19 @@
-import { Suspense, useState, useRef, useLayoutEffect } from "react";
-import { useSelector } from "react-redux";
-import { Outlet, useLocation } from "react-router";
+import { Suspense } from "react";
+import { Outlet } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-// import SiteLoader from "../../../../components/common/SiteLoader";
-import { selectCurrentUser } from "../../../auth/authSlice";
-import { ROLES_CONFIG } from "../../../../routes/roles.config";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNavbar from "./DashboardNavbar";
+import useDashboardLayoutLogic from "./useDashboardLayoutLogic.js";
 
 const DashboardLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const mainRef = useRef(null);
-
-  const user = useSelector(selectCurrentUser);
-  const location = useLocation();
-
-  const roleName = user?.role?.role_name;
-  const roleConfig = roleName ? ROLES_CONFIG[roleName] : null;
-  const sidebarLinks = roleConfig?.sidebar ?? [];
-
-  // Scroll to top on route change
-  useLayoutEffect(() => {
-    if (mainRef.current) {
-      mainRef.current.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "instant",
-      });
-    }
-  }, [location.pathname]);
+  const {
+    isSidebarOpen,
+    setIsSidebarOpen,
+    mainRef,
+    user,
+    location,
+    sidebarLinks,
+  } = useDashboardLayoutLogic();
 
   return (
     <div className="flex h-dvh w-full overflow-hidden bg-slate-100">

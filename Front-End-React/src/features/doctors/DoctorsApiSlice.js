@@ -39,9 +39,7 @@ export const DoctorsApiSlice = baseApi.injectEndpoints({
         method: "POST",
         body: doctorsData,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Doctors", id: "Doctors_Id" },
-      ],
+      invalidatesTags: () => [{ type: "Doctors", id: "Doctors_Id" }],
     }),
 
     updateDoctor: builder.mutation({
@@ -51,8 +49,8 @@ export const DoctorsApiSlice = baseApi.injectEndpoints({
         body: data,
       }),
 
-      invalidatesTags: (result, error, arg) => [
-        { type: "Doctors", id: arg.id },
+      invalidatesTags: (...[, , { id }]) => [
+        { type: "Doctors", id },
         { type: "Doctors", id: "Doctors_Id" },
       ],
     }),
@@ -62,8 +60,8 @@ export const DoctorsApiSlice = baseApi.injectEndpoints({
         url: `/doctors/${doctorId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Doctors", id: arg.id },
+      invalidatesTags: (...[, , doctorId]) => [
+        { type: "Doctors", id: doctorId },
         { type: "Doctors", id: "Doctors_Id" },
       ],
     }),

@@ -1,4 +1,4 @@
-import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Em, Flex } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 import {
   Church,
@@ -8,10 +8,7 @@ import {
   Landmark,
   Save,
 } from "lucide-react";
-
-import { useAddHospitalMutation } from "../HospitalsApiSlice";
-import { notifySonner } from "../../../lib/notifySonner";
-import { useState } from "react";
+import useCreateHospitalPageLogic from "./useCreateHospitalPageLogic.js";
 
 const INPUT_CLASS =
   "box-border w-full rounded-xl border-2 border-sky-700 " +
@@ -22,43 +19,12 @@ const INPUT_CLASS =
   "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateHospitalPage = () => {
-  const [createForm, setCreateForm] = useState({
-    code: "",
-    name: "",
-    type: "Government",
-    city: "",
-  });
-
-  const [addHospital, { isLoading: isCreating }] = useAddHospitalMutation();
-
-  const handleCreateFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setCreateForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmitHospital = async (e) => {
-    e.preventDefault();
-
-    try {
-      await addHospital(createForm).unwrap();
-
-      setCreateForm({
-        code: "",
-        name: "",
-        type: "Government",
-        city: "",
-      });
-
-      notifySonner("Hospital Added Successfully");
-    } catch (error) {
-      console.error("Failed to add hospital:", error);
-      notifySonner(error?.data?.message || "Failed to add hospital", "error");
-    }
-  };
+  const {
+    createForm,
+    isCreating,
+    handleCreateFormChange,
+    handleSubmitHospital,
+  } = useCreateHospitalPageLogic();
 
   return (
     <div>

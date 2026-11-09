@@ -1,56 +1,10 @@
-// ==================================================
-// React & React Router
-// ==================================================
-
-import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router";
-
-// ==================================================
-// API
-// ==================================================
-
-import {
-  useGetProductsQuery,
-  useUpdateProductMutation,
-  useDeleteProductMutation,
-} from "../ProductsApiSlice";
-
-import { useGetSubCategoriesQuery } from "../../subCategories/SubCategoriesApiSlice";
-import { useGetManufacturersQuery } from "../../manufacturers/ManufacturersApiSlice";
-import { useGetCategoriesQuery } from "../../categories/CategoriesApiSlice";
 import ProductImageUpload from "../components/utility/ProductImageUpload";
-// ==================================================
-// Hooks
-// ==================================================
-
-import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
-
-// ==================================================
-// Components
-// ==================================================
-
 import ProductsTable from "../components/common/ProductsTable";
 import Pagination from "../../../components/utility/Pagination";
 import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
 import EditModal from "../../../components/utility/EditModal";
-
-// ==================================================
-// Utilities
-// ==================================================
-
-import { notifySonner } from "../../../lib/notifySonner";
-
-// ==================================================
-// Radix UI
-// ==================================================
-
 import * as Select from "@radix-ui/react-select";
 import { Card, Text } from "@radix-ui/themes";
-
-// ==================================================
-// Icons
-// ==================================================
-
 import {
   Check,
   ChevronDown,
@@ -60,471 +14,48 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-
-// ==================================================
-// Products Dashboard Page
-// ==================================================
+import useProductsDashboardPageLogic from "./useProductsDashboardPageLogic.js";
 
 const ProductsDashboardPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [removeExistingImage, setRemoveExistingImage] = useState(false);
-  const topRef = useRef(null);
-  // ==================================================
-  // URL Filters
-  // ==================================================
-
-  const initialSearch = searchParams.get("search") ?? "";
-
-  const [searchInput, setSearchInput] = useState(initialSearch);
-
-  const search = searchParams.get("search") || "";
-  const manufacturerId = searchParams.get("manufacturer_id") || "";
-  const subCategoryId = searchParams.get("subcategory_id") || "";
-  const categoryId = searchParams.get("category_id") || "";
-
-  const [page, setPage] = useState(1);
-
-  // ==================================================
-  // Debounced Search
-  // ==================================================
-
-  const debouncedSearch = useDebouncedValue(searchInput, 400);
-
-  const normalizedSearch = debouncedSearch.trim();
-  const hasSearch = Boolean(normalizedSearch);
-
-  // ==================================================
-  // Subcategories
-  // ==================================================
-
-  const { data: subcategories = [] } = useGetSubCategoriesQuery();
-
-  const subCategoriesResponse = subcategories?.subcategories ?? [];
-
-  // ==================================================
-  // categories
-  // ==================================================
-
-  const { data: categories = [] } = useGetCategoriesQuery();
-
-  const categoriesResponse = categories?.categories ?? [];
-  // ==================================================
-  // Manufacturers
-  // ==================================================
-
-  const { data: manufacturers = [] } = useGetManufacturersQuery();
-
-  const manufacturersResponse = manufacturers?.manufacturers ?? [];
-
-  // ==================================================
-  // Products
-  // ==================================================
-
   const {
-    data: productsResponse,
+    setSelectedImage,
+    setRemoveExistingImage,
+    topRef,
+    searchInput,
+    manufacturerId,
+    subCategoryId,
+    categoryId,
+    normalizedSearch,
+    hasSearch,
+    subCategoriesResponse,
+    categoriesResponse,
+    manufacturersResponse,
     isLoading,
     isFetching,
     isError,
-  } = useGetProductsQuery({
-    search: normalizedSearch,
-    manufacturer_id: manufacturerId,
-    subcategory_id: subCategoryId,
-    category_id: categoryId,
-    page,
-  });
-
-  const products = productsResponse?.products ?? [];
-  const meta = productsResponse?.meta ?? null;
-
-  // ==================================================
-  // Delete State
-  // ==================================================
-
-  const [selectedDeleteProduct, setSelectedDeleteProduct] = useState(null);
-
-  // ==================================================
-  // Edit State
-  // ==================================================
-
-  const [selectedEditProduct, setSelectedEditProduct] = useState(null);
-
-  const [editForm, setEditForm] = useState({
-    code: "",
-    name: "",
-    description: "",
-    manufacturer_id: "",
-    subcategory_id: "",
-    category_id: "",
-  });
-
-  const [formErrors, setFormErrors] = useState({});
-
-  // ==================================================
-  // Mutations
-  // ==================================================
-
-  const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
-
-  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
-
-  // ==================================================
-  // Sync Search With URL
-  // ==================================================
-
-  useEffect(() => {
-    const urlSearch = searchParams.get("search") ?? "";
-
-    if (urlSearch === normalizedSearch) {
-      return;
-    }
-
-    setSearchParams(
-      (params) => {
-        if (normalizedSearch) {
-          params.set("search", normalizedSearch);
-        } else {
-          params.delete("search");
-        }
-
-        return params;
-      },
-      {
-        replace: true,
-      },
-    );
-  }, [normalizedSearch, searchParams, setSearchParams]);
-
-  // ==================================================
-  // Search Handlers
-  // ==================================================
-
-  const handleSearchChange = (event) => {
-    setSearchInput(event.target.value);
-    setPage(1);
-  };
-
-  const clearSearch = () => {
-    setSearchInput("");
-    setPage(1);
-
-    setSearchParams(
-      (params) => {
-        params.delete("search");
-
-        return params;
-      },
-      {
-        replace: true,
-      },
-    );
-  };
-
-  // ==================================================
-  // Subcategory Filter
-  // ==================================================
-
-  const handleSubCategoryChange = (value) => {
-    setPage(1);
-
-    setSearchParams((params) => {
-      if (value) {
-        params.set("subcategory_id", value);
-      } else {
-        params.delete("subcategory_id");
-      }
-
-      return params;
-    });
-  };
-
-  // ==================================================
-  // Manufacturer Filter
-  // ==================================================
-
-  const handleManufacturerChange = (value) => {
-    setPage(1);
-
-    setSearchParams((params) => {
-      if (value) {
-        params.set("manufacturer_id", value);
-      } else {
-        params.delete("manufacturer_id");
-      }
-
-      return params;
-    });
-  };
-
-  // ==================================================
-  // Clear All Filters
-  // ==================================================
-
-  const clearFilters = () => {
-    setSearchInput("");
-    setPage(1);
-    setSearchParams({});
-  };
-
-  // ==================================================
-  // Active Filters
-  // ==================================================
-
-  const hasActiveFilters =
-    Boolean(search) ||
-    Boolean(subCategoryId) ||
-    Boolean(manufacturerId) ||
-    Boolean(categoryId);
-
-  // ==================================================
-  // Delete Handlers
-  // ==================================================
-
-  const handleOpenDeleteModal = (product) => {
-    setSelectedDeleteProduct(product);
-  };
-
-  const handleCloseDeleteModal = () => {
-    if (isDeleting) {
-      return;
-    }
-
-    setSelectedDeleteProduct(null);
-  };
-
-  const handleDeleteProduct = async () => {
-    if (!selectedDeleteProduct) {
-      return;
-    }
-
-    try {
-      await deleteProduct(selectedDeleteProduct.id).unwrap();
-
-      setSelectedDeleteProduct(null);
-
-      notifySonner("Product Deleted Successfully");
-    } catch (error) {
-      console.error("Failed to Delete Product :", error);
-
-      notifySonner(error?.data?.message || "Failed to Delete Product", "error");
-    }
-  };
-
-  // ==================================================
-  // Edit Handlers
-  // ==================================================
-
-  const handleOpenEditModal = (product) => {
-    setSelectedEditProduct(product);
-    setFormErrors({});
-
-    setSelectedImage(null);
-    setRemoveExistingImage(false);
-
-    setEditForm({
-      code: product.code ?? "",
-      name: product.name ?? "",
-      description: product.description ?? "",
-
-      manufacturer_id: String(
-        product.manufacturer_id ?? product.manufacturer?.id ?? "",
-      ),
-
-      subcategory_id: String(
-        product.subcategory_id ?? product.subcategory?.id ?? "",
-      ),
-
-      category_id: String(product.category_id ?? product.category?.id ?? ""),
-    });
-  };
-
-  const handleCloseEditModal = () => {
-    if (isUpdating) {
-      return;
-    }
-
-    setSelectedEditProduct(null);
-    setFormErrors({});
-    setSelectedImage(null);
-    setRemoveExistingImage(false);
-
-    setEditForm({
-      code: "",
-      name: "",
-      description: "",
-      manufacturer_id: "",
-      subcategory_id: "",
-      category_id: "",
-    });
-  };
-
-  const handleEditFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setEditForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-
-    setFormErrors((currentErrors) => ({
-      ...currentErrors,
-      [name]: undefined,
-    }));
-  };
-
-  // ==================================================
-  // Update Product
-  // ==================================================
-
-  const handleUpdateProduct = async () => {
-    if (!selectedEditProduct) {
-      return;
-    }
-
-    const payload = {
-      code: editForm.code.trim(),
-      name: editForm.name.trim(),
-      description: editForm.description.trim(),
-      manufacturer_id: editForm.manufacturer_id,
-      subcategory_id: editForm.subcategory_id,
-      category_id: editForm.category_id,
-    };
-
-    // ==================================================
-    // Validation
-    // ==================================================
-
-    const errors = {};
-
-    if (!payload.code) {
-      errors.code = "The Product Code Field is Required";
-    }
-
-    if (!payload.name) {
-      errors.name = "The Product Name Field is Required";
-    }
-
-    if (!payload.manufacturer_id) {
-      errors.manufacturer_id = "The Manufacturer Field is Required";
-    }
-
-    if (!payload.subcategory_id) {
-      errors.subcategory_id = "The SubCategory Field is Required";
-    }
-
-    if (!payload.category_id) {
-      errors.category_id = "The Category Field is Required";
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-
-    // ==================================================
-    // Check Changes
-    // ==================================================
-
-    const originalManufacturerId =
-      selectedEditProduct.manufacturer_id ??
-      selectedEditProduct.manufacturer?.id ??
-      "";
-
-    const originalSubcategoryId =
-      selectedEditProduct.subcategory_id ??
-      selectedEditProduct.subcategory?.id ??
-      "";
-
-    const originalCategoryId =
-      selectedEditProduct.category_id ?? selectedEditProduct.category?.id ?? "";
-
-    const hasChanges =
-      payload.code !== (selectedEditProduct.code ?? "").trim() ||
-      payload.name !== (selectedEditProduct.name ?? "").trim() ||
-      payload.description !== (selectedEditProduct.description ?? "").trim() ||
-      String(payload.manufacturer_id ?? "") !==
-        String(originalManufacturerId) ||
-      String(payload.subcategory_id ?? "") !== String(originalSubcategoryId) ||
-      String(payload.category_id ?? "") !== String(originalCategoryId) ||
-      Boolean(selectedImage) ||
-      removeExistingImage;
-
-    if (!hasChanges) {
-      handleCloseEditModal();
-      return;
-    }
-
-    // ==================================================
-    // Update
-    // ==================================================
-
-    try {
-      const formData = new FormData();
-
-      formData.append("code", payload.code);
-      formData.append("name", payload.name);
-      formData.append("description", payload.description);
-      formData.append("manufacturer_id", payload.manufacturer_id);
-      formData.append("subcategory_id", payload.subcategory_id);
-      formData.append("category_id", payload.category_id);
-
-      // صورة جديدة، إن وُجدت
-      if (selectedImage) {
-        formData.append("image", selectedImage);
-      }
-
-      // حذف الصورة الحالية فقط إذا طلب المستخدم ذلك
-      formData.append(
-        "remove_image",
-        removeExistingImage && !selectedImage ? "1" : "0",
-      );
-
-      // Laravel method spoofing لتحديث multipart/form-data
-      formData.append("_method", "PUT");
-
-      await updateProduct({
-        id: selectedEditProduct.id,
-        data: formData,
-      }).unwrap();
-
-      setSelectedEditProduct(null);
-      setFormErrors({});
-      setSelectedImage(null);
-      setRemoveExistingImage(false);
-
-      setEditForm({
-        code: "",
-        name: "",
-        description: "",
-        manufacturer_id: "",
-        subcategory_id: "",
-        category_id: "",
-      });
-
-      notifySonner("Product Updated Successfully");
-    } catch (error) {
-      console.error("Failed to Update Product:", error);
-
-      notifySonner(error?.data?.message || "Failed to Update Product", "error");
-    }
-  };
-
-  // ==================================================
-  // Pagination
-  // ==================================================
-
-  const handlePageChange = (newPage) => {
-    if (newPage === page) return;
-
-    setPage(newPage);
-
-    requestAnimationFrame(() => {
-      topRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-  };
+    products,
+    meta,
+    selectedDeleteProduct,
+    selectedEditProduct,
+    editForm,
+    formErrors,
+    isDeleting,
+    isUpdating,
+    handleSearchChange,
+    clearSearch,
+    handleSubCategoryChange,
+    handleManufacturerChange,
+    clearFilters,
+    hasActiveFilters,
+    handleOpenDeleteModal,
+    handleCloseDeleteModal,
+    handleDeleteProduct,
+    handleOpenEditModal,
+    handleCloseEditModal,
+    handleEditFormChange,
+    handleUpdateProduct,
+    handlePageChange,
+  } = useProductsDashboardPageLogic();
 
   // ==================================================
   // Render
@@ -706,8 +237,6 @@ const ProductsDashboardPage = () => {
                   </Select.ItemIndicator>
                 </Select.Item>
 
-                {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
-
                 {(Array.isArray(subCategoriesResponse)
                   ? subCategoriesResponse
                   : []
@@ -816,8 +345,6 @@ const ProductsDashboardPage = () => {
                     <Check size={16} className="text-sky-600" />
                   </Select.ItemIndicator>
                 </Select.Item>
-
-                {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
                 {(Array.isArray(manufacturersResponse)
                   ? manufacturersResponse

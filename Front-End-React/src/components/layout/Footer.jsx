@@ -1,6 +1,7 @@
 import { Building2, Mail, Phone, ShieldCheck } from "lucide-react";
 import { Link as RouterLink } from "react-router";
 import { Em } from "@radix-ui/themes";
+
 const Footer = () => {
   return (
     <footer className="bg-slate-950 text-slate-400 border-t border-slate-900">

@@ -1,24 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-
-// React Redux
-import { useSelector } from "react-redux";
-
 // Radix UI
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import * as Collapsible from "@radix-ui/react-collapsible";
 
 // React Router
-import { NavLink, useLocation } from "react-router";
+import { NavLink } from "react-router";
 
 // Icons
 import { ChevronDown, CircleHelp, LogOut, X } from "lucide-react";
 
-// Auth
-import { selectCurrentUser } from "../../../auth/authSlice";
-import { useLogoutMutation } from "../../../auth/authApiSlice";
-
-// Notifications
-import { notifySonner } from "../../../../lib/notifySonner";
+import useDashboardSidebarLogic from "./useDashboardSidebarLogic.js";
 
 // ==================================================
 // Sidebar Icon
@@ -26,7 +16,6 @@ import { notifySonner } from "../../../../lib/notifySonner";
 
 const SidebarIcon = ({ icon: Icon, className = "h-4 w-4 shrink-0" }) => {
   const IconComponent = Icon ?? CircleHelp;
-
   return <IconComponent className={className} />;
 };
 
@@ -35,128 +24,20 @@ const SidebarIcon = ({ icon: Icon, className = "h-4 w-4 shrink-0" }) => {
 // ==================================================
 
 const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
-  const user = useSelector(selectCurrentUser);
-  const location = useLocation();
-
-  // ==================================================
-  // State
-  // ==================================================
-
-  const [openMenus, setOpenMenus] = useState({});
-
-  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
-
-  const links = useMemo(
-    () => (Array.isArray(sidebarLinks) ? sidebarLinks : []),
-    [sidebarLinks],
-  );
-
-  // ==================================================
-  // Close Sidebar With ESC
-  // ==================================================
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleEscape = (event) => {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleEscape);
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, [isOpen, setIsOpen]);
-
-  // ==================================================
-  // Lock Body Scroll On Mobile
-  // ==================================================
-
-  useEffect(() => {
-    document.body.classList.toggle("max-lg:overflow-hidden", isOpen);
-
-    return () => {
-      document.body.classList.remove("max-lg:overflow-hidden");
-    };
-  }, [isOpen]);
-
-  // ==================================================
-  // Validate Sidebar Icons
-  // ==================================================
-
-  useEffect(() => {
-    if (!import.meta.env.DEV) return;
-
-    links.forEach((item) => {
-      if (!item.icon) {
-        console.warn("[DashboardSidebar] Missing icon:", {
-          label: item.label,
-          path: item.to ?? null,
-          role: user?.role?.role_name,
-        });
-      }
-    });
-  }, [sidebarLinks, user?.role?.role_name, links]);
-
-  // ==================================================
-  // Active Route Helpers
-  // ==================================================
-
-  const isPathActive = (path) => {
-    if (!path) return false;
-
-    return (
-      location.pathname === path || location.pathname.startsWith(`${path}/`)
-    );
-  };
-
-  const isChildActive = (children) => {
-    if (!Array.isArray(children)) return false;
-
-    return children.some((child) => isPathActive(child.to));
-  };
-
-  // ==================================================
-  // Navigation Handlers
-  // ==================================================
-
-  const handleNavigation = () => {
-    setIsOpen(false);
-  };
-
-  const handleMenuChange = (label, open) => {
-    setOpenMenus((previous) => ({
-      ...previous,
-      [label]: open,
-    }));
-  };
-
-  // ==================================================
-  // Logout Handler
-  // ==================================================
-
-  const handleLogout = async () => {
-    if (isLoggingOut) return;
-
-    try {
-      await logout().unwrap();
-
-      setIsOpen(false);
-
-      // The logout endpoint clears auth state.
-      // ProtectedRoute redirects to /login.
-    } catch (error) {
-      console.error("[DashboardSidebar] Logout failed:", error);
-
-      notifySonner(
-        error?.data?.message || "Failed to sign out. Please try again.",
-        "error",
-      );
-    }
-  };
+  const {
+    user,
+    openMenus,
+    isLoggingOut,
+    links,
+    isChildActive,
+    handleNavigation,
+    handleMenuChange,
+    handleLogout,
+  } = useDashboardSidebarLogic({
+    isOpen: isOpen,
+    setIsOpen: setIsOpen,
+    sidebarLinks: sidebarLinks,
+  });
 
   // ==================================================
   // Render
@@ -167,7 +48,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
       {/* ========================================
           Mobile Overlay
       ======================================== */}
-
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
@@ -178,11 +58,9 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
           "
         />
       )}
-
       {/* ========================================
           Sidebar Container
       ======================================== */}
-
       <aside
         className={`
           fixed inset-y-0 left-0 z-50
@@ -190,9 +68,7 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
           border-r border-slate-800
           bg-slate-900 text-slate-300
           transition-transform duration-300
-
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-
           lg:static lg:z-auto
           lg:w-64 lg:translate-x-0
         `}
@@ -200,7 +76,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
         {/* ========================================
             Sidebar Header
         ======================================== */}
-
         <div
           className="
             relative flex shrink-0
@@ -213,7 +88,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
             alt="EuroMed"
             className="w-40"
           />
-
           <button
             type="button"
             onClick={() => setIsOpen(false)}
@@ -231,11 +105,9 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
             <X className="h-5 w-5" />
           </button>
         </div>
-
         {/* ========================================
             Navigation
         ======================================== */}
-
         <ScrollArea.Root className="min-h-0 flex-1 overflow-hidden">
           <ScrollArea.Viewport className="h-full w-full">
             <div className="p-6">
@@ -243,16 +115,12 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
                 {links.map((item) => {
                   const hasChildren =
                     Array.isArray(item.children) && item.children.length > 0;
-
                   // ==================================
                   // Submenu
                   // ==================================
-
                   if (hasChildren) {
                     const childIsActive = isChildActive(item.children);
-
                     const isMenuOpen = openMenus[item.label] ?? childIsActive;
-
                     return (
                       <Collapsible.Root
                         key={item.label}
@@ -263,7 +131,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
                         className="w-full"
                       >
                         {/* Submenu Trigger */}
-
                         <Collapsible.Trigger
                           className={`
                             my-1 flex w-full
@@ -274,7 +141,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
                             px-3.5 py-2.5
                             text-sm font-medium
                             transition-all
-
                             ${
                               childIsActive
                                 ? "bg-slate-800 text-white"
@@ -284,23 +150,18 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
                         >
                           <div className="flex items-center gap-3">
                             <SidebarIcon icon={item.icon} />
-
                             <span>{item.label}</span>
                           </div>
-
                           <ChevronDown
                             className={`
                               h-4 w-4 shrink-0
                               transition-transform
                               duration-200
-
                               ${isMenuOpen ? "rotate-180" : "rotate-0"}
                             `}
                           />
                         </Collapsible.Trigger>
-
                         {/* Submenu Content */}
-
                         <Collapsible.Content className="overflow-hidden">
                           <div
                             className="
@@ -322,7 +183,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
                                     px-3 py-2
                                     text-xs font-bold
                                     transition-all
-
                                     ${
                                       isActive
                                         ? "bg-sky-600 text-white shadow-sm"
@@ -344,13 +204,10 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
                       </Collapsible.Root>
                     );
                   }
-
                   // ==================================
                   // Normal Navigation Link
                   // ==================================
-
                   if (!item.to) return null;
-
                   return (
                     <NavLink
                       key={item.to}
@@ -364,7 +221,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
                         px-3.5 py-2.5
                         text-sm font-medium
                         transition-all
-
                         ${
                           isActive
                             ? "bg-sky-600 text-white shadow-md"
@@ -373,7 +229,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
                       `}
                     >
                       <SidebarIcon icon={item.icon} />
-
                       <span>{item.label}</span>
                     </NavLink>
                   );
@@ -381,11 +236,9 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
               </nav>
             </div>
           </ScrollArea.Viewport>
-
           {/* ========================================
               Scrollbar
           ======================================== */}
-
           <ScrollArea.Scrollbar
             orientation="vertical"
             className="
@@ -404,11 +257,9 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
             />
           </ScrollArea.Scrollbar>
         </ScrollArea.Root>
-
         {/* ========================================
             User / Logout Section
         ======================================== */}
-
         <div
           className="
             shrink-0 space-y-3
@@ -417,7 +268,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
           "
         >
           {/* Current User */}
-
           <div className="text-xs">
             <div className="font-bold text-white">
               {user?.name ?? "Unknown User"}
@@ -427,9 +277,7 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
               {user?.role?.role_name ?? "Unknown"} Access
             </div>
           </div>
-
           {/* Logout Button */}
-
           <button
             type="button"
             onClick={handleLogout}
@@ -444,10 +292,8 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
               text-xs font-bold
               text-red-400
               transition-colors
-
               hover:bg-red-950/50
               hover:text-red-300
-
               disabled:cursor-not-allowed
               disabled:opacity-60
             "
@@ -455,7 +301,6 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
             <LogOut
               className={`h-4 w-4 ${isLoggingOut ? "animate-pulse" : ""}`}
             />
-
             <span>{isLoggingOut ? "Signing Out..." : "Sign Out"}</span>
           </button>
         </div>

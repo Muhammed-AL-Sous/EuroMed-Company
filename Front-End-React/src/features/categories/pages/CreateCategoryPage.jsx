@@ -1,10 +1,7 @@
-import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Em, Flex } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 import { Blocks, Church, FileText, Hash, Save } from "lucide-react";
-
-import { notifySonner } from "../../../lib/notifySonner";
-import { useState } from "react";
-import { useAddCategoryMutation } from "../CategoriesApiSlice";
+import useCreateCategoryPageLogic from "./useCreateCategoryPageLogic.js";
 
 const INPUT_CLASS =
   "box-border w-full rounded-xl border-2 border-sky-700 " +
@@ -15,41 +12,12 @@ const INPUT_CLASS =
   "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateCategoryPage = () => {
-  const [createForm, setCreateForm] = useState({
-    code: "",
-    name: "",
-    description: "",
-  });
-
-  const [addCategory, { isLoading: isCreating }] = useAddCategoryMutation();
-
-  const handleCreateFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setCreateForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmitCategory = async (e) => {
-    e.preventDefault();
-
-    try {
-      await addCategory(createForm).unwrap();
-
-      setCreateForm({
-        code: "",
-        name: "",
-        description: "",
-      });
-
-      notifySonner("Category Added Successfully");
-    } catch (error) {
-      console.error("Failed to add category:", error);
-      notifySonner(error?.data?.message || "Failed to add category", "error");
-    }
-  };
+  const {
+    createForm,
+    isCreating,
+    handleCreateFormChange,
+    handleSubmitCategory,
+  } = useCreateCategoryPageLogic();
 
   return (
     <div>
@@ -63,7 +31,6 @@ const CreateCategoryPage = () => {
         <Card variant="ghost" className="border-none outline-none">
           <Flex gap="3" direction="column">
             <img className="max-h-100 mx-auto" src="/images/categories.png" />
-
             <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
               <Form.Root className="w-full" onSubmit={handleSubmitCategory}>
                 <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 md:grid-cols-2">

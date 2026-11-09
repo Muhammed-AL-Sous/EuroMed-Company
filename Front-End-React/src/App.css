@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --animate-left-to-right: LeftToright 1s ease-in-out infinite;
+  --animate-left-to-right: LeftToRight 1s ease-in-out infinite;
 
-  @keyframes LeftToright {
+  @keyframes LeftToRight {
     0%,
     100% {
       transform: translateX(0);

@@ -1,12 +1,5 @@
-// React
-import { useRef, useState } from "react";
-
-// External Libraries
-// Radix UI
 import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
-
-// Lucide React Library
 import {
   Church,
   LockKeyhole,
@@ -18,12 +11,7 @@ import {
   EyeOff,
   Save,
 } from "lucide-react";
-
-// Notify Sonner
-import { notifySonner } from "../../../lib/notifySonner";
-
-// Api Slice
-import { useCreateUserMutation } from "../UsersApiSlice";
+import useCreateUserPageLogic from "./useCreateUserPageLogic.js";
 
 const INPUT_CLASS =
   "box-border w-full rounded-xl border-2 border-sky-700 " +
@@ -34,117 +22,19 @@ const INPUT_CLASS =
   "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateUserPage = () => {
-  const initialCreateForm = {
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
-    role: "staff",
-    doctor: {
-      name: "",
-    },
-  };
-
-  const [createForm, setCreateForm] = useState(initialCreateForm);
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirmation, setShowPasswordConfirmation] =
-    useState(false);
-
-  // ========= Refs ========= //
-  const passwordRef = useRef(null);
-  const passwordConfirmationRef = useRef(null);
-
-  const togglePasswordVisibility = (inputRef, setVisible) => {
-    const input = inputRef.current;
-
-    if (!input) return;
-
-    const start = input.selectionStart;
-    const end = input.selectionEnd;
-
-    setVisible((previous) => !previous);
-
-    requestAnimationFrame(() => {
-      input.focus({ preventScroll: true });
-
-      if (start !== null && end !== null) {
-        input.setSelectionRange(start, end);
-      }
-    });
-  };
-
-  const [createUser, { isLoading: isCreating }] = useCreateUserMutation();
-
-  const handleCreateFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setCreateForm((currentForm) => {
-      if (name === "doctor.name") {
-        return {
-          ...currentForm,
-          doctor: {
-            ...currentForm.doctor,
-            name: value,
-          },
-        };
-      }
-
-      return {
-        ...currentForm,
-        [name]: value,
-      };
-    });
-  };
-
-  const handleSubmitUser = async (event) => {
-    event.preventDefault();
-
-    if (createForm.password !== createForm.password_confirmation) {
-      notifySonner("Passwords Do Not Match", "error");
-      return;
-    }
-
-    // Basic User Data
-    const payload = {
-      name: createForm.name.trim(),
-      email: createForm.email.trim(),
-      password: createForm.password,
-      password_confirmation: createForm.password_confirmation,
-      role: createForm.role,
-    };
-
-    // Add Doctor Profile Only For Doctor Role
-    if (createForm.role === "doctor" && createForm.doctor.name.trim() !== "") {
-      payload.doctor = {
-        name: createForm.doctor.name.trim(),
-      };
-    }
-
-    try {
-      await createUser(payload).unwrap();
-
-      setCreateForm(initialCreateForm);
-
-      setShowPassword(false);
-      setShowPasswordConfirmation(false);
-
-      notifySonner("User Added Successfully");
-    } catch (error) {
-      console.error("Failed to add User:", error);
-
-      const validationErrors = error?.data?.errors;
-
-      const firstError = validationErrors
-        ? Object.values(validationErrors).flat()[0]
-        : null;
-
-      notifySonner(
-        firstError || error?.data?.message || "Failed to add User",
-        "error",
-      );
-    }
-  };
+  const {
+    createForm,
+    showPassword,
+    setShowPassword,
+    showPasswordConfirmation,
+    setShowPasswordConfirmation,
+    passwordRef,
+    passwordConfirmationRef,
+    togglePasswordVisibility,
+    isCreating,
+    handleCreateFormChange,
+    handleSubmitUser,
+  } = useCreateUserPageLogic();
 
   return (
     <div>
@@ -383,38 +273,6 @@ const CreateUserPage = () => {
                   </Form.Field>
 
                   {/* =========== User Role =========== */}
-                  {/* <SelectField
-                    name="role"
-                    label="User Role"
-                    labelIcon={<UserRound size={17} />}
-                    placeholder="Select user role..."
-                    required
-                    value={createForm.role}
-                    onValueChange={(selectedRole) => {
-                      setCreateForm((currentForm) => ({
-                        ...currentForm,
-                        role: selectedRole,
-                      }));
-                    }}
-                    options={[
-                      {
-                        value: "admin",
-                        label: "Administrator",
-                        description: "Full system access",
-                      },
-                      {
-                        value: "staff",
-                        label: "Staff",
-                        description: "Manage operations and inventory",
-                      },
-                      {
-                        value: "doctor",
-                        label: "Doctor",
-                        description: "Manage own medical operations",
-                      },
-                    ]}
-                  /> */}
-
                   <Form.Field
                     className="grid content-start gap-1.5"
                     name="role"

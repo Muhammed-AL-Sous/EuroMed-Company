@@ -9,11 +9,7 @@ const SiteLoader = ({ fullScreen = false, message = "Loading EuroMed..." }) => {
       className={`
         flex items-center justify-center
         bg-slate-50 px-4
-        ${
-          fullScreen
-            ? "fixed inset-0 z-9999 min-h-dvh"
-            : "w-full min-h-75"
-        }
+        ${fullScreen ? "fixed inset-0 z-9999 min-h-dvh" : "w-full min-h-75"}
       `}
     >
       <div className="flex flex-col items-center gap-5 text-center">

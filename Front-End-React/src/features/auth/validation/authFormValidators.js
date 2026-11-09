@@ -55,7 +55,6 @@ export function collectAuthNameErrors(name, fieldKey = "name") {
   return { [fieldKey]: "The Name Field is Required." };
 }
 
-
 export function mergeFieldErrors(...parts) {
   return Object.assign({}, ...parts);
 }

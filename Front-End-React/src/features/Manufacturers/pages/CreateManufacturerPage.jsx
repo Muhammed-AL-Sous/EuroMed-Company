@@ -1,9 +1,5 @@
-// React
-import { useState } from "react";
-
-// External Libraries
 // Radix UI
-import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Em, Flex } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 
 // Lucide React Library
@@ -18,12 +14,7 @@ import {
   RobotArm,
   Save,
 } from "lucide-react";
-
-// Notify Sonner
-import { notifySonner } from "../../../lib/notifySonner";
-
-// Api Slice
-import { useAddManufacturerMutation } from "../ManufacturersApiSlice";
+import useCreateManufacturerPageLogic from "./useCreateManufacturerPageLogic.js";
 
 const INPUT_CLASS =
   "box-border w-full rounded-xl border-2 border-sky-700 " +
@@ -34,57 +25,12 @@ const INPUT_CLASS =
   "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateManufacturerPage = () => {
-  const [createForm, setCreateForm] = useState({
-    code: "",
-    name: "",
-    origin: "",
-    logo_text: "",
-    description: "",
-    website: "",
-    is_active: true,
-  });
-
-  const [addManufacturer, { isLoading: isCreating }] =
-    useAddManufacturerMutation();
-
-  const handleCreateFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setCreateForm((currentForm) => ({
-      ...currentForm,
-      [name]:
-        name === "is_active"
-          ? value === "true"
-          : name === "origin"
-            ? value.toUpperCase()
-            : value,
-    }));
-  };
-  const handleSubmitManufacturer = async (e) => {
-    e.preventDefault();
-
-    try {
-      await addManufacturer(createForm).unwrap();
-
-      setCreateForm({
-        code: "",
-        name: "",
-        origin: "",
-        logo_text: "",
-        description: "",
-        website: "",
-        is_active: true,
-      });
-
-      notifySonner("Manufacturer Added Successfully");
-    } catch (error) {
-      console.error("Failed to add manufacturer:", error);
-      notifySonner(
-        error?.data?.message || "Failed to add manufacturer",
-        "error",
-      );
-    }
-  };
+  const {
+    createForm,
+    isCreating,
+    handleCreateFormChange,
+    handleSubmitManufacturer,
+  } = useCreateManufacturerPageLogic();
 
   return (
     <div>

@@ -1,7 +1,3 @@
-// React
-import { useState } from "react";
-
-// External Library
 import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 import {
@@ -12,14 +8,8 @@ import {
   Stethoscope,
   UserRoundSearch,
 } from "lucide-react";
-import { notifySonner } from "../../../lib/notifySonner";
 import * as Select from "@radix-ui/react-select";
-
-// Api Slice
-import {
-  useGetUsersQuery,
-  useUpdateUserMutation,
-} from "../../users/UsersApiSlice";
+import useCreateDoctorProfilePageLogic from "./useCreateDoctorProfilePageLogic.js";
 
 const INPUT_CLASS =
   "box-border w-full rounded-xl border-2 border-sky-700 " +
@@ -30,126 +20,17 @@ const INPUT_CLASS =
   "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateDoctorProfilePage = () => {
-  const [createForm, setCreateForm] = useState({
-    user_id: "",
-    name: "",
-  });
-
-  // ==================================================
-  // Users Query
-  // ==================================================
-
-  const { data, refetch } = useGetUsersQuery();
-
-  const [updateUser, { isLoading: isCreating }] = useUpdateUserMutation();
-
-  const users = Array.isArray(data?.users) ? data.users : [];
-
-  const getUserRole = (user) => {
-    if (typeof user.role === "string") {
-      return user.role;
-    }
-
-    return (
-      user.role?.role_name ?? user.role?.name ?? user.roles?.[0]?.name ?? ""
-    );
-  };
-
-  const availableUsers = users.filter((user) => {
-    const role = getUserRole(user);
-
-    return (
-      (role === "staff" || role === "admin" || role === "doctor") &&
-      user.has_doctor_profile === false
-    );
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const handleCreateFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setCreateForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmitDoctor = async (event) => {
-    event.preventDefault();
-
-    // Validate Selected User
-    if (!createForm.user_id) {
-      setErrors((prev) => ({
-        ...prev,
-        user_id: "Please Select a User",
-      }));
-      return;
-    }
-
-    // Validate Doctor Name
-    const doctorName = createForm.name.trim();
-
-    if (!doctorName) {
-      notifySonner("Please Enter Doctor Name", "error");
-      return;
-    }
-
-    // Ensure User Is Eligible
-    const selectedUser = availableUsers.find(
-      (user) => String(user.id) === String(createForm.user_id),
-    );
-
-    if (!selectedUser) {
-      notifySonner(
-        "Selected User Is Not Eligible For a Doctor Profile",
-        "error",
-      );
-      return;
-    }
-
-    // User Update Payload
-    const payload = {
-      role: "doctor",
-      doctor: {
-        name: doctorName,
-      },
-    };
-
-    try {
-      // Change Role + Create Doctor Profile
-      await updateUser({
-        id: selectedUser.id,
-        data: payload,
-      }).unwrap();
-
-      // Reset Form
-      setCreateForm({
-        user_id: "",
-        name: "",
-      });
-
-      setErrors({});
-
-      // Refresh Users List
-      refetch();
-
-      notifySonner("Doctor Profile Created Successfully");
-    } catch (error) {
-      console.error("Failed to Create Doctor Profile:", error);
-
-      const validationErrors = error?.data?.errors;
-
-      const firstError = validationErrors
-        ? Object.values(validationErrors).flat()[0]
-        : null;
-
-      notifySonner(
-        firstError || error?.data?.message || "Failed to Create Doctor Profile",
-        "error",
-      );
-    }
-  };
+  const {
+    createForm,
+    setCreateForm,
+    isCreating,
+    getUserRole,
+    availableUsers,
+    errors,
+    setErrors,
+    handleCreateFormChange,
+    handleSubmitDoctor,
+  } = useCreateDoctorProfilePageLogic();
 
   return (
     <div>
@@ -166,7 +47,6 @@ const CreateDoctorProfilePage = () => {
               className="max-h-80 mx-auto"
               src="/images/Create_Doctor_Profile.png"
             />
-
             <Box className="max-w-full border border-slate-200 shadow-lg rounded-2xl p-5 ">
               <Form.Root className="w-full" onSubmit={handleSubmitDoctor}>
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
@@ -309,8 +189,6 @@ const CreateDoctorProfilePage = () => {
                                 <Check size={16} className="text-sky-600" />
                               </Select.ItemIndicator>
                             </Select.Item>
-
-                            {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
                             {(Array.isArray(availableUsers)
                               ? availableUsers

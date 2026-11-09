@@ -1,330 +1,42 @@
-// React & React Router
-import { useEffect, useState, useRef } from "react";
-import { useSearchParams } from "react-router";
-
-// =========== External Library =========== //
-// Radix
 import { Card, Text } from "@radix-ui/themes";
-
-// Lucide Icons
 import { Search, ShieldAlert, SquarePen, Trash2, X } from "lucide-react";
-
-// Notify Sonner
-import { notifySonner } from "./../../../lib/notifySonner";
-
-// Api Slice
-import {
-  useGetSubCategoriesQuery,
-  useUpdateSubCategoryMutation,
-  useDeleteSubCategoryMutation,
-} from "../SubCategoriesApiSlice";
-
-// Utilities
-import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 import Pagination from "../../../components/utility/Pagination";
 import EditModal from "../../../components/utility/EditModal";
 import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
-
-// Components
 import SubCategoriesTable from "../components/common/SubCategoriesTable";
 import ProductImageUpload from "../../products/components/utility/ProductImageUpload";
+import useSubCategoriesPageLogic from "./useSubCategoriesPageLogic.js";
 
 const SubCategoriesPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [removeExistingImage, setRemoveExistingImage] = useState(false);
-  const topRef = useRef(null);
-  // ==================================================
-  // Search State
-  // ==================================================
-
-  const initialSearch = searchParams.get("search") ?? "";
-
-  const [searchInput, setSearchInput] = useState(initialSearch);
-  const [page, setPage] = useState(1);
-
-  const debouncedSearch = useDebouncedValue(searchInput, 400);
-  const normalizedSearch = debouncedSearch.trim();
-
-  const hasSearch = Boolean(normalizedSearch);
-
-  // ==================================================
-  // Delete State
-  // ==================================================
-
-  const [selectedDeleteSubCategory, setSelectedDeleteSubCategory] =
-    useState(null);
-
-  // ==================================================
-  // Edit State
-  // ==================================================
-
-  const [selectedEditSubCategory, setSelectedEditSubCategory] = useState(null);
-
-  const [editForm, setEditForm] = useState({
-    name: "",
-    description: "",
-  });
-  const [formErrors, setFormErrors] = useState({});
-
-  // ==================================================
-  // SubCategories Query
-  // ==================================================
-
-  const { data, isLoading, isFetching, isError } = useGetSubCategoriesQuery({
-    search: normalizedSearch,
-    page,
-  });
-
-  const subcategories = data?.subcategories ?? [];
-  const meta = data?.meta ?? null;
-
-  // ==================================================
-  // Delete Mutation
-  // ==================================================
-
-  const [deleteSubCategory, { isLoading: isDeleting }] =
-    useDeleteSubCategoryMutation();
-
-  // ==================================================
-  // Update Mutation
-  // ==================================================
-
-  const [updateSubCategory, { isLoading: isUpdating }] =
-    useUpdateSubCategoryMutation();
-
-  // ==================================================
-  // Sync Search With URL
-  // ==================================================
-
-  useEffect(() => {
-    const urlSearch = searchParams.get("search") ?? "";
-
-    if (urlSearch === normalizedSearch) {
-      return;
-    }
-
-    setSearchParams(
-      (params) => {
-        if (normalizedSearch) {
-          params.set("search", normalizedSearch);
-        } else {
-          params.delete("search");
-        }
-
-        return params;
-      },
-      { replace: true },
-    );
-  }, [normalizedSearch, searchParams, setSearchParams]);
-
-  // ==================================================
-  // Delete Handlers
-  // ==================================================
-
-  const handleOpenDeleteModal = (category) => {
-    setSelectedDeleteSubCategory(category);
-  };
-
-  const handleDeleteSubCategory = async () => {
-    if (!selectedDeleteSubCategory || isDeleting) return;
-
-    try {
-      await deleteSubCategory(selectedDeleteSubCategory.id).unwrap();
-
-      setSelectedDeleteSubCategory(null);
-
-      notifySonner("SubCategory Deleted Successfully");
-    } catch (error) {
-      console.error("Failed to Delete SubCategory:", error);
-
-      notifySonner(
-        error?.data?.message || "Failed to Delete SubCategory",
-        "error",
-      );
-    }
-  };
-
-  // ==================================================
-  // Edit Handlers
-  // ==================================================
-
-  const handleOpenEditModal = (subcategory) => {
-    setSelectedEditSubCategory(subcategory);
-    setFormErrors({});
-
-    setSelectedImage(null);
-    setRemoveExistingImage(false);
-
-    setEditForm({
-      name: subcategory.name ?? "",
-      description: subcategory.description || "",
-    });
-  };
-
-  const handleCloseEditModal = () => {
-    if (isUpdating) {
-      return;
-    }
-
-    setSelectedEditSubCategory(null);
-    setFormErrors({});
-    setSelectedImage(null);
-    setRemoveExistingImage(false);
-
-    setEditForm({
-      name: "",
-      description: "",
-    });
-  };
-
-  const handleEditFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setEditForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-
-    setFormErrors((currentErrors) => ({
-      ...currentErrors,
-      [name]: undefined,
-    }));
-  };
-
-  const handleUpdateSubCategory = async () => {
-    if (!selectedEditSubCategory || isUpdating) return;
-
-    const payload = {
-      name: editForm.name.trim(),
-      description: editForm.description.trim(),
-    };
-
-    // Validation
-    const errors = {};
-
-    if (!payload.name) {
-      errors.name = "The Name Field is Required";
-    }
-
-    if (!payload.description) {
-      errors.description = "The Description Field is Required";
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-
-    // Check for changes
-    const hasChanges =
-      payload.name !== (selectedEditSubCategory.name ?? "") ||
-      payload.description !== (selectedEditSubCategory.description ?? "") ||
-      Boolean(selectedImage) ||
-      removeExistingImage;
-
-    if (!hasChanges) {
-      handleCloseEditModal();
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-
-      formData.append("name", payload.name);
-      formData.append("description", payload.description);
-
-      // Upload a new image if selected
-      if (selectedImage) {
-        formData.append("image", selectedImage);
-      }
-
-      // Remove existing image if requested
-      formData.append(
-        "remove_image",
-        removeExistingImage && !selectedImage ? "1" : "0",
-      );
-
-      // Laravel method spoofing
-      formData.append("_method", "PUT");
-
-      await updateSubCategory({
-        id: selectedEditSubCategory.id,
-        data: formData,
-      }).unwrap();
-
-      setSelectedEditSubCategory(null);
-      setFormErrors({});
-      setSelectedImage(null);
-      setRemoveExistingImage(false);
-
-      setEditForm({
-        name: "",
-        description: "",
-      });
-
-      notifySonner("SubCategory Updated Successfully");
-    } catch (error) {
-      console.error("Failed to Update SubCategory:", error);
-
-      // Laravel validation errors
-      if (error?.status === 422 && error?.data?.errors) {
-        const validationErrors = {};
-
-        Object.entries(error.data.errors).forEach(([field, messages]) => {
-          validationErrors[field] = Array.isArray(messages)
-            ? messages[0]
-            : messages;
-        });
-
-        setFormErrors(validationErrors);
-      }
-
-      notifySonner(
-        error?.data?.message || "Failed to Update SubCategory",
-        "error",
-      );
-    }
-  };
-
-  // ==================================================
-  // Search Handlers
-  // ==================================================
-
-  const handleSearchChange = (event) => {
-    setSearchInput(event.target.value);
-    setPage(1);
-  };
-
-  const clearSearch = () => {
-    setSearchInput("");
-    setPage(1);
-
-    setSearchParams(
-      (params) => {
-        params.delete("search");
-        return params;
-      },
-      { replace: true },
-    );
-  };
-
-  // ==================================================
-  // Pagination
-  // ==================================================
-
-  const handlePageChange = (newPage) => {
-    if (newPage === page) return;
-
-    setPage(newPage);
-
-    requestAnimationFrame(() => {
-      topRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-  };
+  const {
+    setSelectedImage,
+    setRemoveExistingImage,
+    topRef,
+    searchInput,
+    normalizedSearch,
+    hasSearch,
+    selectedDeleteSubCategory,
+    setSelectedDeleteSubCategory,
+    selectedEditSubCategory,
+    editForm,
+    formErrors,
+    isLoading,
+    isFetching,
+    isError,
+    subcategories,
+    meta,
+    isDeleting,
+    isUpdating,
+    handleOpenDeleteModal,
+    handleDeleteSubCategory,
+    handleOpenEditModal,
+    handleCloseEditModal,
+    handleEditFormChange,
+    handleUpdateSubCategory,
+    handleSearchChange,
+    clearSearch,
+    handlePageChange,
+  } = useSubCategoriesPageLogic();
 
   // ==================================================
   // Render

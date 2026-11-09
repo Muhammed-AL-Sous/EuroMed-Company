@@ -1,6 +1,3 @@
-import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router";
-import { useReactToPrint } from "react-to-print";
 import { motion } from "motion/react";
 import {
   AlertCircle,
@@ -22,8 +19,7 @@ import {
   Stethoscope,
   UserRound,
 } from "lucide-react";
-
-import { useVerifyPatientOperationMutation } from "../features/patients/PatientOperationApiSlice";
+import useOperationDetailsPageLogic from "./useOperationDetailsPageLogic.js";
 
 // ---------------------------------------------------------
 // Constants and formatting helpers
@@ -70,29 +66,6 @@ const showValue = (value) => {
   return String(value);
 };
 
-// const formatPrice = (value) => {
-//   if (value === null || value === undefined || value === "") return "—";
-//   const amount = Number(value);
-//   if (!Number.isFinite(amount)) return showValue(value);
-//   return `$${amount.toLocaleString("en-US", {
-//     minimumFractionDigits: 2,
-//     maximumFractionDigits: 2,
-//   })}`;
-// };
-
-// const resolveImageUrl = (value) => {
-//   if (typeof value !== "string" || !value.trim()) return null;
-//   const raw = value.trim();
-//   // Supports both normal URLs and "[title](https://...)" strings.
-//   const markdownMatch = raw.match(/^\[[^\]]*\]\((https?:\/\/[^)]+)\)$/i);
-//   const url = markdownMatch ? markdownMatch[1] : raw.replace(/^\[|\]$/g, "");
-//   return /^(https?:\/\/|\/)(?!\/\/\/)/i.test(url) ? url : null;
-// };
-
-const getErrorMessage = (error) =>
-  error?.data?.message ||
-  "We couldn't find an operation matching the provided information. Please check the operation code and date.";
-
 // ---------------------------------------------------------
 // Reusable presentation components
 // ---------------------------------------------------------
@@ -102,12 +75,10 @@ const DetailsCard = ({ children, className = "" }) => (
       report-card
       rounded-xl border border-slate-200
       bg-white p-5 shadow-sm sm:p-6
-
       print:break-inside-auto
       print:rounded-md
       print:p-3
       print:shadow-none
-
       ${className}
     `}
   >
@@ -166,130 +137,10 @@ const Notes = ({ label, children, tone = "neutral" }) => (
 );
 
 // ---------------------------------------------------------
-// Detailed product: ALL fields from the original component
-// ---------------------------------------------------------
-// const ProductDetailsCard = ({ item, index }) => {
-//   const product = item.product;
-//   if (!product) return null;
-
-//   const imageUrl = resolveImageUrl(product.image_url);
-//   const specifications =
-//     product.specifications &&
-//     typeof product.specifications === "object" &&
-//     !Array.isArray(product.specifications)
-//       ? Object.entries(product.specifications)
-//       : [];
-//   const sizes = Array.isArray(product.available_sizes)
-//     ? product.available_sizes
-//     : [];
-
-//   return (
-//     <article className="break-inside-avoid overflow-hidden rounded-xl border border-slate-200 bg-white">
-//       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 bg-slate-50 px-4 py-4 sm:px-5">
-//         <div className="min-w-0">
-//           <p className="text-xs font-semibold text-sky-700">
-//             Material #{index + 1}
-//           </p>
-//           <h3 className="mt-1 break-words text-base font-bold text-slate-800">
-//             {getName(product.name)}
-//           </h3>
-//           <p className="mt-1 font-mono text-xs text-slate-500">
-//             {showValue(product.code)}
-//           </p>
-//         </div>
-//         <div className="flex flex-wrap gap-2">
-//           <span className="rounded-lg bg-sky-100 px-3 py-1.5 text-xs font-semibold text-sky-800">
-//             Quantity: {showValue(item.quantity)}
-//           </span>
-//           <span className="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
-//             {formatPrice(product.price)}
-//           </span>
-//         </div>
-//       </div>
-
-//       <div className="space-y-5 p-4 sm:p-5">
-//         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-//           <InfoField label="Product ID" value={product.id} />
-//           <InfoField label="Product Code" value={product.code} mono />
-//           <InfoField label="Manufacturer ID" value={product.manufacturer_id} />
-//           <InfoField label="Category ID" value={product.category_id} />
-//           <InfoField label="Subcategory ID" value={product.subcategory_id} />
-//           <InfoField label="Unit Price" value={formatPrice(product.price)} />
-//           <InfoField label="Used Quantity" value={item.quantity} />
-//           <InfoField label="Item ID" value={item.id} />
-//         </div>
-
-//         {imageUrl && (
-//           <div className="flex justify-center border-t border-slate-100 pt-5">
-//             <img
-//               src={imageUrl}
-//               alt={getName(product.name)}
-//               className="h-44 w-44 rounded-xl border border-slate-200 bg-white object-contain p-3"
-//               loading="lazy"
-//             />
-//           </div>
-//         )}
-
-//         {product.description && (
-//           <Notes label="Product Description">{product.description}</Notes>
-//         )}
-//         {product.medical_usage && (
-//           <Notes label="Medical Usage" tone="info">
-//             {product.medical_usage}
-//           </Notes>
-//         )}
-
-//         {specifications.length > 0 && (
-//           <div>
-//             <h4 className="text-xs font-semibold text-slate-500">
-//               Specifications
-//             </h4>
-//             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-//               {specifications.map(([key, value]) => (
-//                 <div
-//                   key={key}
-//                   className="rounded-lg border border-slate-200 bg-slate-50 p-3"
-//                 >
-//                   <p className="break-words text-xs font-medium text-slate-500">
-//                     {key}
-//                   </p>
-//                   <p className="mt-1 break-words text-sm font-semibold text-slate-800">
-//                     {showValue(value)}
-//                   </p>
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-//         )}
-
-//         {sizes.length > 0 && (
-//           <div>
-//             <h4 className="text-xs font-semibold text-slate-500">
-//               Available Sizes
-//             </h4>
-//             <div className="mt-3 flex flex-wrap gap-2">
-//               {sizes.map((size, sizeIndex) => (
-//                 <span
-//                   key={`${String(size)}-${sizeIndex}`}
-//                   className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700"
-//                 >
-//                   {showValue(size)}
-//                 </span>
-//               ))}
-//             </div>
-//           </div>
-//         )}
-//       </div>
-//     </article>
-//   );
-// };
-
-// ---------------------------------------------------------
 // Read-only report. This is the node used by Print / PDF.
 // ---------------------------------------------------------
 const OperationReport = ({ operation, reportRef }) => {
   const items = Array.isArray(operation.items) ? operation.items : EMPTY_ITEMS;
-  console.log(items);
   const totalQuantity = items.reduce(
     (sum, item) => sum + (Number(item.quantity) || 0),
     0,
@@ -348,23 +199,6 @@ const OperationReport = ({ operation, reportRef }) => {
           />
 
           <InfoField icon={Layers3} label="Side" value={operation.side} />
-          {/* <InfoField
-            icon={FileText}
-            label="Invoice Number"
-            value={operation.invoice_number}
-            mono
-          /> */}
-          {/* <InfoField icon={Hash} label="Operation ID" value={operation.id} /> */}
-          {/* <InfoField
-            icon={CalendarDays}
-            label="Created At"
-            value={formatDate(operation.created_at)}
-          /> */}
-          {/* <InfoField
-            icon={CalendarDays}
-            label="Updated At"
-            value={formatDate(operation.updated_at)}
-          /> */}
         </div>
         {operation.description && (
           <Notes label="Operation Description">{operation.description}</Notes>
@@ -418,11 +252,6 @@ const OperationReport = ({ operation, reportRef }) => {
                 label="Date of Birth"
                 value={formatDate(operation.patient.date_of_birth)}
               />
-              {/* <InfoField
-                icon={Hash}
-                label="Patient ID"
-                value={operation.patient.id}
-              /> */}
             </div>
           </DetailsCard>
         )}
@@ -495,54 +324,10 @@ const OperationReport = ({ operation, reportRef }) => {
                 label="City"
                 value={getName(operation.hospital.city)}
               />
-              {/* <InfoField
-                icon={Hash}
-                label="Hospital ID"
-                value={operation.hospital.id}
-              /> */}
             </div>
           </DetailsCard>
         )}
       </div>
-
-      {/* <div className="grid grid-cols-1 gap-5 lg:grid-cols-3"> */}
-
-      {/* {operation.operation_type && (
-          <DetailsCard>
-            <SectionHeader
-              icon={FileText}
-              title="Procedure Information"
-              subtitle="Operation classification"
-            />
-            <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 sm:grid-cols-2">
-              <InfoField
-                label="Procedure"
-                value={getName(operation.operation_type.name)}
-              />
-              <InfoField
-                icon={Hash}
-                label="Code"
-                value={operation.operation_type.code}
-                mono
-              />
-              <InfoField
-                icon={Package}
-                label="Product Count"
-                value={operation.operation_type.product_count}
-              />
-              <InfoField
-                label="Procedure ID"
-                value={operation.operation_type.id}
-              />
-            </div>
-            {operation.operation_type.description && (
-              <Notes label="Procedure Description">
-                {operation.operation_type.description}
-              </Notes>
-            )}
-          </DetailsCard>
-        )} */}
-      {/* </div> */}
 
       <DetailsCard>
         <SectionHeader
@@ -593,7 +378,6 @@ const OperationReport = ({ operation, reportRef }) => {
                     /^https?:\/\//i.test(item?.product?.image_url)
                       ? item?.product?.image_url
                       : null;
-                  // console.log(imageUrl)
                   return (
                     <tr key={item.id ?? index} className="hover:bg-sky-50/50">
                       <td className="px-4 py-3 font-semibold text-slate-500 border border-slate-200">
@@ -651,25 +435,6 @@ const OperationReport = ({ operation, reportRef }) => {
           </table>
         </div>
       </DetailsCard>
-
-      {/* {items.some((item) => item.product) && (
-        <DetailsCard>
-          <SectionHeader
-            icon={Package}
-            title="Material Details"
-            subtitle="Technical and usage details for every product"
-          />
-          <div className="mt-5 space-y-4 border-t border-slate-100 pt-5">
-            {items.map((item, index) => (
-              <ProductDetailsCard
-                key={item.id ?? index}
-                item={item}
-                index={index}
-              />
-            ))}
-          </div>
-        </DetailsCard>
-      )} */}
     </div>
   );
 };
@@ -678,154 +443,20 @@ const OperationReport = ({ operation, reportRef }) => {
 // Public patient verification portal
 // ---------------------------------------------------------
 const OperationDetailsPage = () => {
-  const [searchParams] = useSearchParams();
-  const urlCode = searchParams.get("code") || "";
-  const urlDate = searchParams.get("date") || "";
-
-  const [code, setCode] = useState(urlCode);
-  const [date, setDate] = useState(urlDate);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [operationData, setOperationData] = useState(null);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const printRef = useRef(null);
-  const requestVersion = useRef(0);
-
-  const [verifyPatientOperation, { isLoading }] =
-    useVerifyPatientOperationMutation();
-
-  const handleVerify = async (event) => {
-    event.preventDefault();
-    const normalizedCode = code.trim().toUpperCase();
-    if (!normalizedCode || !date || isLoading) return;
-
-    const version = ++requestVersion.current;
-    setErrorMessage("");
-    setOperationData(null);
-
-    try {
-      const response = await verifyPatientOperation({
-        code: normalizedCode,
-        date,
-      }).unwrap();
-      if (requestVersion.current !== version) return;
-
-      if (response?.status && response?.data) {
-        setOperationData(response.data);
-      } else {
-        setErrorMessage(response?.message || getErrorMessage(null));
-      }
-    } catch (error) {
-      if (requestVersion.current === version) {
-        setErrorMessage(getErrorMessage(error));
-      }
-    }
-  };
-
-  // Verify automatically when the page is opened with ?code=...&date=...
-  useEffect(() => {
-    if (!urlCode.trim() || !urlDate) return;
-
-    const version = ++requestVersion.current;
-    const request = verifyPatientOperation({
-      code: urlCode.trim().toUpperCase(),
-      date: urlDate,
-    });
-
-    request
-      .unwrap()
-      .then((response) => {
-        if (requestVersion.current !== version) return;
-        if (response?.status && response?.data) {
-          setOperationData(response.data);
-          setErrorMessage("");
-        } else {
-          setOperationData(null);
-          setErrorMessage(response?.message || getErrorMessage(null));
-        }
-      })
-      .catch((error) => {
-        if (requestVersion.current !== version) return;
-        setOperationData(null);
-        setErrorMessage(getErrorMessage(error));
-      });
-
-    return () => {
-      if (requestVersion.current === version) requestVersion.current += 1;
-      request.abort();
-    };
-  }, [urlCode, urlDate, verifyPatientOperation]);
-
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-
-    documentTitle: operationData
-      ? `Operation-${operationData.patient_access_code}`
-      : "Operation-Certificate",
-
-    pageStyle: `
-    @page {
-      size: A4 portrait;
-      margin: 10mm;
-    }
-
-    @media print {
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: auto;
-        overflow: visible;
-      }
-    }
-  `,
-  });
-
-  // Keeps the original Laravel + Browsershot PDF endpoint contract.
-  const handleDownloadPdf = async () => {
-    if (!printRef.current || !operationData || isDownloading) return;
-
-    setIsDownloading(true);
-    setErrorMessage("");
-    let objectUrl;
-
-    try {
-      const contentHtml = printRef.current.cloneNode(true).outerHTML;
-      const stylesheets = Array.from(document.styleSheets)
-        .map((sheet) => {
-          try {
-            return Array.from(sheet.cssRules)
-              .map((rule) => rule.cssText)
-              .join("\n");
-          } catch {
-            // Cross-origin stylesheets cannot be read by the browser.
-            return "";
-          }
-        })
-        .join("\n");
-
-      const response = await fetch("/api/operations/pdf", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ html: contentHtml, css: stylesheets }),
-      });
-
-      if (!response.ok) throw new Error("Failed to generate PDF");
-
-      const blob = await response.blob();
-      objectUrl = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = objectUrl;
-      anchor.download = `Operation-${operationData.patient_access_code}.pdf`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-    } catch (error) {
-      console.error("PDF generation error:", error);
-      setErrorMessage("Failed to download PDF. Please try again.");
-    } finally {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-      setIsDownloading(false);
-    }
-  };
+  const {
+    code,
+    setCode,
+    date,
+    setDate,
+    errorMessage,
+    operationData,
+    isDownloading,
+    printRef,
+    isLoading,
+    handleVerify,
+    handlePrint,
+    handleDownloadPdf,
+  } = useOperationDetailsPageLogic();
 
   return (
     <motion.div

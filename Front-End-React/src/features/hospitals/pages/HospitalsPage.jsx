@@ -1,298 +1,49 @@
-import { useEffect, useState, useRef } from "react";
 import { Search, ShieldAlert, SquarePen, Trash2, X } from "lucide-react";
-import { useSearchParams } from "react-router";
 import { Card, Text } from "@radix-ui/themes";
-
-import {
-  useDeleteHospitalMutation,
-  useGetHospitalsQuery,
-  useUpdateHospitalMutation,
-} from "../HospitalsApiSlice";
-
-import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
-
 import HospitalsTable from "../components/common/HospitalsTable";
 import Pagination from "../../../components/utility/Pagination";
 import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
 import EditModal from "../../../components/utility/EditModal";
-import { notifySonner } from "./../../../lib/notifySonner";
+import useHospitalsPageLogic from "./useHospitalsPageLogic.js";
 
 const HospitalsPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const topRef = useRef(null);
-  // ==================================================
-  // Search State
-  // ==================================================
-
-  const initialSearch = searchParams.get("search") ?? "";
-
-  const [searchInput, setSearchInput] = useState(initialSearch);
-  const [page, setPage] = useState(1);
-
-  const debouncedSearch = useDebouncedValue(searchInput, 400);
-  const normalizedSearch = debouncedSearch.trim();
-
-  const hasSearch = Boolean(normalizedSearch);
-
-  // ==================================================
-  // Delete State
-  // ==================================================
-
-  const [selectedDeleteHospital, setSelectedDeleteHospital] = useState(null);
-
-  // ==================================================
-  // Edit State
-  // ==================================================
-
-  const [selectedEditHospital, setSelectedEditHospital] = useState(null);
-
-  const [editForm, setEditForm] = useState({
-    name: "",
-    type: "",
-    city: "",
-  });
-  const [formErrors, setFormErrors] = useState({});
-
-  // ==================================================
-  // Hospitals Query
-  // ==================================================
-
-  const { data, isLoading, isFetching, isError } = useGetHospitalsQuery({
-    search: normalizedSearch,
-    page,
-  });
-
-  const hospitals = data?.hospitals ?? [];
-  const meta = data?.meta ?? null;
-
-  // ==================================================
-  // Delete Mutation
-  // ==================================================
-
-  const [deleteHospital, { isLoading: isDeleting }] =
-    useDeleteHospitalMutation();
-
-  // ==================================================
-  // Update Mutation
-  // ==================================================
-
-  const [updateHospital, { isLoading: isUpdating }] =
-    useUpdateHospitalMutation();
-
-  // ==================================================
-  // Sync Search With URL
-  // ==================================================
-
-  useEffect(() => {
-    const urlSearch = searchParams.get("search") ?? "";
-
-    if (urlSearch === normalizedSearch) {
-      return;
-    }
-
-    setSearchParams(
-      (params) => {
-        if (normalizedSearch) {
-          params.set("search", normalizedSearch);
-        } else {
-          params.delete("search");
-        }
-
-        return params;
-      },
-      { replace: true },
-    );
-  }, [normalizedSearch, searchParams, setSearchParams]);
-
-  // ==================================================
-  // Delete Handlers
-  // ==================================================
-
-  const handleOpenDeleteModal = (hospital) => {
-    setSelectedDeleteHospital(hospital);
-  };
-
-  const handleCloseDeleteModal = () => {
-    if (isDeleting) {
-      return;
-    }
-
-    setSelectedDeleteHospital(null);
-  };
-
-  const handleDeleteHospital = async () => {
-    if (!selectedDeleteHospital) {
-      return;
-    }
-
-    try {
-      await deleteHospital(selectedDeleteHospital.id).unwrap();
-
-      setSelectedDeleteHospital(null);
-
-      notifySonner("Hospital Deleted Successfully");
-    } catch (error) {
-      console.error("Failed to Delete Hospital:", error);
-
-      notifySonner(
-        error?.data?.message || "Failed to Delete Hospital",
-        "error",
-      );
-    }
-  };
-
-  // ==================================================
-  // Edit Handlers
-  // ==================================================
-
-  const handleOpenEditModal = (hospital) => {
-    setSelectedEditHospital(hospital);
-    setFormErrors({});
-
-    setEditForm({
-      name: hospital.name ?? "",
-      type: hospital.type || "Government",
-      city: hospital.city ?? "",
-    });
-  };
-
-  const handleCloseEditModal = () => {
-    if (isUpdating) {
-      return;
-    }
-
-    setSelectedEditHospital(null);
-    setFormErrors({});
-
-    setEditForm({
-      name: "",
-      type: "",
-      city: "",
-    });
-  };
-
-  const handleEditFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setEditForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-
-    setFormErrors((currentErrors) => ({
-      ...currentErrors,
-      [name]: undefined,
-    }));
-  };
-
-  const handleUpdateHospital = async () => {
-    if (!selectedEditHospital) {
-      return;
-    }
-
-    const payload = {
-      name: editForm.name.trim(),
-      type: editForm.type,
-      city: editForm.city.trim(),
-    };
-
-    // Validation
-    const errors = {};
-
-    if (!payload.name) errors.name = "The Name Field is Required";
-    if (!payload.type) errors.type = "The Type Field is Required";
-    if (!payload.city) errors.city = "The City Field is Required";
-
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-
-    // No real changes
-    const hasChanges =
-      payload.name !== (selectedEditHospital.name ?? "") ||
-      payload.type !== (selectedEditHospital.type ?? "") ||
-      payload.city !== (selectedEditHospital.city ?? "");
-
-    if (!hasChanges) {
-      setSelectedEditHospital(null);
-      setFormErrors({});
-      setEditForm({ name: "", type: "", city: "" });
-      return;
-    }
-
-    // Update
-    try {
-      await updateHospital({
-        id: selectedEditHospital.id,
-        data: payload,
-      }).unwrap();
-
-      setSelectedEditHospital(null);
-      setFormErrors({});
-      setEditForm({ name: "", type: "", city: "" });
-
-      notifySonner("Hospital updated successfully");
-    } catch (error) {
-      console.error("Failed to update hospital:", error);
-
-      notifySonner(
-        error?.data?.message || "Failed to update hospital",
-        "error",
-      );
-    }
-  };
-
-  // ==================================================
-  // Search Handlers
-  // ==================================================
-
-  const handleSearchChange = (event) => {
-    setSearchInput(event.target.value);
-    setPage(1);
-  };
-
-  const clearSearch = () => {
-    setSearchInput("");
-    setPage(1);
-
-    setSearchParams(
-      (params) => {
-        params.delete("search");
-        return params;
-      },
-      { replace: true },
-    );
-  };
-
-  // ==================================================
-  // Pagination
-  // ==================================================
-
-  const handlePageChange = (newPage) => {
-    if (newPage === page) return;
-
-    setPage(newPage);
-
-    requestAnimationFrame(() => {
-      topRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-  };
+  const {
+    topRef,
+    searchInput,
+    normalizedSearch,
+    hasSearch,
+    selectedDeleteHospital,
+    selectedEditHospital,
+    editForm,
+    formErrors,
+    isLoading,
+    isFetching,
+    isError,
+    hospitals,
+    meta,
+    isDeleting,
+    isUpdating,
+    handleOpenDeleteModal,
+    handleCloseDeleteModal,
+    handleDeleteHospital,
+    handleOpenEditModal,
+    handleCloseEditModal,
+    handleEditFormChange,
+    handleUpdateHospital,
+    handleSearchChange,
+    clearSearch,
+    handlePageChange,
+  } = useHospitalsPageLogic();
 
   // ==================================================
   // Render
   // ==================================================
-
   return (
     <Card variant="ghost">
       <div ref={topRef} className="scroll-mt-24" />
       {/* ==================================================
           Header
       ================================================== */}
-
       <div
         className="
           flex

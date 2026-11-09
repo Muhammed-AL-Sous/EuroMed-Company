@@ -5,7 +5,7 @@ import { Clock, Mail, MapPin, Phone, Send } from "lucide-react";
 import LocationMap from "./../components/common/LocationMap";
 
 // Contacts Logic
-import useContactPageLogic from "../logic/useContactPageLogic";
+import useContactPageLogic from "./useContactPageLogic";
 
 import { motion } from "motion/react";
 const ContactPage = () => {

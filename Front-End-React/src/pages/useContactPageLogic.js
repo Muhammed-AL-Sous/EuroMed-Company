@@ -51,6 +51,7 @@ const useContactPageLogic = () => {
       );
     }
   };
+
   return {
     form,
     submitted,

@@ -1,16 +1,11 @@
 import { SquarePen, Trash } from "lucide-react";
+import usePatientsTableLogic from "./usePatientsTableLogic.js";
 
 const PatientsTable = ({ Patients = [], onDelete, onEdit }) => {
-  const headerCell =
-    "bg-sky-500 p-2 sm:p-3 text-sm font-semibold text-white border-b border-slate-300";
-
-  const bodyCell =
-    "border-b border-slate-300 px-2 py-3 sm:px-4 text-sm font-medium text-slate-700";
+  const { headerCell, bodyCell } = usePatientsTableLogic();
 
   return (
-    // الحاوية الخارجية: للحواف المدوّرة والإطار فقط
     <div className="w-full overflow-hidden rounded-2xl border border-slate-300">
-      {/* الحاوية الداخلية: هي المسؤولة عن السكرول الأفقي */}
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-140 border-separate border-spacing-0 text-center">
           {/* Header */}
@@ -19,7 +14,9 @@ const PatientsTable = ({ Patients = [], onDelete, onEdit }) => {
               <th className={`${headerCell} border-r`}>Name</th>
               <th className={`${headerCell} border-r`}>Phone</th>
               <th className={`${headerCell} border-r`}>Age</th>
-              <th className={`${headerCell} border-r whitespace-nowrap`}>Date Of Birth</th>
+              <th className={`${headerCell} border-r whitespace-nowrap`}>
+                Date Of Birth
+              </th>
               <th className={`${headerCell} border-r`}>Gender</th>
               <th className={headerCell}>Tools</th>
             </tr>
@@ -72,7 +69,7 @@ const PatientsTable = ({ Patients = [], onDelete, onEdit }) => {
                   >
                     {Patient.gender}
                   </td>
-                  
+
                   <td
                     className={`${bodyCell} ${lastRow} group-hover:bg-sky-50 transition-colors duration-200 whitespace-nowrap`}
                   >

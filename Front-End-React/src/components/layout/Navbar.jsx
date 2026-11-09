@@ -6,95 +6,23 @@ import {
   ShieldCheck,
   X,
 } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
-import {
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useCallback,
-} from "react";
-import {
-  selectCurrentUser,
-  selectAuthReady,
-} from "../../features/auth/authSlice";
-import { useLogoutMutation } from "../../features/auth/authApiSlice";
-import { useSelector } from "react-redux";
-import { ROLES_CONFIG } from "../../routes/roles.config";
+import useNavbarLogic from "./useNavbarLogic.js";
 
 export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
-  const user = useSelector(selectCurrentUser);
-  const authReady = useSelector(selectAuthReady);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const menuRef = useRef(null);
-  const toggleRef = useRef(null);
-  const [logout] = useLogoutMutation();
-
-  /* ================= Lock Body Scroll ================= */
-  useLayoutEffect(() => {
-    document.body.style.overflow = isMobileOpen ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isMobileOpen]);
-
-  /* ================= Click Outside ================= */
-  const handleClickOutside = useCallback(
-    (event) => {
-      if (
-        isMobileOpen &&
-        menuRef.current &&
-        !menuRef.current.contains(event.target) &&
-        toggleRef.current &&
-        !toggleRef.current.contains(event.target)
-      ) {
-        setIsMobileOpen(false);
-      }
-    },
-    [isMobileOpen],
-  );
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [handleClickOutside]);
-
-  /* ================= Navigation Links ================= */
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Brands", path: "/brands" },
-    { name: "Operations Details", path: "/operation-details", highlight: true },
-    { name: "Products", path: "/products" },
-    { name: "About Us", path: "/about" },
-    { name: "Contact", path: "/contact" },
-  ];
-
-  const authButtonClass =
-    "px-4 py-2 bg-linear-to-r from-[#00a6f1] to-[#00a6f4] rounded-full text-white text-sm font-semibold shadow-sky-500 cursor-pointer hover:shadow-xl hover:shadow-[#00a6f4]/30 transition-all duration-300 transform hover:-translate-y-1 transform-will-change";
-
-  const logoutButtonClass =
-    "inline-flex items-center gap-2 px-2 py-2 rounded-full border border-slate-300 dark:border-white/20 text-gray-800 dark:text-white text-sm font-semibold cursor-pointer hover:bg-slate-100 hover:border-slate-300 dark:hover:bg-white/10 dark:hover:border-white/10 transition-all duration-300 transform hover:-translate-y-1 transform-will-change";
-
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap();
-    } catch (error) {
-      console.warn("Logout request failed:", error);
-    }
-
-    setMobileMenuOpen(false);
-    navigate("/login", { replace: true });
-  };
-
-  const isFullyOnboarded = authReady && user;
-
-  const dashboardHref = user
-    ? `/${ROLES_CONFIG[user.role.role_name]?.prefix || "doctor"}`
-    : "/";
+  const {
+    mobileMenuOpen,
+    setMobileMenuOpen,
+    location,
+    user,
+    navLinks,
+    authButtonClass,
+    logoutButtonClass,
+    handleLogout,
+    isFullyOnboarded,
+    dashboardHref,
+  } = useNavbarLogic();
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-xs">
@@ -102,7 +30,7 @@ export default function Navbar() {
       <div className="bg-slate-900 text-slate-300 text-xs py-1.5 px-4 sm:px-6 hidden md:flex justify-between items-center">
         <div className="flex items-center gap-2 max-w-7xl mx-auto w-full flex-col lg:flex-row justify-between">
           <div className="flex items-center gap-2 flex-col md:flex-row">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
             <span className="inline-block font-medium text-white text-[11px] md:text-xs">
               Erbil HQ & Regional Distribution Center :
             </span>

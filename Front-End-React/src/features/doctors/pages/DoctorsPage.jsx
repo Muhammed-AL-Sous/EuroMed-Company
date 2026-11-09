@@ -1,283 +1,52 @@
-// React & React Router
-import { useEffect, useState, useRef } from "react";
-import { useSearchParams } from "react-router";
-
 // External Library
 import { Search, ShieldAlert, SquarePen, Trash2, X } from "lucide-react";
 import { Card, Text } from "@radix-ui/themes";
-import { notifySonner } from "./../../../lib/notifySonner";
-
-// Api Slice
-import {
-  useGetDoctorsQuery,
-  useDeleteDoctorMutation,
-  useUpdateDoctorMutation,
-} from "../DoctorsApiSlice";
-
-// Components
-import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 
 // Utilities
 import DoctorsTable from "./../components/common/DoctorsTable";
 import Pagination from "../../../components/utility/Pagination";
 import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
 import EditModal from "../../../components/utility/EditModal";
+import useDoctorsPageLogic from "./useDoctorsPageLogic.js";
 
 const DoctorsPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const topRef = useRef(null);
-  // ==================================================
-  // Search State
-  // ==================================================
-
-  const initialSearch = searchParams.get("search") ?? "";
-
-  const [searchInput, setSearchInput] = useState(initialSearch);
-  const [page, setPage] = useState(1);
-
-  const debouncedSearch = useDebouncedValue(searchInput, 400);
-  const normalizedSearch = debouncedSearch.trim();
-
-  const hasSearch = Boolean(normalizedSearch);
-
-  // ==================================================
-  // Delete State
-  // ==================================================
-
-  const [selectedDeleteDoctor, setSelectedDeleteDoctor] = useState(null);
-
-  // ==================================================
-  // Edit State
-  // ==================================================
-
-  const [selectedEditDoctor, setSelectedEditDoctor] = useState(null);
-
-  const [editForm, setEditForm] = useState({
-    name: "",
-  });
-  const [formErrors, setFormErrors] = useState({});
-
-  // ==================================================
-  // Doctors Query
-  // ==================================================
-
-  const { data, isLoading, isFetching, isError } = useGetDoctorsQuery({
-    search: normalizedSearch,
-    page,
-  });
-
-  const Doctors = data?.doctors ?? [];
-  const meta = data?.meta ?? null;
-
-  // ==================================================
-  // Delete Mutation
-  // ==================================================
-
-  const [deleteDoctor, { isLoading: isDeleting }] = useDeleteDoctorMutation();
-
-  // ==================================================
-  // Update Mutation
-  // ==================================================
-
-  const [updateDoctor, { isLoading: isUpdating }] = useUpdateDoctorMutation();
-
-  // ==================================================
-  // Sync Search With URL
-  // ==================================================
-
-  useEffect(() => {
-    const urlSearch = searchParams.get("search") ?? "";
-
-    if (urlSearch === normalizedSearch) {
-      return;
-    }
-
-    setSearchParams(
-      (params) => {
-        if (normalizedSearch) {
-          params.set("search", normalizedSearch);
-        } else {
-          params.delete("search");
-        }
-
-        return params;
-      },
-      { replace: true },
-    );
-  }, [normalizedSearch, searchParams, setSearchParams]);
-
-  // ==================================================
-  // Delete Handlers
-  // ==================================================
-
-  const handleOpenDeleteModal = (Doctor) => {
-    setSelectedDeleteDoctor(Doctor);
-  };
-
-  const handleCloseDeleteModal = () => {
-    if (isDeleting) {
-      return;
-    }
-
-    setSelectedDeleteDoctor(null);
-  };
-
-  const handleDeleteDoctor = async () => {
-    if (!selectedDeleteDoctor) {
-      return;
-    }
-
-    try {
-      await deleteDoctor(selectedDeleteDoctor.id).unwrap();
-
-      setSelectedDeleteDoctor(null);
-
-      notifySonner("Doctor Deleted Successfully");
-    } catch (error) {
-      console.error("Failed to Delete Doctor:", error);
-
-      notifySonner(error?.data?.message || "Failed to Delete Doctor", "error");
-    }
-  };
-
-  // ==================================================
-  // Edit Handlers
-  // ==================================================
-
-  const handleOpenEditModal = (Doctor) => {
-    setSelectedEditDoctor(Doctor);
-    setFormErrors({});
-
-    setEditForm({
-      name: Doctor.name ?? "",
-    });
-  };
-
-  const handleCloseEditModal = () => {
-    if (isUpdating) {
-      return;
-    }
-
-    setSelectedEditDoctor(null);
-    setFormErrors({});
-
-    setEditForm({
-      name: "",
-    });
-  };
-
-  const handleEditFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setEditForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-
-    setFormErrors((currentErrors) => ({
-      ...currentErrors,
-      [name]: undefined,
-    }));
-  };
-
-  const handleUpdateDoctor = async () => {
-    if (!selectedEditDoctor) {
-      return;
-    }
-
-    const payload = {
-      name: editForm.name.trim(),
-    };
-
-    // Validation
-    const errors = {};
-
-    if (!payload.name) errors.name = "The Name Field is Required";
-
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-
-    // No real changes
-    const hasChanges = payload.name !== (selectedEditDoctor.name ?? "");
-
-    if (!hasChanges) {
-      setSelectedEditDoctor(null);
-      setFormErrors({});
-      setEditForm({ name: "" });
-      return;
-    }
-
-    // Update
-    try {
-      await updateDoctor({
-        id: selectedEditDoctor.id,
-        data: payload,
-      }).unwrap();
-
-      setSelectedEditDoctor(null);
-      setFormErrors({});
-      setEditForm({ name: "" });
-
-      notifySonner("Doctor updated successfully");
-    } catch (error) {
-      console.error("Failed to update Doctor:", error);
-
-      notifySonner(error?.data?.message || "Failed to update Doctor", "error");
-    }
-  };
-
-  // ==================================================
-  // Search Handlers
-  // ==================================================
-
-  const handleSearchChange = (event) => {
-    setSearchInput(event.target.value);
-    setPage(1);
-  };
-
-  const clearSearch = () => {
-    setSearchInput("");
-    setPage(1);
-
-    setSearchParams(
-      (params) => {
-        params.delete("search");
-        return params;
-      },
-      { replace: true },
-    );
-  };
-
-  // ==================================================
-  // Pagination
-  // ==================================================
-
-  const handlePageChange = (newPage) => {
-    if (newPage === page) return;
-
-    setPage(newPage);
-
-    requestAnimationFrame(() => {
-      topRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-  };
+  const {
+    topRef,
+    searchInput,
+    normalizedSearch,
+    hasSearch,
+    selectedDeleteDoctor,
+    selectedEditDoctor,
+    editForm,
+    formErrors,
+    isLoading,
+    isFetching,
+    isError,
+    Doctors,
+    meta,
+    isDeleting,
+    isUpdating,
+    handleOpenDeleteModal,
+    handleCloseDeleteModal,
+    handleDeleteDoctor,
+    handleOpenEditModal,
+    handleCloseEditModal,
+    handleEditFormChange,
+    handleUpdateDoctor,
+    handleSearchChange,
+    clearSearch,
+    handlePageChange,
+  } = useDoctorsPageLogic();
 
   // ==================================================
   // Render
   // ==================================================
-
   return (
     <Card variant="ghost">
       <div ref={topRef} className="scroll-mt-24" />
       {/* ==================================================
           Header
       ================================================== */}
-
       <div
         className="
           flex
@@ -292,11 +61,9 @@ const DoctorsPage = () => {
         <Text as="div" size="6" weight="bold" className="text-sky-900">
           All Doctors
         </Text>
-
         {/* ==================================================
             Search
         ================================================== */}
-
         <div className="relative w-full md:max-w-md">
           <Search
             className="
@@ -310,7 +77,6 @@ const DoctorsPage = () => {
               text-slate-400
             "
           />
-
           <input
             type="text"
             value={searchInput}
@@ -335,7 +101,6 @@ const DoctorsPage = () => {
               focus:ring-sky-500
             "
           />
-
           {searchInput && (
             <button
               type="button"
@@ -357,11 +122,9 @@ const DoctorsPage = () => {
           )}
         </div>
       </div>
-
       {/* ==================================================
           Active Search
       ================================================== */}
-
       {hasSearch && (
         <div
           className="
@@ -382,7 +145,6 @@ const DoctorsPage = () => {
               "{normalizedSearch}"
             </span>
           </span>
-
           <button
             type="button"
             onClick={clearSearch}
@@ -402,11 +164,9 @@ const DoctorsPage = () => {
           </button>
         </div>
       )}
-
       {/* ==================================================
           Content
       ================================================== */}
-
       {isLoading ? (
         <LoadingState />
       ) : isError ? (
@@ -432,7 +192,6 @@ const DoctorsPage = () => {
       {/* ==================================================
           Delete Confirmation Modal
       ================================================== */}
-
       <DeleteConfirmModal
         isOpen={Boolean(selectedDeleteDoctor)}
         onClose={handleCloseDeleteModal}
@@ -445,11 +204,9 @@ const DoctorsPage = () => {
         cancelText="Cancel"
         icon={Trash2}
       />
-
       {/* ==================================================
           Edit Modal
       ================================================== */}
-
       <EditModal
         isOpen={Boolean(selectedEditDoctor)}
         onClose={handleCloseEditModal}
@@ -464,7 +221,6 @@ const DoctorsPage = () => {
         {/* ==================================================
             Doctor Name
         ================================================== */}
-
         <div className="space-y-1.5">
           <label
             htmlFor="Doctor-name"
@@ -500,7 +256,6 @@ const DoctorsPage = () => {
       }
     `}
           />
-
           {formErrors.name && (
             <p
               id="Doctor-name-error"
@@ -515,11 +270,9 @@ const DoctorsPage = () => {
     </Card>
   );
 };
-
 // ==================================================
 // Loading State
 // ==================================================
-
 const LoadingState = ({ message = "Loading Doctors..." }) => {
   return (
     <div
@@ -544,7 +297,6 @@ const LoadingState = ({ message = "Loading Doctors..." }) => {
           border-t-transparent
         "
       />
-
       <p className="text-sm font-medium text-slate-500">{message}</p>
     </div>
   );
@@ -553,7 +305,6 @@ const LoadingState = ({ message = "Loading Doctors..." }) => {
 // ==================================================
 // Empty State
 // ==================================================
-
 const EmptyState = ({ hasSearch, onReset }) => {
   return (
     <div
@@ -610,11 +361,9 @@ const EmptyState = ({ hasSearch, onReset }) => {
     </div>
   );
 };
-
 // ==================================================
 // Error State
 // ==================================================
-
 const ErrorState = () => {
   return (
     <div

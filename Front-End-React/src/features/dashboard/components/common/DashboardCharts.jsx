@@ -11,6 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import useDashboardChartsLogic from "./useDashboardChartsLogic.js";
 
 const COLORS = [
   "#0284c7",
@@ -19,21 +20,6 @@ const COLORS = [
   "#f59e0b",
   "#ec4899",
   "#8b5cf6",
-];
-
-const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
 ];
 
 const chartCardClass =
@@ -46,24 +32,11 @@ export default function DashboardCharts({
   monthlyOperations = [],
   materialDemand = [],
 }) {
-  // Format monthly operations data
-  const operationsData = monthlyOperations.map((item) => {
-    const [year, month] = item.month.split("-");
-    const monthIndex = Number(month) - 1;
-
-    return {
-      month: `${MONTHS[monthIndex] ?? month} ${year}`,
-      count: Number(item.total) || 0,
-    };
-  });
-
-  // Format material demand data
-  const categoryData = materialDemand.map((item) => ({
-    category: item.category,
-    count: Number(item.count) || 0,
-  }));
-
-  const hasMaterialData = categoryData.some((item) => item.count > 0);
+  const { operationsData, categoryData, hasMaterialData } =
+    useDashboardChartsLogic({
+      monthlyOperations: monthlyOperations,
+      materialDemand: materialDemand,
+    });
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">

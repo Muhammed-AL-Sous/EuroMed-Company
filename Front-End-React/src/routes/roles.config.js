@@ -34,19 +34,6 @@ import {
   UserRoundArrowLeft,
 } from "lucide-react";
 
-// ============== Stats Pages ============== //
-const AdminStats = lazy(
-  () => import("../features/admin/components/common/AdminStats.jsx"),
-);
-
-const DoctorStats = lazy(
-  () => import("../features/doctors/components/common/DoctorStats.jsx"),
-);
-
-const StaffStats = lazy(
-  () => import("../features/staff/components/common/StaffStats.jsx"),
-);
-
 // ============== Dashboard ============== //
 const DashboardPage = lazy(
   () => import("../features/dashboard/pages/DashboardPage"),
@@ -143,8 +130,6 @@ const UpdateUserPage = lazy(
 export const ROLES_CONFIG = {
   admin: {
     prefix: "admin",
-
-    statsComponent: AdminStats,
 
     sidebar: [
       { to: "/admin", label: "Dashboard", icon: BarChart2 },
@@ -468,8 +453,6 @@ export const ROLES_CONFIG = {
   doctor: {
     prefix: "doctor",
 
-    doctorComponent: DoctorStats,
-
     sidebar: [
       { icon: BarChart2, label: "Dashboard", to: "/doctor" },
       {
@@ -549,8 +532,6 @@ export const ROLES_CONFIG = {
 
   staff: {
     prefix: "staff",
-
-    staffComponent: StaffStats,
 
     sidebar: [
       { icon: BarChart2, label: "Dashboard", to: "/staff" },

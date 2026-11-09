@@ -4,24 +4,16 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
-
 import clsx from "clsx";
+import usePaginationLogic from "./usePaginationLogic.js";
 
 export default function Pagination({ meta, onPageChange, disabled = false }) {
+  const { current, last, total, from, to, canPrev, canNext } =
+    usePaginationLogic({ meta: meta });
+
   if (!meta || meta.total_pages < 1) {
     return null;
   }
-
-  const {
-    current_page: current,
-    total_pages: last,
-    total_items: total,
-    from,
-    to,
-  } = meta;
-
-  const canPrev = current > 1;
-  const canNext = current < last;
 
   return (
     <div className="mt-6 flex flex-col items-stretch justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm sm:flex-row sm:items-center">

@@ -1,13 +1,12 @@
 import { ExternalLink, Globe } from "lucide-react";
 import { Link } from "react-router";
-import { useGetManufacturersQuery } from "../features/manufacturers/ManufacturersApiSlice";
 import SiteLoader from "../components/common/SiteLoader";
 import { motion } from "motion/react";
+import useBrandsPageLogic from "./useBrandsPageLogic.js";
 
 const BrandsPage = () => {
-  const { data, isLoading } = useGetManufacturersQuery();
-  const brands = data?.manufacturers || [];
-  
+  const { isLoading, brands } = useBrandsPageLogic();
+
   return (
     <div className="py-12 sm:py-16 bg-slate-50 min-h-screen space-y-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">

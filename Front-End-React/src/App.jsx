@@ -5,8 +5,6 @@ import { router } from "./routes/index";
 import AuthInitializer from "./features/auth/components/common/AuthInitializer";
 import { Toaster } from "sonner";
 import { Provider } from "react-redux";
-
-// Components
 import SiteLoader from "./components/common/SiteLoader";
 
 const App = () => {

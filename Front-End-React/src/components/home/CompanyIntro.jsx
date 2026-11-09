@@ -1,43 +1,9 @@
 import { Building2, Check, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
+import useCompanyIntroLogic from "./useCompanyIntroLogic.js";
 
 const CompanyIntro = () => {
-  const stats = [
-    {
-      label: "Product Categories",
-      value: "9+",
-      description: "Knee, Hip, Plates, Screws, Nails & Cables",
-    },
-    {
-      label: "Partner Brands",
-      value: "6+",
-      description: "Global Manufacturers (Zimmer , MAXX , etc ...)",
-    },
-    {
-      label: "Orthopedic Surgeons",
-      value: "350+",
-      description: "Surgeons Served Across Erbil & Iraq",
-    },
-    {
-      label: "Partner Hospitals",
-      value: "45+",
-      description: "Hospitals & Surgical Centers Supplied",
-    },
-    {
-      label: "Years Experience",
-      value: "15+",
-      description: "Dedicated Orthopedic Excellence",
-    },
-  ];
-
-  const highlights = [
-    "Uncompromising Medical Quality & ISO Certification",
-    "Full Serial & Lot Number Traceability for Every Implant",
-    "Comprehensive Inventory Stored in Erbil HQ",
-    "Expert Surgical Support & Product Training",
-    "Rapid Emergency Delivery to Operating Rooms",
-    "Direct Partnerships With European & Global Manufacturers",
-  ];
+  const { stats, highlights } = useCompanyIntroLogic();
 
   return (
     <section className="py-16 sm:py-24 bg-white">

@@ -1,5 +1,5 @@
-import { useId, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
+import useSearchableSelectLogic from "./useSearchableSelectLogic.js";
 
 const SearchableSelect = ({
   label,
@@ -16,39 +16,26 @@ const SearchableSelect = ({
   isLoading = false,
   error,
 }) => {
-  const listId = useId();
-  const [search, setSearch] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-
-  const selected =
-    options.find((option) => String(option.id) === String(value)) ??
-    (selectedOption && String(selectedOption.id) === String(value)
-      ? selectedOption
-      : null);
-
-  const filteredOptions = serverSearch
-    ? options
-    : options.filter((option) => {
-        const text = [getOptionLabel(option), getOptionDetails(option)]
-          .join(" ")
-          .toLowerCase();
-
-        return text.includes(search.trim().toLowerCase());
-      });
-
-  const handleSearchChange = (event) => {
-    const nextSearch = event.target.value;
-
-    setSearch(nextSearch);
-    onSearchChange?.(nextSearch);
-  };
-
-  const handleSelect = (option) => {
-    onChange(option);
-    setSearch("");
-    onSearchChange?.("");
-    setIsOpen(false);
-  };
+  const {
+    listId,
+    search,
+    setSearch,
+    isOpen,
+    setIsOpen,
+    selected,
+    filteredOptions,
+    handleSearchChange,
+    handleSelect,
+  } = useSearchableSelectLogic({
+    options: options,
+    value: value,
+    selectedOption: selectedOption,
+    serverSearch: serverSearch,
+    onChange: onChange,
+    onSearchChange: onSearchChange,
+    getOptionLabel: getOptionLabel,
+    getOptionDetails: getOptionDetails,
+  });
 
   return (
     <div className="space-y-1.5">

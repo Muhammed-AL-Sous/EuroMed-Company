@@ -1,8 +1,7 @@
 import { Plus, Trash2, Package } from "lucide-react";
-
 import OperationReferenceSelect from "../utility/OperationReferenceSelect";
-
 import { getEntityName } from "../utility/OperationEntityUtils";
+import useOperationEditFormLogic from "./useOperationEditFormLogic.js";
 
 const relationFields = [
   { name: "doctor_id", relation: "doctor", label: "Doctor", type: "doctor" },
@@ -36,93 +35,16 @@ const OperationEditForm = ({
   setFormErrors,
   isUpdating,
 }) => {
-  const clearError = (field) => {
-    setFormErrors((previous) => {
-      const updated = { ...previous };
-      delete updated[field];
-      return updated;
-    });
-  };
-
-  // Update Relation
-  const handleRelationChange = (name, relation, id, entity) => {
-    setEditForm((previous) => ({
-      ...previous,
-      [name]: id,
-      [relation]: entity,
-    }));
-
-    clearError(name);
-  };
-
-  // Update Normal Field
-  const handleFieldChange = (event) => {
-    const { name, value } = event.target;
-
-    setEditForm((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-
-    clearError(name);
-  };
-
-  // Update Item
-  const handleItemChange = (index, field, value, entity = null) => {
-    setEditForm((previous) => ({
-      ...previous,
-      items: previous.items.map((item, itemIndex) => {
-        if (itemIndex !== index) return item;
-
-        if (field === "product_id") {
-          return {
-            ...item,
-            product_id: value,
-            product: entity,
-          };
-        }
-
-        return {
-          ...item,
-          [field]: value,
-        };
-      }),
-    }));
-
-    clearError(`items.${index}.${field}`);
-  };
-
-  // Add Item
-  const handleAddItem = () => {
-    setEditForm((previous) => ({
-      ...previous,
-      items: [
-        ...previous.items,
-        {
-          clientKey: crypto.randomUUID(),
-          product_id: "",
-          quantity: "1",
-          product: null,
-        },
-      ],
-    }));
-
-    clearError("items");
-  };
-
-  // Remove Item
-  const handleRemoveItem = (index) => {
-    setEditForm((previous) => ({
-      ...previous,
-      items: previous.items.filter((_, itemIndex) => itemIndex !== index),
-    }));
-
-    setFormErrors((previous) =>
-      Object.fromEntries(
-        Object.entries(previous).filter(([key]) => !key.startsWith("items.")),
-      ),
-    );
-  };
+  const {
+    handleRelationChange,
+    handleFieldChange,
+    handleItemChange,
+    handleAddItem,
+    handleRemoveItem,
+  } = useOperationEditFormLogic({
+    setEditForm: setEditForm,
+    setFormErrors: setFormErrors,
+  });
 
   return (
     <div className="space-y-5">

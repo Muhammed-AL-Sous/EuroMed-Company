@@ -41,9 +41,7 @@ export const SubCategoriesApiSlice = baseApi.injectEndpoints({
         method: "POST",
         body: formData,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "SubCategories", id: "subcategory_id" },
-      ],
+      invalidatesTags: () => [{ type: "SubCategories", id: "subcategory_id" }],
     }),
 
     updateSubCategory: builder.mutation({
@@ -53,8 +51,8 @@ export const SubCategoriesApiSlice = baseApi.injectEndpoints({
         body: data,
       }),
 
-      invalidatesTags: (result, error, arg) => [
-        { type: "SubCategories", id: arg.id },
+      invalidatesTags: (...[, , { id }]) => [
+        { type: "SubCategories", id },
         { type: "SubCategories", id: "subcategory_id" },
       ],
     }),

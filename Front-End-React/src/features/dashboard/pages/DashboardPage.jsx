@@ -1,19 +1,7 @@
-import { Link, useLocation } from "react-router";
-import {
-  Activity,
-  CalendarDays,
-  ClipboardList,
-  Hospital,
-  Package,
-  RefreshCw,
-  Stethoscope,
-  Users,
-} from "lucide-react";
-
+import { Link } from "react-router";
+import { Activity, RefreshCw } from "lucide-react";
 import DashboardCharts from "../components/common/DashboardCharts";
-
-import { useGetDashboardOverviewQuery } from "../DashboardApiSlice";
-// import SiteLoader from "../../../components/common/SiteLoader";
+import useDashboardPageLogic from "./useDashboardPageLogic.js";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -30,12 +18,10 @@ function StatCard({ title, value, icon: Icon }) {
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
         <span className="text-sm font-medium text-slate-500">{title}</span>
-
         <div className="rounded-lg bg-sky-50 p-2.5 text-sky-700">
           <Icon size={20} />
         </div>
       </div>
-
       <h3 className="text-3xl font-bold text-slate-800">
         {numberFormatter.format(value ?? 0)}
       </h3>
@@ -67,22 +53,23 @@ const LoadingState = ({ message = "Loading Dashboard..." }) => {
           border-t-transparent
         "
       />
-
       <p className="text-sm font-medium text-slate-500">{message}</p>
     </div>
   );
 };
 
 export default function DashboardPage() {
-  const location = useLocation();
-  const scope =
-    location.pathname === "/doctor" || location.pathname.startsWith("/doctor/")
-      ? "doctor"
-      : "admin";
-  const { data, isLoading, isError, isFetching, refetch } =
-    useGetDashboardOverviewQuery(undefined, {
-      refetchOnMountOrArgChange: true,
-    });
+  const {
+    scope,
+    data,
+    isLoading,
+    isError,
+    isFetching,
+    refetch,
+    viewer,
+    recent_operations,
+    statCards,
+  } = useDashboardPageLogic();
 
   if (isLoading) {
     return <LoadingState />;
@@ -92,7 +79,6 @@ export default function DashboardPage() {
     return (
       <div className="rounded-xl border border-red-200 bg-red-50 p-6">
         <p className="mb-4 text-red-700">Unable to load dashboard data.</p>
-
         <button
           type="button"
           onClick={refetch}
@@ -104,43 +90,6 @@ export default function DashboardPage() {
     );
   }
 
-  const { viewer, stats = {}, recent_operations = [] } = data;
-
-  const isDoctor = viewer?.role === "doctor";
-
-  const statCards = [
-    {
-      title: "Total Operations",
-      value: stats.total_operations,
-      icon: ClipboardList,
-    },
-    {
-      title: "Operations This Month",
-      value: stats.operations_this_month,
-      icon: CalendarDays,
-    },
-    {
-      title: isDoctor ? "Doctor Profile" : "Total Doctors",
-      value: stats.doctors,
-      icon: Stethoscope,
-    },
-    {
-      title: isDoctor ? "My Patients" : "Total Patients",
-      value: stats.patients,
-      icon: Users,
-    },
-    {
-      title: isDoctor ? "My Hospitals" : "Total Hospitals",
-      value: stats.hospitals,
-      icon: Hospital,
-    },
-    {
-      title: isDoctor ? "Products Used" : "Total Products",
-      value: stats.products,
-      icon: Package,
-    },
-  ];
-
   return (
     <main className="space-y-6 p-5">
       {/* Header */}
@@ -149,7 +98,6 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-bold text-slate-800">
             Dashboard Overview
           </h1>
-
           <p className="mt-1 text-sm text-slate-500">
             EuroMed Management System
           </p>
@@ -190,10 +138,8 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between border-b border-slate-100 p-5">
           <div className="flex items-center gap-2">
             <Activity size={19} className="text-sky-700" />
-
             <h2 className="font-semibold text-slate-800">Recent Operations</h2>
           </div>
-
           <Link
             to={`/${scope}/operations`}
             className="text-sm font-medium text-sky-700 hover:underline"

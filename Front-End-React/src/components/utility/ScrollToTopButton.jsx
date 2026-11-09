@@ -1,27 +1,9 @@
-import { useEffect, useState } from "react";
-
 // Icons
 import { ArrowUp } from "lucide-react";
+import useScrollToTopButtonLogic from "./useScrollToTopButtonLogic.js";
 
 const ScrollToTopButton = () => {
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 400) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const { showScrollTop, scrollToTop } = useScrollToTopButtonLogic();
 
   return (
     <button

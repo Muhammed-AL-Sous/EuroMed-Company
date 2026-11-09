@@ -50,9 +50,7 @@ export const ProductsApiSlice = baseApi.injectEndpoints({
         method: "POST",
         body: formData,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Products", id: "PRODUCTS" },
-      ],
+      invalidatesTags: () => [{ type: "Products", id: "PRODUCTS" }],
     }),
 
     updateProduct: builder.mutation({
@@ -62,8 +60,8 @@ export const ProductsApiSlice = baseApi.injectEndpoints({
         body: data,
       }),
 
-      invalidatesTags: (result, error, arg) => [
-        { type: "Products", id: arg.id },
+      invalidatesTags: (...[, , { id }]) => [
+        { type: "Products", id },
         { type: "Products", id: "PRODUCTS" },
       ],
     }),
@@ -73,8 +71,8 @@ export const ProductsApiSlice = baseApi.injectEndpoints({
         url: `/products/${productId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Products", id: arg.id },
+      invalidatesTags: (...[, , productId]) => [
+        { type: "Products", id: productId },
         { type: "Products", id: "PRODUCTS" },
       ],
     }),

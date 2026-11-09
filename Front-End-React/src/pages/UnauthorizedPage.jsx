@@ -1,19 +1,9 @@
 import { Link } from "react-router";
-import { useSelector } from "react-redux";
 import { ShieldAlert } from "lucide-react";
-
-import { selectCurrentUser } from "../features/auth/authSlice";
+import useUnauthorizedPageLogic from "./useUnauthorizedPageLogic.js";
 
 const UnauthorizedPage = () => {
-  const user = useSelector(selectCurrentUser);
-
-  const homePaths = {
-    admin: "/admin",
-    doctor: "/doctor",
-    staff: "/staff",
-  };
-
-  const homePath = homePaths[user?.role?.role_name] ?? "/login";
+  const { homePath } = useUnauthorizedPageLogic();
 
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4 p-6 text-center">

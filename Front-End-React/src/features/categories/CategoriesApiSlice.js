@@ -41,9 +41,7 @@ export const CategoriesApiSlice = baseApi.injectEndpoints({
         method: "POST",
         body: categoryData,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Categories", id: "category_id" },
-      ],
+      invalidatesTags: () => [{ type: "Categories", id: "category_id" }],
     }),
 
     updateCategory: builder.mutation({
@@ -53,8 +51,8 @@ export const CategoriesApiSlice = baseApi.injectEndpoints({
         body: data,
       }),
 
-      invalidatesTags: (result, error, arg) => [
-        { type: "Categories", id: arg.id },
+      invalidatesTags: (...[, , { id }]) => [
+        { type: "Categories", id },
         { type: "Categories", id: "category_id" },
       ],
     }),

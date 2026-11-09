@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation, useParams } from "react-router";
+import { Link, useLocation } from "react-router";
 
 // Icons
 import {
@@ -21,11 +21,7 @@ import {
   UserRound,
 } from "lucide-react";
 
-// API
-import { useGetOperationQuery } from "../OperationsApiSlice";
-
-// Constants
-const EMPTY_ITEMS = [];
+import useOperationDetailsPageLogic from "./useOperationDetailsPageLogic.js";
 
 // Helpers
 const formatDate = (value) => {
@@ -54,21 +50,6 @@ const formatGender = (value) => {
   return (
     String(value).charAt(0).toUpperCase() + String(value).slice(1).toLowerCase()
   );
-};
-
-const formatPrice = (value) => {
-  if (value === null || value === undefined || value === "") {
-    return "—";
-  }
-
-  const price = Number(value);
-
-  if (!Number.isFinite(price)) return "—";
-
-  return price.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
 };
 
 // Reusable Components
@@ -120,7 +101,6 @@ const LoadingSkeleton = () => {
   return (
     <div className="animate-pulse space-y-5">
       <div className="h-16 w-64 rounded-lg bg-slate-200" />
-
       <div className="h-48 rounded-xl bg-slate-200" />
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
@@ -375,26 +355,21 @@ const OperationMaterialsTable = ({ items }) => {
 
 // Main Component
 const OperationDetailsPage = () => {
-  const { id } = useParams();
-  const location = useLocation();
-  const scope = location.pathname.startsWith("/doctor/") ? "doctor" : "admin";
-
   const {
-    data: response,
+    id,
+    scope,
     isLoading,
     isFetching,
     isError,
     error,
     refetch,
-  } = useGetOperationQuery({
-    id,
-    scope,
-  });
-  // Supports wrapped and directly transformed responses.
-  const operation = response?.data ?? response;
-
-  // Stable fallback array
-  const items = Array.isArray(operation?.items) ? operation.items : EMPTY_ITEMS;
+    operation,
+    items,
+    patient,
+    doctor,
+    hospital,
+    operationType,
+  } = useOperationDetailsPageLogic();
 
   // Loading State
   if (isLoading) {
@@ -413,12 +388,6 @@ const OperationDetailsPage = () => {
       </div>
     );
   }
-
-  // Relations
-  const patient = operation.patient;
-  const doctor = operation.doctor;
-  const hospital = operation.hospital;
-  const operationType = operation.operation_type;
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-5 p-4 sm:p-6">
@@ -467,8 +436,6 @@ const OperationDetailsPage = () => {
         />
 
         <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-5 border-t border-slate-100 pt-5 sm:grid-cols-2 lg:grid-cols-4">
-          {/* <InfoField icon={Hash} label="Operation ID" value={operation.id} /> */}
-
           <InfoField
             icon={Hash}
             label="Operation Code"
@@ -520,8 +487,6 @@ const OperationDetailsPage = () => {
               value={patient?.name}
             />
 
-            {/* <InfoField icon={Hash} label="Patient ID" value={patient?.id} /> */}
-
             <InfoField
               icon={Phone}
               label="Phone Number"
@@ -552,8 +517,6 @@ const OperationDetailsPage = () => {
               label="Doctor Name"
               value={doctor?.name}
             />
-
-            {/* <InfoField icon={Hash} label="Doctor ID" value={doctor?.id} /> */}
           </div>
         </DetailsCard>
       </div>
@@ -594,12 +557,6 @@ const OperationDetailsPage = () => {
               label="Operation Type Name"
               value={operationType?.name}
             />
-
-            {/* <InfoField
-              icon={Hash}
-              label="Operation Type Code"
-              value={operationType?.code}
-            /> */}
 
             <div className="sm:col-span-2">
               <InfoField

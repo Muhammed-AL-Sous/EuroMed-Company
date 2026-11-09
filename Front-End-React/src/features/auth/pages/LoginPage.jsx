@@ -1,125 +1,21 @@
 import { AlertCircle, Eye, EyeOff, KeyRound, Lock, Mail } from "lucide-react";
-// ========= React ========= //
-import { useState, useRef, useCallback } from "react";
-
-import { useNavigate, useLocation } from "react-router";
-// ========= Redux ========= //
-import { useDispatch } from "react-redux";
-
-// ========= Login Slice ========= //
-import { useLoginMutation } from "../authApiSlice";
-import { setCredentials } from "../authSlice";
-import { notifySonner } from "./../../../lib/notifySonner";
 import { Spinner } from "../../../components/common/SpinnerFallback";
-import { getPostAuthDestination } from "../logic/postAuthRedirect";
-import { getLoginFormErrors } from "../validation/authFormValidators";
+import useLoginPageLogic from "./useLoginPageLogic.js";
 
 const LoginPage = () => {
-  // ========= React State ========= //
-  const [showPassword, setShowPassword] = useState(false);
-  const [loginForm, setLoginForm] = useState({
-    email: "",
-    password: "",
-    remember: false,
-  });
-
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const [errors, setErrors] = useState({});
-
-  // ========= Refs ========= //
-  const passwordRef = useRef(null);
-
-  // ========= Router ========= //
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // ========= Redux ========= //
-  const dispatch = useDispatch();
-
-  // ========= API Mutation ========= //
-  const [login, { isLoading }] = useLoginMutation();
-
-  // ========= Validate Login Form ========= //
-  const validateLoginForm = () => {
-    const newErrors = getLoginFormErrors(loginForm);
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const patchClearFieldError = (prevErrors, fieldName) => {
-    if (!prevErrors || !prevErrors[fieldName]) return prevErrors;
-    return { ...prevErrors, [fieldName]: null };
-  };
-
-  // ========= Handle Change Function ========= //
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLoginForm((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => patchClearFieldError(prev, name));
-  };
-
-  // ========= Handle Submit Function ========= //
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
-
-    const isValid = validateLoginForm();
-    if (!isValid) return;
-
-    try {
-      const loginPromise = login(loginForm).unwrap();
-
-      const response = await loginPromise;
-
-      const { user } = response.data;
-
-      dispatch(setCredentials({ user }));
-
-      const destination = getPostAuthDestination(user, {
-        fallbackPath: location.state?.from?.pathname,
-      });
-
-      navigate(destination, { replace: true });
-
-      notifySonner("Welcome Back", "success");
-    } catch (err) {
-      setErrorMessage(
-        err?.data?.message || "Login failed. Please Check Your Credentials.",
-      );
-
-      const status = err.status;
-
-      if (status === 401) {
-        notifySonner("Invalid Email Or Password", "error");
-        return;
-      }
-      notifySonner("Login Failed", "error");
-    }
-  };
-
-  // =============================
-  // Toggle Password (Professional Fix)
-  // =============================
-  const togglePassword = useCallback((e) => {
-    // منع سحب التركيز (يمنع اختفاء الكيبورد)
-    e.preventDefault();
-
-    const input = passwordRef.current;
-    if (!input) return;
-
-    // حفظ مكان المؤشر بدقة قبل التغيير
-    const start = input.selectionStart;
-    const end = input.selectionEnd;
-
-    setShowPassword((prev) => !prev);
-
-    // إعادة التركيز والمؤشر فوراً (بدون setTimeout إذا استخدمت onMouseDown)
-    requestAnimationFrame(() => {
-      input.setSelectionRange(start, end);
-      input.focus();
-    });
-  }, []);
+  const {
+    showPassword,
+    loginForm,
+    setLoginForm,
+    errorMessage,
+    errors,
+    passwordRef,
+    isLoading,
+    handleChange,
+    handleSubmit,
+    handleForgotPassword,
+    togglePassword,
+  } = useLoginPageLogic();
 
   return (
     <div className=" bg-slate-100 flex items-start justify-center p-4 sm:p-6 lg:p-8">
@@ -181,12 +77,7 @@ const LoginPage = () => {
               </label>
               <button
                 type="button"
-                onClick={() =>
-                  notifySonner(
-                    "Please contact the EuroMed System Administrator in Erbil HQ to reset your password.",
-                    "warning",
-                  )
-                }
+                onClick={handleForgotPassword}
                 className="text-xs font-semibold text-sky-600 hover:underline outline-none"
               >
                 Forgot Password?

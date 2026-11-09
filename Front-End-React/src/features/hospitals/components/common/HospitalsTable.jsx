@@ -8,9 +8,7 @@ const bodyCell =
 
 const HospitalsTable = ({ hospitals = [], onDelete, onEdit }) => {
   return (
-    // الحاوية الخارجية: للحواف المدوّرة والإطار فقط
     <div className="w-full overflow-hidden rounded-2xl border border-slate-300">
-      {/* الحاوية الداخلية: هي المسؤولة عن السكرول الأفقي */}
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-140 border-separate border-spacing-0 text-center">
           {/* Header */}

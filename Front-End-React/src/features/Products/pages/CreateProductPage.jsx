@@ -1,19 +1,6 @@
-// React
-import { useState } from "react";
-
-// Api Slice
-import { useAddProductMutation } from "../ProductsApiSlice";
-
-// ========== External Library ========== //
-// Toast Notify
-import { notifySonner } from "../../../lib/notifySonner";
-
-// (Radix)
 import { Form } from "radix-ui";
-import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Em, Flex } from "@radix-ui/themes";
 import * as Select from "@radix-ui/react-select";
-
-// Icons
 import {
   Check,
   ChevronDown,
@@ -25,12 +12,8 @@ import {
   Blocks,
   Save,
 } from "lucide-react";
-import { useGetManufacturersQuery } from "../../manufacturers/ManufacturersApiSlice";
-import { useGetCategoriesQuery } from "../../categories/CategoriesApiSlice";
-import { useGetSubCategoriesQuery } from "../../subCategories/SubCategoriesApiSlice";
-
-// Utility Component
 import ProductImageUpload from "../components/utility/ProductImageUpload";
+import useCreateProductPageLogic from "./useCreateProductPageLogic.js";
 
 const INPUT_CLASS =
   "box-border w-full rounded-xl border-2 border-sky-700 " +
@@ -41,125 +24,20 @@ const INPUT_CLASS =
   "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateProductPage = () => {
-  const [createForm, setCreateForm] = useState({
-    code: "",
-    name: "",
-    manufacturer_id: "",
-    subcategory_id: "",
-    category_id: "",
-    image_url: "",
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const [addProduct, { isLoading: isCreating }] = useAddProductMutation();
-
-  const [productImage, setProductImage] = useState(null);
-  const [imageResetKey, setImageResetKey] = useState(0);
-  // ==================================================
-  // Subcategories
-  // ==================================================
-
-  const { data: subcategories = [] } = useGetSubCategoriesQuery();
-
-  const subCategoriesResponse = subcategories?.subcategories ?? [];
-
-  // ==================================================
-  // categories
-  // ==================================================
-
-  const { data: categories = [] } = useGetCategoriesQuery();
-
-  const categoriesResponse = categories?.categories ?? [];
-
-  // ==================================================
-  // Manufacturers
-  // ==================================================
-
-  const { data: manufacturers = [] } = useGetManufacturersQuery();
-
-  const manufacturersResponse = manufacturers?.manufacturers ?? [];
-
-  const validateSelectFields = () => {
-    const newErrors = {};
-
-    if (!createForm.manufacturer_id) {
-      newErrors.manufacturer_id = "Please Select The Product Manufacturer";
-    }
-
-    if (!createForm.subcategory_id) {
-      newErrors.subcategory_id = "Please Select The Product Subcategory";
-    }
-
-    if (!createForm.category_id) {
-      newErrors.category_id = "Please Select The Product Category";
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleCreateFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setCreateForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmitProduct = async (e) => {
-    e.preventDefault();
-
-    const isValid = validateSelectFields();
-
-    if (!isValid) {
-      return;
-    }
-    const formData = new FormData();
-    formData.append("code", createForm.code.trim());
-    formData.append("name", createForm.name.trim());
-    formData.append(
-      "manufacturer_id",
-      String(Number(createForm.manufacturer_id)),
-    );
-    formData.append(
-      "subcategory_id",
-      String(Number(createForm.subcategory_id)),
-    );
-    formData.append("category_id", String(Number(createForm.category_id)));
-
-    if (productImage) {
-      formData.append("image", productImage);
-    }
-
-    try {
-      await addProduct(formData).unwrap();
-
-      setProductImage(null);
-
-      // Reset ProductImageUpload
-      setImageResetKey((prev) => prev + 1);
-
-      setCreateForm({
-        code: "",
-        name: "",
-        manufacturer_id: "",
-        subcategory_id: "",
-        category_id: "",
-        image_url: "",
-      });
-
-      setErrors({});
-
-      notifySonner("Product Added Successfully");
-    } catch (error) {
-      console.error("Failed To Add Product:", error);
-
-      notifySonner(error?.data?.message || "Failed to Add Product", "error");
-    }
-  };
+  const {
+    createForm,
+    setCreateForm,
+    errors,
+    setErrors,
+    isCreating,
+    setProductImage,
+    imageResetKey,
+    subCategoriesResponse,
+    categoriesResponse,
+    manufacturersResponse,
+    handleCreateFormChange,
+    handleSubmitProduct,
+  } = useCreateProductPageLogic();
 
   return (
     <div>
@@ -367,8 +245,6 @@ const CreateProductPage = () => {
                               </Select.ItemIndicator>
                             </Select.Item>
 
-                            {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
-
                             {(Array.isArray(manufacturersResponse)
                               ? manufacturersResponse
                               : []
@@ -522,8 +398,6 @@ const CreateProductPage = () => {
                               </Select.ItemIndicator>
                             </Select.Item>
 
-                            {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
-
                             {(Array.isArray(subCategoriesResponse)
                               ? subCategoriesResponse
                               : []
@@ -674,8 +548,6 @@ const CreateProductPage = () => {
                                 <Check size={16} className="text-sky-600" />
                               </Select.ItemIndicator>
                             </Select.Item>
-
-                            {/* <Select.Separator className="my-1.5 h-px bg-slate-100" /> */}
 
                             {(Array.isArray(categoriesResponse)
                               ? categoriesResponse

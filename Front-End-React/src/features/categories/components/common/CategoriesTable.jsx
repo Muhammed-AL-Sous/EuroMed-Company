@@ -1,11 +1,9 @@
 import { SquarePen, Trash } from "lucide-react";
+import useCategoriesTableLogic from "./useCategoriesTableLogic.js";
 
 const CategoriesTable = ({ categories = [], onDelete, onEdit }) => {
-  const headerCell =
-    "bg-sky-500 p-2 sm:p-3 text-sm font-semibold text-white border-b border-slate-300";
+  const { headerCell, bodyCell } = useCategoriesTableLogic();
 
-  const bodyCell =
-    "border-b border-slate-300 px-2 py-3 sm:px-4 text-sm font-medium text-slate-700";
   return (
     // الحاوية الخارجية: للحواف المدوّرة والإطار فقط
     <div className="w-full overflow-hidden rounded-2xl border border-slate-300">

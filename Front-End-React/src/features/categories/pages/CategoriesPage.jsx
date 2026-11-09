@@ -1,282 +1,46 @@
-// React & React Router
-import { useEffect, useState, useRef } from "react";
-import { useSearchParams } from "react-router";
-
-// =========== External Library =========== //
 // Radix
 import { Card, Text } from "@radix-ui/themes";
 
 // Lucide Icons
 import { Search, ShieldAlert, SquarePen, Trash2, X } from "lucide-react";
 
-// Notify Sonner
-import { notifySonner } from "./../../../lib/notifySonner";
-
-// Api Slice
-import {
-  useDeleteCategoryMutation,
-  useGetCategoriesQuery,
-  useUpdateCategoryMutation,
-} from "../CategoriesApiSlice";
-
-// Utilities
-import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
+// Utilities Components
 import Pagination from "../../../components/utility/Pagination";
 import EditModal from "../../../components/utility/EditModal";
 import DeleteConfirmModal from "../../../components/utility/DeleteConfirmModal";
 
 // Components
 import CategoriesTable from "../components/common/CategoriesTable";
+import useCategoriesPageLogic from "./useCategoriesPageLogic.js";
 
 const CategoriesPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const topRef = useRef(null);
-  // ==================================================
-  // Search State
-  // ==================================================
-
-  const initialSearch = searchParams.get("search") ?? "";
-
-  const [searchInput, setSearchInput] = useState(initialSearch);
-  const [page, setPage] = useState(1);
-
-  const debouncedSearch = useDebouncedValue(searchInput, 400);
-  const normalizedSearch = debouncedSearch.trim();
-
-  const hasSearch = Boolean(normalizedSearch);
-
-  // ==================================================
-  // Delete State
-  // ==================================================
-
-  const [selectedDeleteCategory, setSelectedDeleteCategory] = useState(null);
-
-  // ==================================================
-  // Edit State
-  // ==================================================
-
-  const [selectedEditCategory, setSelectedEditCategory] = useState(null);
-
-  const [editForm, setEditForm] = useState({
-    name: "",
-    description: "",
-  });
-  const [formErrors, setFormErrors] = useState({});
-
-  // ==================================================
-  // Categories Query
-  // ==================================================
-
-  const { data, isLoading, isFetching, isError } = useGetCategoriesQuery({
-    search: normalizedSearch,
-    page,
-  });
-
-  const categories = data?.categories ?? [];
-  const meta = data?.meta ?? null;
-
-  // ==================================================
-  // Delete Mutation
-  // ==================================================
-
-  const [deleteCategory, { isLoading: isDeleting }] =
-    useDeleteCategoryMutation();
-
-  // ==================================================
-  // Update Mutation
-  // ==================================================
-
-  const [updateCategory, { isLoading: isUpdating }] =
-    useUpdateCategoryMutation();
-
-  // ==================================================
-  // Sync Search With URL
-  // ==================================================
-
-  useEffect(() => {
-    const urlSearch = searchParams.get("search") ?? "";
-
-    if (urlSearch === normalizedSearch) {
-      return;
-    }
-
-    setSearchParams(
-      (params) => {
-        if (normalizedSearch) {
-          params.set("search", normalizedSearch);
-        } else {
-          params.delete("search");
-        }
-
-        return params;
-      },
-      { replace: true },
-    );
-  }, [normalizedSearch, searchParams, setSearchParams]);
-
-  // ==================================================
-  // Delete Handlers
-  // ==================================================
-
-  const handleOpenDeleteModal = (category) => {
-    setSelectedDeleteCategory(category);
-  };
-
-  const handleDeleteCategory = async () => {
-    if (!selectedDeleteCategory || isDeleting) return;
-
-    try {
-      await deleteCategory(selectedDeleteCategory.id).unwrap();
-
-      setSelectedDeleteCategory(null);
-
-      notifySonner("Category Deleted Successfully");
-    } catch (error) {
-      console.error("Failed to Delete Category:", error);
-
-      notifySonner(
-        error?.data?.message || "Failed to Delete Category",
-        "error",
-      );
-    }
-  };
-
-  // ==================================================
-  // Edit Handlers
-  // ==================================================
-
-  const handleOpenEditModal = (category) => {
-    setSelectedEditCategory(category);
-    setFormErrors({});
-
-    setEditForm({
-      name: category.name ?? "",
-      description: category.description || "",
-    });
-  };
-
-  const handleCloseEditModal = () => {
-    if (isUpdating) {
-      return;
-    }
-
-    setSelectedEditCategory(null);
-    setFormErrors({});
-
-    setEditForm({
-      name: "",
-      description: "",
-    });
-  };
-
-  const handleEditFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setEditForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-
-    setFormErrors((currentErrors) => ({
-      ...currentErrors,
-      [name]: undefined,
-    }));
-  };
-
-  const handleUpdateCategory = async () => {
-    if (!selectedEditCategory) {
-      return;
-    }
-
-    const payload = {
-      name: editForm.name.trim(),
-      description: editForm.description.trim(),
-    };
-
-    // Validation
-    const errors = {};
-
-    if (!payload.name) errors.name = "The Name Field is Required";
-    if (!payload.description)
-      errors.description = "The Description Field is Required";
-
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-
-    // No real changes
-    const hasChanges =
-      payload.name !== (selectedEditCategory.name ?? "") ||
-      payload.description !== (selectedEditCategory.description ?? "");
-
-    if (!hasChanges) {
-      setSelectedEditCategory(null);
-      setFormErrors({});
-      setEditForm({ name: "", description: "" });
-      return;
-    }
-
-    // Update
-    try {
-      await updateCategory({
-        id: selectedEditCategory.id,
-        data: payload,
-      }).unwrap();
-
-      setSelectedEditCategory(null);
-      setFormErrors({});
-      setEditForm({ name: "", description: "", type: "" });
-
-      notifySonner("Category Updated Successfully");
-    } catch (error) {
-      console.error("Failed to Update Category:", error);
-
-      notifySonner(
-        error?.data?.message || "Failed to Update Category",
-        "error",
-      );
-    }
-  };
-
-  // ==================================================
-  // Search Handlers
-  // ==================================================
-
-  const handleSearchChange = (event) => {
-    setSearchInput(event.target.value);
-    setPage(1);
-  };
-
-  const clearSearch = () => {
-    setSearchInput("");
-    setPage(1);
-
-    setSearchParams(
-      (params) => {
-        params.delete("search");
-        return params;
-      },
-      { replace: true },
-    );
-  };
-
-  // ==================================================
-  // Pagination
-  // ==================================================
-
-  const handlePageChange = (newPage) => {
-    if (newPage === page) return;
-
-    setPage(newPage);
-
-    requestAnimationFrame(() => {
-      topRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-  };
+  const {
+    topRef,
+    searchInput,
+    normalizedSearch,
+    hasSearch,
+    selectedDeleteCategory,
+    setSelectedDeleteCategory,
+    selectedEditCategory,
+    editForm,
+    formErrors,
+    isLoading,
+    isFetching,
+    isError,
+    categories,
+    meta,
+    isDeleting,
+    isUpdating,
+    handleOpenDeleteModal,
+    handleDeleteCategory,
+    handleOpenEditModal,
+    handleCloseEditModal,
+    handleEditFormChange,
+    handleUpdateCategory,
+    handleSearchChange,
+    clearSearch,
+    handlePageChange,
+  } = useCategoriesPageLogic();
 
   // ==================================================
   // Render
@@ -288,7 +52,6 @@ const CategoriesPage = () => {
       {/* ==================================================
           Header
       ================================================== */}
-
       <div
         className="
           flex
@@ -303,11 +66,9 @@ const CategoriesPage = () => {
         <Text as="div" size="6" weight="bold" className="text-sky-900">
           All Categories
         </Text>
-
         {/* ==================================================
             Search
         ================================================== */}
-
         <div className="relative w-full md:max-w-md">
           <Search
             className="
@@ -321,7 +82,6 @@ const CategoriesPage = () => {
               text-slate-400
             "
           />
-
           <input
             type="text"
             value={searchInput}
@@ -346,7 +106,6 @@ const CategoriesPage = () => {
               focus:ring-sky-500
             "
           />
-
           {searchInput && (
             <button
               type="button"
@@ -368,11 +127,9 @@ const CategoriesPage = () => {
           )}
         </div>
       </div>
-
       {/* ==================================================
           Active Search
       ================================================== */}
-
       {hasSearch && (
         <div
           className="
@@ -393,7 +150,6 @@ const CategoriesPage = () => {
               "{normalizedSearch}"
             </span>
           </span>
-
           <button
             type="button"
             onClick={clearSearch}
@@ -413,11 +169,9 @@ const CategoriesPage = () => {
           </button>
         </div>
       )}
-
       {/* ==================================================
           Content
       ================================================== */}
-
       {isLoading ? (
         <LoadingState />
       ) : isError ? (
@@ -443,7 +197,6 @@ const CategoriesPage = () => {
       {/* ==================================================
           Delete Confirmation Modal
       ================================================== */}
-
       <DeleteConfirmModal
         isOpen={!!selectedDeleteCategory}
         onClose={() => setSelectedDeleteCategory(null)}
@@ -456,11 +209,9 @@ const CategoriesPage = () => {
         cancelText="Cancel"
         icon={Trash2}
       />
-
       {/* ==================================================
           Edit Modal
       ================================================== */}
-
       <EditModal
         isOpen={Boolean(selectedEditCategory)}
         onClose={handleCloseEditModal}
@@ -475,7 +226,6 @@ const CategoriesPage = () => {
         {/* ==================================================
             Category Name
         ================================================== */}
-
         <div className="space-y-1.5">
           <label
             htmlFor="category-name"
@@ -488,7 +238,6 @@ const CategoriesPage = () => {
           >
             Category Name
           </label>
-
           <input
             id="category-name"
             name="name"
@@ -513,7 +262,6 @@ const CategoriesPage = () => {
       }
     `}
           />
-
           {formErrors.name && (
             <p
               id="category-name-error"
@@ -524,11 +272,9 @@ const CategoriesPage = () => {
             </p>
           )}
         </div>
-
         {/* ==================================================
             Category description
         ================================================== */}
-
         <div className="mt-5 space-y-1.5">
           <label
             htmlFor="category-description"
@@ -541,7 +287,6 @@ const CategoriesPage = () => {
           >
             Category Description
           </label>
-
           <textarea
             id="category-description"
             name="description"
@@ -579,11 +324,9 @@ const CategoriesPage = () => {
     </Card>
   );
 };
-
 // ==================================================
 // Loading State
 // ==================================================
-
 const LoadingState = ({ message = "Loading hospitals..." }) => {
   return (
     <div
@@ -608,7 +351,6 @@ const LoadingState = ({ message = "Loading hospitals..." }) => {
           border-t-transparent
         "
       />
-
       <p className="text-sm font-medium text-slate-500">{message}</p>
     </div>
   );
@@ -617,7 +359,6 @@ const LoadingState = ({ message = "Loading hospitals..." }) => {
 // ==================================================
 // Empty State
 // ==================================================
-
 const EmptyState = ({ hasSearch, onReset }) => {
   return (
     <div
@@ -639,17 +380,14 @@ const EmptyState = ({ hasSearch, onReset }) => {
           text-slate-400
         "
       />
-
       <h3 className="mt-3 text-lg font-bold text-slate-800">
         No Hospitals Found
       </h3>
-
       <p className="mt-2 text-sm text-slate-500">
         {hasSearch
           ? "No hospitals match your search criteria."
           : "There are no hospitals available."}
       </p>
-
       {hasSearch && (
         <button
           type="button"
@@ -674,11 +412,9 @@ const EmptyState = ({ hasSearch, onReset }) => {
     </div>
   );
 };
-
 // ==================================================
 // Error State
 // ==================================================
-
 const ErrorState = () => {
   return (
     <div
@@ -700,11 +436,9 @@ const ErrorState = () => {
           text-red-400
         "
       />
-
       <h3 className="mt-3 text-lg font-bold text-red-800">
         Something went wrong
       </h3>
-
       <p className="mt-2 text-sm text-red-600">
         Failed to load hospitals. Please try again later.
       </p>

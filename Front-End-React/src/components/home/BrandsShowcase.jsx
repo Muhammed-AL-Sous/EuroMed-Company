@@ -1,12 +1,10 @@
 import { ExternalLink, Globe } from "lucide-react";
 import { Link } from "react-router";
-import { useGetManufacturersQuery } from "../../features/manufacturers/ManufacturersApiSlice";
 import { motion } from "motion/react";
+import useBrandsShowcaseLogic from "./useBrandsShowcaseLogic.js";
 
 const BrandsShowcase = () => {
-  const { data } = useGetManufacturersQuery();
-
-  const Brands = data?.manufacturers || [];
+  const { Brands } = useBrandsShowcaseLogic();
 
   return (
     <section className="py-20 bg-white">

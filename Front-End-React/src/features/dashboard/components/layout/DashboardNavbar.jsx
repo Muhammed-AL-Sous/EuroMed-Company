@@ -1,34 +1,11 @@
-import { Link, useLocation, useMatches } from "react-router";
+import { Link } from "react-router";
 import { Menu } from "lucide-react";
-
-// Roles Config
-import { ROLES_CONFIG } from "../../../../routes/roles.config";
-
-const findRouteByPath = (items, pathname) => {
-  for (const item of items) {
-    if (item.to === pathname) return item;
-
-    if (item.children) {
-      const found = findRouteByPath(item.children, pathname);
-      if (found) return found;
-    }
-  }
-
-  return null;
-};
+import useDashboardNavbarLogic from "./useDashboardNavbarLogic.js";
 
 const DashboardNavbar = ({ user, toggleSidebar }) => {
-  const location = useLocation();
-  const matches = useMatches();
-
-  const currentMatch = matches[matches.length - 1];
-  const action = currentMatch?.handle?.action;
-
-  const sidebarItems = ROLES_CONFIG[user?.role?.role_name]?.sidebar ?? [];
-  const currentRoute = findRouteByPath(sidebarItems, location.pathname);
-  const CurrentIcon = currentRoute?.icon;
-
-  const isCreatePage = location.pathname.includes("/create");
+  const { action, CurrentIcon, isCreatePage } = useDashboardNavbarLogic({
+    user: user,
+  });
 
   return (
     <div
@@ -39,7 +16,6 @@ const DashboardNavbar = ({ user, toggleSidebar }) => {
       `}
     >
       <div className="flex items-start gap-3">
-        {/* زر فتح السايدبار: تحت 1024px فقط */}
         <button
           type="button"
           onClick={toggleSidebar}

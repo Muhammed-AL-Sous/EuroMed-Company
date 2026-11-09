@@ -4,12 +4,11 @@ import CompanyIntro from "../components/home/CompanyIntro";
 import HeroSection from "../components/home/HeroSection";
 import PatientPortalCTA from "../components/home/PatientPortalCTA";
 import ProductSubCategoriesGrid from "../components/home/ProductSubCategoriesGrid";
-import { useGetSubCategoriesQuery } from "../features/subCategories/SubCategoriesApiSlice";
 import { motion } from "motion/react";
+import useHomePageLogic from "./useHomePageLogic.js";
 
 const HomePage = () => {
-  const { data } = useGetSubCategoriesQuery();
-  const subcategories = data?.subcategories ?? [];
+  const { subcategories } = useHomePageLogic();
 
   return (
     <div className="space-y-0">

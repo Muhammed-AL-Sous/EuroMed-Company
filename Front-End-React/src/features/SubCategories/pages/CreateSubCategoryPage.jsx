@@ -1,13 +1,8 @@
-import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Em, Flex } from "@radix-ui/themes";
 import { Form } from "radix-ui";
 import { Church, FileText, Box as BoxIcon, Save, Hash } from "lucide-react";
-
-import { notifySonner } from "../../../lib/notifySonner";
-import { useState } from "react";
-import { useAddSubCategoryMutation } from "../SubCategoriesApiSlice";
-
-// Utility Component
 import ProductImageUpload from "../../products/components/utility/ProductImageUpload";
+import useCreateSubCategoryPageLogic from "./useCreateSubCategoryPageLogic.js";
 
 const INPUT_CLASS =
   "box-border w-full rounded-xl border-2 border-sky-700 " +
@@ -18,63 +13,14 @@ const INPUT_CLASS =
   "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreateSubCategoryPage = () => {
-  const [createForm, setCreateForm] = useState({
-    code: "",
-    name: "",
-    description: "",
-  });
-
-  const [subCategoryImage, setSubCategoryImage] = useState(null);
-  const [imageResetKey, setImageResetKey] = useState(0);
-
-  const [addSubCategory, { isLoading: isCreating }] =
-    useAddSubCategoryMutation();
-
-  const handleCreateFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setCreateForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmitCategory = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("code", createForm.code.trim());
-    formData.append("name", createForm.name.trim());
-    formData.append("description", createForm.description.trim());
-
-    if (subCategoryImage) {
-      formData.append("image", subCategoryImage);
-    }
-
-    try {
-      await addSubCategory(formData).unwrap();
-
-      setSubCategoryImage(null);
-
-      // Reset ProductImageUpload
-      setImageResetKey((prev) => prev + 1);
-
-      setCreateForm({
-        code: "",
-        name: "",
-        description: "",
-        image_url: "",
-      });
-
-      notifySonner("SubCategory Added Successfully");
-    } catch (error) {
-      console.error("Failed to add subcategory:", error);
-      notifySonner(
-        error?.data?.message || "Failed to add subcategory",
-        "error",
-      );
-    }
-  };
+  const {
+    createForm,
+    setSubCategoryImage,
+    imageResetKey,
+    isCreating,
+    handleCreateFormChange,
+    handleSubmitCategory,
+  } = useCreateSubCategoryPageLogic();
 
   return (
     <div>

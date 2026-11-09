@@ -1,8 +1,4 @@
-// React
-import { useState } from "react";
-
-// External Library
-import { Box, Card, Em, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Em, Flex } from "@radix-ui/themes";
 import {
   Church,
   Save,
@@ -13,10 +9,7 @@ import {
   Transgender,
 } from "lucide-react";
 import { Form } from "radix-ui";
-import { notifySonner } from "../../../lib/notifySonner";
-
-// Api Slice
-import { useAddPatientMutation } from "../PatientsApiSlice";
+import useCreatePatientPageLogic from "./useCreatePatientPageLogic.js";
 
 const INPUT_CLASS =
   "box-border w-full rounded-xl border-2 border-sky-700 " +
@@ -27,45 +20,12 @@ const INPUT_CLASS =
   "disabled:cursor-not-allowed disabled:opacity-60";
 
 const CreatePatientPage = () => {
-  const [createForm, setCreateForm] = useState({
-    name: "",
-    phone: "",
-    age: "",
-    date_of_birth: "",
-    gender: "",
-  });
-
-  const [addPatient, { isLoading: isCreating }] = useAddPatientMutation();
-
-  const handleCreateFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setCreateForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmitPatient = async (e) => {
-    e.preventDefault();
-
-    try {
-      await addPatient(createForm).unwrap();
-
-      setCreateForm({
-        name: "",
-        phone: "",
-        age: "",
-        date_of_birth: "",
-        gender: "",
-      });
-
-      notifySonner("Patient Added Successfully");
-    } catch (error) {
-      console.error("Failed to add Patient:", error);
-      notifySonner(error?.data?.message || "Failed to add Patient", "error");
-    }
-  };
+  const {
+    createForm,
+    isCreating,
+    handleCreateFormChange,
+    handleSubmitPatient,
+  } = useCreatePatientPageLogic();
 
   return (
     <div>

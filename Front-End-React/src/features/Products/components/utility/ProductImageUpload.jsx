@@ -1,8 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useDropzone } from "react-dropzone";
-
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
-
 import {
   ImagePlus,
   Upload,
@@ -11,14 +7,7 @@ import {
   AlertCircle,
   ImageDown,
 } from "lucide-react";
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
-const ACCEPTED_IMAGE_TYPES = {
-  "image/jpeg": [".jpg", ".jpeg"],
-  "image/png": [".png"],
-  "image/webp": [".webp"],
-};
+import useProductImageUploadLogic from "./useProductImageUploadLogic.js";
 
 export default function ProductImageUpload({
   initialImageUrl = "",
@@ -29,112 +18,22 @@ export default function ProductImageUpload({
   showIcon = false,
   disabled = false,
 }) {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isExistingImageRemoved, setIsExistingImageRemoved] = useState(false);
-
-  // Keep track of the temporary preview URL for cleanup.
-  const previewObjectUrlRef = useRef(null);
-
-  // Revoke the temporary URL when the component unmounts.
-  useEffect(() => {
-    return () => {
-      if (previewObjectUrlRef.current) {
-        URL.revokeObjectURL(previewObjectUrlRef.current);
-        previewObjectUrlRef.current = null;
-      }
-    };
-  }, []);
-
-  const revokePreviewUrl = useCallback(() => {
-    if (previewObjectUrlRef.current) {
-      URL.revokeObjectURL(previewObjectUrlRef.current);
-      previewObjectUrlRef.current = null;
-    }
-  }, []);
-
-  const onDrop = useCallback(
-    (acceptedFiles, fileRejections) => {
-      setErrorMessage("");
-
-      if (fileRejections.length > 0) {
-        const errorCode = fileRejections[0].errors[0]?.code;
-
-        if (errorCode === "file-too-large") {
-          setErrorMessage("Image size must not exceed 5 MB.");
-        } else if (errorCode === "file-invalid-type") {
-          setErrorMessage("Only JPG, PNG, and WebP images are allowed.");
-        } else if (errorCode === "too-many-files") {
-          setErrorMessage("Please select only one image.");
-        } else {
-          setErrorMessage("Unable to select this image.");
-        }
-
-        return;
-      }
-
-      const file = acceptedFiles[0];
-
-      if (!file) return;
-
-      // Release the previous temporary preview URL.
-      revokePreviewUrl();
-
-      // Create a preview URL for the new file.
-      const objectUrl = URL.createObjectURL(file);
-
-      previewObjectUrlRef.current = objectUrl;
-
-      setSelectedFile(file);
-      setPreviewUrl(objectUrl);
-      setIsExistingImageRemoved(false);
-
-      // Pass the File object to the parent form.
-      // The parent is responsible for uploading it to Laravel.
-      onChange?.(file);
-    },
-    [onChange, revokePreviewUrl],
-  );
-
-  const { getRootProps, getInputProps, open, isDragActive, isDragReject } =
-    useDropzone({
-      onDrop,
-      accept: ACCEPTED_IMAGE_TYPES,
-      maxSize: MAX_FILE_SIZE,
-      maxFiles: 1,
-      multiple: false,
-      disabled,
-      noClick: true,
-      noKeyboard: true,
-    });
-
-  const handleRemove = () => {
-    if (disabled) return;
-
-    revokePreviewUrl();
-
-    setSelectedFile(null);
-    setPreviewUrl("");
-    setErrorMessage("");
-
-    // If an existing server image is being removed,
-    // notify the parent so it can submit the deletion.
-    if (initialImageUrl && !isExistingImageRemoved) {
-      setIsExistingImageRemoved(true);
-      onRemove?.();
-    }
-
-    onChange?.(null);
-  };
-
-  const displayedImage = selectedFile
-    ? previewUrl
-    : isExistingImageRemoved
-      ? ""
-      : initialImageUrl;
-
-  const hasImage = Boolean(displayedImage);
+  const {
+    errorMessage,
+    getRootProps,
+    getInputProps,
+    open,
+    isDragActive,
+    isDragReject,
+    handleRemove,
+    displayedImage,
+    hasImage,
+  } = useProductImageUploadLogic({
+    initialImageUrl: initialImageUrl,
+    onChange: onChange,
+    onRemove: onRemove,
+    disabled: disabled,
+  });
 
   return (
     <div {...getRootProps()} className="w-full">
@@ -200,17 +99,6 @@ export default function ProductImageUpload({
                 </button>
               </div>
 
-              {/* Image Information */}
-              {/* <div className="border-t border-slate-200 bg-white px-3 py-2">
-                <Flex align="center" gap="2">
-                  <FileImage size={16} className="shrink-0 text-blue-600" />
-
-                  <Text size="2" color="gray" truncate>
-                    {selectedFile ? selectedFile.name : "Current product image"}
-                  </Text>
-                </Flex>
-              </div> */}
-
               {isDragActive && (
                 <div className="absolute inset-0 flex items-center justify-center bg-blue-50/90">
                   <Text size="3" weight="medium" color="blue">
@@ -267,7 +155,12 @@ export default function ProductImageUpload({
                 Choose Image
               </button>
 
-              <Text as="p" className="text-[10px] sm:text-xs" color="gray" mt="4">
+              <Text
+                as="p"
+                className="text-[10px] sm:text-xs"
+                color="gray"
+                mt="4"
+              >
                 JPG, PNG or WebP · Maximum 5 MB
               </Text>
             </div>
