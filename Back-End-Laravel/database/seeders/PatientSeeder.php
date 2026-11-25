@@ -3,42 +3,37 @@
 namespace Database\Seeders;
 
 use App\Models\Patient;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PatientSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $Patients = [
-            [
-                "name" => "محمد ياسين",
-                "phone" => "0991013483",
-                "age" => "57",
-                "date_of_birth" => "11-02-1969",
-                "gender" => "male"
-            ],
-            [
-                "name" => "احمد الروماني",
-                "phone" => "0991743483",
-                "age" => "47",
-                "date_of_birth" => "30-05-1979",
-                "gender" => "male"
-            ],
-            [
-                "name" => "يارا السعدي",
-                "phone" => "0991013483",
-                "age" => "27",
-                "date_of_birth" => "05-07-1999",
-                "gender" => "female"
-            ]
-        ];
+        $patients = json_decode(
+            file_get_contents(
+                database_path('seeders/data/patients.json')
+            ),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
 
-        foreach ($Patients as $Patient) {
-            Patient::create($Patient);
-        }
+        DB::transaction(function () use ($patients) {
+            foreach ($patients as $patient) {
+                Patient::updateOrCreate(
+                    [
+                        'import_reference' => $patient['import_reference'],
+                    ],
+                    [
+                        'name' => $patient['name'],
+                    ]
+                );
+            }
+        });
+
+        $this->command->info(
+            count($patients) . ' patient records processed successfully.'
+        );
     }
 }

@@ -14,6 +14,7 @@ class Patient extends Model
         'age',
         'date_of_birth',
         'gender',
+        'import_reference',
     ];
 
     protected function casts(): array

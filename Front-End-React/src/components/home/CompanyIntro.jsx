@@ -81,7 +81,7 @@ const CompanyIntro = () => {
 
           {/* Stats Grid */}
 
-          <div className="mt-16 pt-12 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 auto-rows-fr gap-6">
+          <div className="mt-16 pt-12 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-fr gap-6">
             {stats.map((stat, idx) => (
               <motion.div
                 key={stat.label}

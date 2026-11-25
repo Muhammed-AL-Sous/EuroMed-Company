@@ -28,10 +28,10 @@ const Footer = () => {
               Joint Replacement Hardware Serving Surgeons and Hospitals.
             </p>
             <div className="pt-2 flex items-center gap-3 text-xs font-semibold text-sky-400">
-              <span className="flex items-center gap-1 bg-sky-950/80 px-3 py-1.5 rounded-lg border border-sky-800/50">
+              {/* <span className="flex items-center gap-1 bg-sky-950/80 px-3 py-1.5 rounded-lg border border-sky-800/50">
                 <ShieldCheck className="w-4 h-4 text-sky-400" /> ISO 13485
                 Certified
-              </span>
+              </span> */}
               <span className="flex items-center gap-1 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
                 100% Implant Traceability
               </span>
@@ -50,16 +50,16 @@ const Footer = () => {
                   Home
                 </RouterLink>
               </li>
-              <li className="hover:text-white hover:translate-x-1 duration-300">
+              {/* <li className="hover:text-white hover:translate-x-1 duration-300">
                 <RouterLink to="/products" className="hover:text-white">
                   Orthopedic Products
                 </RouterLink>
-              </li>
-              <li className="hover:text-white hover:translate-x-1 duration-300">
+              </li> */}
+              {/* <li className="hover:text-white hover:translate-x-1 duration-300">
                 <RouterLink to="/brands" className="hover:text-white">
                   Partner Brands
                 </RouterLink>
-              </li>
+              </li> */}
               <li className="hover:text-white hover:translate-x-1 duration-300">
                 <RouterLink to="/about" className="hover:text-white">
                   About EuroMed

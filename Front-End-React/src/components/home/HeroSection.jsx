@@ -97,13 +97,13 @@ const HeroSection = () => {
                     <div className="text-[10.5px] sm:text-xs font-semibold text-white mt-0.5">
                       Total Knee & Hip Arthroplasty
                     </div>
-                    <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5">
+                    {/* <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5">
                       Maxx, Zimmer, Normmed Systems
-                    </div>
+                    </div> */}
                   </div>
-                  <div className="p-2.5 rounded-lg bg-sky-500/20 text-sky-300 font-bold text-xs">
+                  {/* <div className="p-2.5 rounded-lg bg-sky-500/20 text-sky-300 font-bold text-xs">
                     ISO 13485
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

@@ -10,6 +10,7 @@ use App\Services\DoctorService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Illuminate\Http\Request;
 
 class DoctorController extends Controller
 {
@@ -19,12 +20,39 @@ class DoctorController extends Controller
         protected DoctorService $doctorService
     ) {}
 
-    public function index(): JsonResponse
+
+    public function index(Request $request): JsonResponse
     {
+        $filters = $request->validate([
+            'search' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'page' => ['sometimes', 'integer', 'min:1'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+        ]);
+
         $doctors = Doctor::query()
             ->with(['user.roles'])
-            ->latest()
-            ->paginate(15);
+            ->when(
+                filled($filters['search'] ?? null),
+                function ($query) use ($filters) {
+                    $terms = preg_split(
+                        '/\s+/u',
+                        trim($filters['search']),
+                        -1,
+                        PREG_SPLIT_NO_EMPTY
+                    );
+
+                    foreach ($terms as $term) {
+                        $query->where(
+                            'name',
+                            'LIKE',
+                            "%{$term}%"
+                        );
+                    }
+                }
+            )
+            ->orderBy('name')
+            ->orderBy('id')
+            ->paginate($filters['per_page'] ?? 15);
 
         return $this->success(
             DoctorResource::collection($doctors)

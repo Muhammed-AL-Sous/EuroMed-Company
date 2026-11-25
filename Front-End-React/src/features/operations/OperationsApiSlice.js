@@ -10,6 +10,7 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
     // ==================================================
     // Get Operation Form Options
     // ==================================================
+
     getOperationFormOptions: builder.query({
       query: ({ type, search = "" }) => {
         const routes = {
@@ -30,6 +31,7 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
           params: {
             search: search.trim() || undefined,
             page: 1,
+            per_page: 30,
           },
         };
       },
@@ -43,6 +45,7 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
         return [];
       },
     }),
+
     // ==================================================
     // Get Operations
     // ==================================================

@@ -30,155 +30,18 @@ class OperationController extends Controller
         );
 
         $filters = $request->validate([
-            'search' => [
-                'sometimes',
-                'nullable',
-                'string',
-                'max:100',
-            ],
-            'hospital_id' => [
-                'sometimes',
-                'integer',
-                'exists:hospitals,id',
-            ],
-            'doctor_id' => [
-                'sometimes',
-                'integer',
-                'exists:doctors,id',
-            ],
-            'date' => [
-                'sometimes',
-                'date',
-            ],
-            'limit' => [
-                'sometimes',
-                'integer',
-                'min:1',
-                'max:100',
-            ],
-            'operation_type_id' => [
-                'sometimes',
-                'integer',
-                'exists:operation_types,id',
-            ],
+            'search' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'hospital_id' => ['sometimes', 'integer', 'exists:hospitals,id'],
+            'doctor_id' => ['sometimes', 'integer', 'exists:doctors,id'],
+            'operation_type_id' => ['sometimes', 'integer', 'exists:operation_types,id'],
+            'date' => ['sometimes', 'date_format:Y-m-d'],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
         ]);
 
-        $operations = Operation::query()
-            ->with([
-                'doctor',
-                'hospital',
-                'patient',
-                'operationType',
-            ])
-            ->withCount('items')
-
-            // Search
-            ->when(
-                $request->filled('search'),
-                function ($query) use ($filters) {
-
-                    $terms = preg_split(
-                        '/\s+/u',
-                        trim($filters['search'])
-                    );
-
-                    foreach ($terms as $term) {
-
-                        $like = "%{$term}%";
-
-                        $query->where(function ($q) use ($like) {
-
-                            $q
-                                // Invoice Number
-                                ->where(
-                                    'invoice_number',
-                                    'LIKE',
-                                    $like
-                                )
-
-                                // Patient Access Code
-                                ->orWhere(
-                                    'patient_access_code',
-                                    'LIKE',
-                                    $like
-                                )
-
-                                // Doctor Name
-                                ->orWhereHas(
-                                    'doctor',
-                                    fn($doctorQuery) =>
-                                    $doctorQuery->where(
-                                        'name',
-                                        'LIKE',
-                                        $like
-                                    )
-                                )
-
-                                // Patient Name / Phone
-                                ->orWhereHas(
-                                    'patient',
-                                    fn($patientQuery) =>
-                                    $patientQuery
-                                        ->where('name', 'LIKE', $like)
-                                        ->orWhere('phone', 'LIKE', $like)
-                                )
-
-                                // Hospital Name
-                                ->orWhereHas(
-                                    'hospital',
-                                    fn($hospitalQuery) =>
-                                    $hospitalQuery->where(
-                                        'name',
-                                        'LIKE',
-                                        $like
-                                    )
-                                )
-
-                                // Operation Type Name
-                                ->orWhereHas(
-                                    'operationType',
-                                    fn($typeQuery) =>
-                                    $typeQuery->where(
-                                        'name',
-                                        'LIKE',
-                                        $like
-                                    )
-                                );
-                        });
-                    }
-                }
-            )
-
-            // Hospital Filter
-            ->when(
-                $filters['hospital_id'] ?? null,
-                fn($query, $id) =>
-                $query->where('hospital_id', $id)
-            )
-
-            // Operation Type Filter
-            ->when(
-                $filters['operation_type_id'] ?? null,
-                fn($query, $id) =>
-                $query->where('operation_type_id', $id)
-            )
-
-            // Doctor Filter
-            ->when(
-                $filters['doctor_id'] ?? null,
-                fn($query, $id) =>
-                $query->where('doctor_id', $id)
-            )
-
-            // Date Filter
-            ->when(
-                $filters['date'] ?? null,
-                fn($query, $date) =>
-                $query->whereDate('operation_date', $date)
-            )
-
-            ->latest('operation_date')
-            ->paginate($filters['limit'] ?? 15);
+        $operations = $this->operationService->operations(
+            $filters
+        );
 
         return $this->success(
             OperationResource::collection($operations)

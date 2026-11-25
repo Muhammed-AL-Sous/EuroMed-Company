@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             UserSeeder::class,
             DoctorSeeder::class,
+            OperationSeeder::class
         ]);
     }
 }

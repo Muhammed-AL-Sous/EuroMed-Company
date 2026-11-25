@@ -1,10 +1,12 @@
 import { useLocation, useParams } from "react-router";
 import { useGetOperationQuery } from "../OperationsApiSlice";
 
+const EMPTY_ITEMS = [];
+
 const useOperationDetailsPageLogic = () => {
-  const EMPTY_ITEMS = [];
   const { id } = useParams();
   const location = useLocation();
+
   const scope = location.pathname.startsWith("/doctor/") ? "doctor" : "admin";
 
   const {
@@ -14,17 +16,16 @@ const useOperationDetailsPageLogic = () => {
     isError,
     error,
     refetch,
-  } = useGetOperationQuery({
-    id,
-    scope,
-  });
+  } = useGetOperationQuery({ id, scope }, { skip: !id });
 
   const operation = response?.data ?? response;
+
   const items = Array.isArray(operation?.items) ? operation.items : EMPTY_ITEMS;
-  const patient = operation.patient;
-  const doctor = operation.doctor;
-  const hospital = operation.hospital;
-  const operationType = operation.operation_type;
+
+  const patient = operation?.patient ?? null;
+  const doctor = operation?.doctor ?? null;
+  const hospital = operation?.hospital ?? null;
+  const operationType = operation?.operation_type ?? null;
 
   return {
     id,

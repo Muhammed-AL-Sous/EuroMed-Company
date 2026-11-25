@@ -81,9 +81,9 @@ const ContactPage = () => {
                     <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                       +964 750 376 9545
                     </div>
-                    <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
+                    {/* <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                       +964 750 000 0000
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -95,9 +95,9 @@ const ContactPage = () => {
                     <div className="font-bold text-slate-800 text-[15px]">
                       Email Address
                     </div>
-                    <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
+                    {/* <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                       info@euromed.iq
-                    </div>
+                    </div> */}
                     <div className="text-sky-700 text-[11px] tracking-tight leading-relaxed font-bold">
                       Euromed.iraq@gmail.com
                     </div>

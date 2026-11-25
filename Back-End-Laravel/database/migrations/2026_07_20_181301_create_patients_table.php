@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('import_reference', 100)
+                ->nullable()
+                ->unique();
+            $table->string('name');
             $table->string('phone')->nullable();
             $table->unsignedSmallInteger('age')->nullable();
             $table->date('date_of_birth')->nullable();

@@ -4,8 +4,7 @@ const useAboutPageLogic = () => {
   const values = [
     {
       title: "Uncompromised Quality",
-      description:
-        "We Source Exclusively From ISO 13485 Certified European and International Implant Manufacturers.",
+      description:"We import our products exclusively from European and international manufacturers of joint replacement and fracture repair materials that are ISO-certified.",
       icon: Award,
     },
     {

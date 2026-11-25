@@ -5,11 +5,11 @@ const useCompanyIntroLogic = () => {
       value: "9+",
       description: "Knee, Hip, Plates, Screws, Nails & Cables",
     },
-    {
-      label: "Partner Brands",
-      value: "6+",
-      description: "Global Manufacturers (Zimmer , MAXX , etc ...)",
-    },
+    // {
+    //   label: "Partner Brands",
+    //   value: "6+",
+    //   description: "Global Manufacturers (Zimmer , MAXX , etc ...)",
+    // },
     {
       label: "Orthopedic Surgeons",
       value: "350+",

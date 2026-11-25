@@ -49,9 +49,9 @@ const LocationMap = () => {
                   <div className="text-slate-400 text-[11.5px] font-semibold">
                     +964 750 376 9545
                   </div>
-                  <div className="text-slate-400 text-[11.5px] font-semibold">
+                  {/* <div className="text-slate-400 text-[11.5px] font-semibold">
                     +964 750 000 0000
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

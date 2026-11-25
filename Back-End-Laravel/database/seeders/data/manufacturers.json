@@ -70,5 +70,14 @@
         "description": "Biocomposites is an international medical device company that engineers, manufactures and markets world leading products for use in infection management in bone and soft tissue. Based in Keele, UK, it has global operations across Europe, USA, Canada, China and India.",
         "website": "https://biocomposites.com/",
         "is_active": true
+    },
+    {
+        "code": "manufacturer-009",
+        "name": "Atesos",
+        "origin": "Switzerland",
+        "logo_text": "Atesos Medical AG",
+        "description": "Atesos medical AG is founded in August 2009 and moves to Schachenallee 29 in Aarau, Switzerland.",
+        "website": "https://atesos.ch/en/",
+        "is_active": true
     }
 ]
