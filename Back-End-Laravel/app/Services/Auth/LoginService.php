@@ -3,8 +3,8 @@
 namespace App\Services\Auth;
 
 use App\Http\Requests\AuthLoginRequest;
-use App\Models\User;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Traits\ApiResponse;
 use App\Traits\HasFastCheckCookie;
 use Illuminate\Http\JsonResponse;
@@ -16,35 +16,59 @@ class LoginService
     use ApiResponse;
     use HasFastCheckCookie;
 
-    public function login(AuthLoginRequest $request): JsonResponse
-    {
+    private const MAX_ATTEMPTS = 5;
+    private const DECAY_SECONDS = 60;
+
+    public function login(
+        AuthLoginRequest $request
+    ): JsonResponse {
         if ($response = $this->checkRateLimit($request)) {
             return $response;
         }
 
+        $data = $request->validated();
+
         $credentials = [
-            'email' => strtolower(trim($request->input('email'))),
-            'password' => $request->input('password'),
+            'username' => $data['username'],
+            'password' => $data['password'],
+            'is_active' => true,
         ];
 
         if (! Auth::guard('web')->attempt(
             $credentials,
             $request->boolean('remember')
         )) {
-            RateLimiter::hit($this->throttleKey($request), 60);
+            RateLimiter::hit(
+                $this->throttleKey($request),
+                self::DECAY_SECONDS
+            );
 
             return self::unauthorized(__('auth.failed'));
         }
 
-        RateLimiter::clear($this->throttleKey($request));
-
         $user = Auth::guard('web')->user();
 
-        if (! $this->isEmailVerified($user)) {
+        if (! $this->canLogin($user)) {
             Auth::guard('web')->logout();
 
-            return self::forbidden('Please verify your email before logging in.');
+            if ($request->hasSession()) {
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
+
+            RateLimiter::hit(
+                $this->throttleKey($request),
+                self::DECAY_SECONDS
+            );
+
+            return self::forbidden(
+                'You Are Not Authorized To Login .'
+            );
         }
+
+        RateLimiter::clear(
+            $this->throttleKey($request)
+        );
 
         if ($request->hasSession()) {
             $request->session()->regenerate();
@@ -53,15 +77,21 @@ class LoginService
         return self::success([
             'user' => new UserResource(
                 $user->load(['roles', 'doctor'])
-            )
-        ]);
+            ),
+        ])->withCookie(
+            $this->getFastCheckCookie()
+        );
     }
 
-    private function checkRateLimit(AuthLoginRequest $request): ?JsonResponse
-    {
+    private function checkRateLimit(
+        AuthLoginRequest $request
+    ): ?JsonResponse {
         $key = $this->throttleKey($request);
 
-        if (RateLimiter::tooManyAttempts($key, 5)) {
+        if (RateLimiter::tooManyAttempts(
+            $key,
+            self::MAX_ATTEMPTS
+        )) {
             $seconds = RateLimiter::availableIn($key);
 
             return self::tooManyRequests(
@@ -72,13 +102,18 @@ class LoginService
         return null;
     }
 
-    private function throttleKey(AuthLoginRequest $request): string
-    {
-        return 'login:' . strtolower($request->input('email')) . '|' . $request->ip();
+    private function throttleKey(
+        AuthLoginRequest $request
+    ): string {
+        return 'login:'
+            . $request->validated('username')
+            . '|'
+            . $request->ip();
     }
 
-    private function isEmailVerified(User $user): bool
+    private function canLogin(User $user): bool
     {
-        return $user->is_active && $user->email_verified_at !== null;
+        return $user->is_active
+            && $user->roles()->exists();
     }
 }

@@ -10,7 +10,7 @@ import { getLoginFormErrors } from "../validation/authFormValidators";
 const useLoginPageLogic = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginForm, setLoginForm] = useState({
-    email: "",
+    username: "",
     password: "",
     remember: false,
   });
@@ -74,7 +74,7 @@ const useLoginPageLogic = () => {
       );
       const status = err.status;
       if (status === 401) {
-        notifySonner("Invalid Email Or Password", "error");
+        notifySonner("Invalid Username Or Password", "error");
         return;
       }
       notifySonner("Login Failed", "error");

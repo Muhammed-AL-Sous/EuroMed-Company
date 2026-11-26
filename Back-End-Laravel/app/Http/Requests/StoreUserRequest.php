@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\HasTranslatableRules;
+use App\Support\UsernameNormalizer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -16,6 +17,17 @@ class StoreUserRequest extends FormRequest
         return $this->user()?->hasRole('admin') ?? false;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if (is_string($this->input('username'))) {
+            $this->merge([
+                'username' => UsernameNormalizer::normalize(
+                    $this->input('username')
+                ),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return array_merge(
@@ -26,8 +38,17 @@ class StoreUserRequest extends FormRequest
                     'max:100',
                 ],
 
-                'email' => [
+                'username' => [
                     'required',
+                    'string',
+                    'min:3',
+                    'max:50',
+                    'regex:/^[a-z0-9]+$/',
+                    'unique:users,username',
+                ],
+
+                'email' => [
+                    'nullable',
                     'string',
                     'email',
                     'max:255',
@@ -37,7 +58,7 @@ class StoreUserRequest extends FormRequest
                 'password' => [
                     'required',
                     'confirmed',
-                    Password::min(8)
+                    Password::min(6)
                         ->letters()
                         ->numbers(),
                 ],

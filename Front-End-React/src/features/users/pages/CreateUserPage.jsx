@@ -187,7 +187,7 @@ const CreateUserPage = () => {
                       className="text-xs text-red-700 font-bold mt-2"
                       match="tooShort"
                     >
-                      Password Must Contain At Least 8 Characters
+                      Password Must Contain At Least 6 Characters
                     </Form.Message>
 
                     <Form.Message

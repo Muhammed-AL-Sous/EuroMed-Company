@@ -1,4 +1,5 @@
 import {
+  CalendarDays,
   Download,
   LoaderCircle,
   Search,
@@ -73,6 +74,8 @@ const OperationsPage = () => {
     handleSearchChange,
     clearSearch,
     handleReferenceFilterChange,
+    operationDate,
+    handleDateFilterChange,
     clearFilters,
     clearAllCriteria,
     handlePageChange,
@@ -239,6 +242,27 @@ const OperationsPage = () => {
             )
           }
         />
+        {/* Operation Date Filter */}
+        <div>
+          <label
+            htmlFor="operation-date-filter"
+            className="text-sm font-semibold text-slate-700"
+          >
+            Operation Date
+          </label>
+
+          <div className="relative w-full">
+            <CalendarDays className="pointer-events-none absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2 text-slate-400" />
+
+            <input
+              id="operation-date-filter"
+              type="date"
+              value={operationDate}
+              onChange={handleDateFilterChange}
+              className="w-full min-w-0 cursor-pointer rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-3 pl-11 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+            />
+          </div>
+        </div>
 
         {hasFilters && (
           <div className="flex items-end">

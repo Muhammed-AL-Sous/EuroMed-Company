@@ -57,6 +57,7 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
         doctor_id = "",
         hospital_id = "",
         operation_type_id = "",
+        date = "",
       } = {}) => ({
         url: getOperationsBaseUrl(scope),
         method: "GET",
@@ -66,6 +67,7 @@ export const OperationsApiSlice = baseApi.injectEndpoints({
           doctor_id: scope !== "doctor" ? doctor_id || undefined : undefined,
           hospital_id: hospital_id || undefined,
           operation_type_id: operation_type_id || undefined,
+          date: date || undefined,
         },
       }),
 

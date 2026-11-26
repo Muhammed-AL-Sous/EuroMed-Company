@@ -1,4 +1,4 @@
-import { AlertCircle, Eye, EyeOff, KeyRound, Lock, Mail } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, KeyRound, Lock, User } from "lucide-react";
 import { Spinner } from "../../../components/common/SpinnerFallback";
 import useLoginPageLogic from "./useLoginPageLogic.js";
 
@@ -41,29 +41,29 @@ const LoginPage = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="mb-7">
             <label className="block text-xs font-bold text-slate-700 tracking-wider mb-2">
-              Email Address
+              Username
             </label>
             <div className="relative">
-              <Mail className="w-5 h-5 text-slate-400 absolute left-3.5 top-3" />
+              <User className="w-5 h-5 text-slate-400 absolute left-3.5 top-3" />
               <input
-                type="email"
-                name="email"
-                value={loginForm.email}
+                type="text"
+                name="username"
+                value={loginForm.username}
                 onChange={handleChange}
-                autoComplete="email"
-                placeholder="user@euromed.iq"
+                autoComplete="username"
+                placeholder="Enter Your Username"
                 className={`w-full bg-slate-50 text-slate-900 pl-11 pr-4 py-3 rounded-xl border outline-0 text-sm font-medium
         ${
-          errors.email
+          errors.username
             ? "border-red-500 focus:border-red-500"
             : "border-slate-200 focus:border-sky-500"
         }`}
               />
-              {/* ======= Errors Email ======= */}
-              {errors.email && (
+              {/* ======= Errors Username ======= */}
+              {errors.username && (
                 <div className="absolute left-0 right-0 top-[calc(100%+6px)] w-full">
                   <p className="text-red-500 text-xs font-semibold px-1">
-                    {errors.email}
+                    {errors.username}
                   </p>
                 </div>
               )}

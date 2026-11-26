@@ -139,13 +139,17 @@ const useOperationsPageLogic = () => {
   const doctorId = searchParams.get("doctor_id") ?? "";
   const hospitalId = searchParams.get("hospital_id") ?? "";
   const operationTypeId = searchParams.get("operation_type_id") ?? "";
+  const operationDate = searchParams.get("date") ?? "";
   const [filterEntities, setFilterEntities] = useState({
     doctor: null,
     hospital: null,
     operation_type: null,
   });
   const hasFilters = Boolean(
-    (scope !== "doctor" && doctorId) || hospitalId || operationTypeId,
+    (scope !== "doctor" && doctorId) ||
+    hospitalId ||
+    operationTypeId ||
+    operationDate,
   );
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebouncedValue(searchInput, 400);
@@ -160,6 +164,7 @@ const useOperationsPageLogic = () => {
     doctor_id: doctorId,
     hospital_id: hospitalId,
     operation_type_id: operationTypeId,
+    date: operationDate,
   });
 
   const operations = Array.isArray(data?.operations)
@@ -475,6 +480,29 @@ const useOperationsPageLogic = () => {
     );
   };
 
+  const handleDateFilterChange = (event) => {
+    const date = event.target.value;
+
+    setPage(1);
+
+    setSearchParams(
+      (previousParams) => {
+        const params = new URLSearchParams(previousParams);
+
+        if (date) {
+          params.set("date", date);
+        } else {
+          params.delete("date");
+        }
+
+        return params;
+      },
+      {
+        replace: true,
+      },
+    );
+  };
+
   const clearFilters = () => {
     setFilterEntities({
       doctor: null,
@@ -488,6 +516,7 @@ const useOperationsPageLogic = () => {
         params.delete("doctor_id");
         params.delete("hospital_id");
         params.delete("operation_type_id");
+        params.delete("date");
         return params;
       },
       {
@@ -511,6 +540,7 @@ const useOperationsPageLogic = () => {
         params.delete("doctor_id");
         params.delete("hospital_id");
         params.delete("operation_type_id");
+        params.delete("date");
         return params;
       },
       {
@@ -573,6 +603,8 @@ const useOperationsPageLogic = () => {
     handleSearchChange,
     clearSearch,
     handleReferenceFilterChange,
+    operationDate,
+    handleDateFilterChange,
     clearFilters,
     clearAllCriteria,
     handlePageChange,

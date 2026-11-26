@@ -24,11 +24,11 @@ export function collectAuthPasswordPolicyErrors(
     return out;
   }
   if (
-    password.length < 8 ||
+    password.length < 6 ||
     !/[a-zA-Z]/.test(password) ||
     !/[0-9]/.test(password)
   ) {
-    out[fieldKey] = "Min. 8 characters (letters & numbers).";
+    out[fieldKey] = "Min. 6 characters (letters & numbers).";
   }
   return out;
 }

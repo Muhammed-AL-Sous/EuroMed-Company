@@ -2,504 +2,567 @@
     {
         "id": 1,
         "name": "Admin",
+        "username": "administrator",
         "email": "admin@euromed.com",
-        "password": "admin@123",
+        "password": "Lt93Oy",
         "role": "admin",
         "is_active": true
     },
     {
         "id": 2,
         "name": "Staff",
+        "username": "staff",
         "email": "staff@euromed.com",
-        "password": "staff@123",
+        "password": "Rc56Sv",
         "role": "staff",
         "is_active": true
     },
     {
         "id": 3,
         "name": "Dr Brwa Dilshad",
+        "username": "brwajaff",
         "email": "brwa-jaff@euromed.com",
-        "password": "brw@jaff@123",
+        "password": "Wm64Pd",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 4,
         "name": "Dr Ahmed Rawanduzy",
-        "email": "Ahmed-Rawanduzy@euromed.com",
-        "password": "Ahm@Raw@123",
+        "username": "ahmadrawanduzy",
+        "email": "ahmed-rawanduzy@euromed.com",
+        "password": "Cc21Yg",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 5,
         "name": "Dr Amanj Mohsin",
-        "email": "amanj-gardi@euromed.com",
-        "password": "aman@gar@123",
+        "username": "amanjmohsin",
+        "email": "amanj-mohsin@euromed.com",
+        "password": "Hf72Ix",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 6,
         "name": "Dr Ali Faisal",
+        "username": "alifaisal",
         "email": "ali-faisal@euromed.com",
-        "password": "ali@fais@123",
+        "password": "Ko24Vl",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 7,
         "name": "Dr Imad Sherwany",
+        "username": "imadsherwany",
         "email": "imad-sher@euromed.com",
-        "password": "imad@sher@123",
+        "password": "Eh47Pe",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 8,
         "name": "Dr Ari Muhammed",
+        "username": "arimuhammed",
         "email": "ari-mhd@euromed.com",
-        "password": "ari@mhd@123",
+        "password": "Uv70Yz",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 9,
         "name": "Dr Abdulsamad Khoshnaw",
+        "username": "abdulsamadkhoshnaw",
         "email": "abd-khosh@euromed.com",
-        "password": "abd@khosh@123",
+        "password": "Zj23Nz",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 10,
         "name": "Dr Mushtaq Abdulkhaleq",
+        "username": "mushtaqabdulkhaleq",
         "email": "mushtaq-khor@euromed.com",
-        "password": "mush@khor@123",
+        "password": "Sa21Rm",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 11,
         "name": "Dr Sherwan Jalal",
+        "username": "sherwanjalal",
         "email": "sherwan-jalal@euromed.com",
-        "password": "sher@jal@123",
+        "password": "Or32Sh",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 12,
         "name": "Dr Husam Hasan",
+        "username": "husamhasan",
         "email": "husam-hasan@euromed.com",
-        "password": "hus@has@123",
+        "password": "Bt77Oj",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 13,
         "name": "Dr Azad Khalil",
+        "username": "azadkhalil",
         "email": "azad-khalil@euromed.com",
-        "password": "azad@khalil@123",
+        "password": "Ys60Tc",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 14,
         "name": "Dr Hawri Hashem",
+        "username": "hawrihashem",
         "email": "hawri-hashem@euromed.com",
-        "password": "haw@has@123",
+        "password": "Ks14Pi",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 15,
         "name": "Dr Sabri Amedi",
+        "username": "sabriamedi",
         "email": "sabri-amedi@euromed.com",
-        "password": "sabri@ame@123",
+        "password": "Ma78Hb",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 16,
         "name": "Dr Haval Sardar",
+        "username": "havalsardar",
         "email": "haval-sardar@euromed.com",
-        "password": "haval@sar@123",
+        "password": "Zl27Vf",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 17,
         "name": "Dr Abdulqader Alani",
+        "username": "abdulqaderalani",
         "email": "abd-alani@euromed.com",
-        "password": "abd@alani@123",
+        "password": "Py63Yo",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 18,
         "name": "Dr Abu Baker Mustafa",
+        "username": "abubakermustafa",
         "email": "abubaker-mustafa@euromed.com",
-        "password": "abubaker@mustafa@123",
+        "password": "Yy70Pk",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 19,
         "name": "Dr Ahmad Barzanji",
+        "username": "ahmadbarzanji",
         "email": "ahmad-barzanji@euromed.com",
-        "password": "ahmad@barzanji@123",
+        "password": "Oy62Mt",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 20,
         "name": "Dr Ahmad Yasin",
+        "username": "ahmadyasin",
         "email": "ahmad-yasin@euromed.com",
-        "password": "ahmad@yasin@123",
+        "password": "Ls91Em",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 21,
         "name": "Dr Alaa Talaat",
+        "username": "alaatalaat",
         "email": "alaa-talaat@euromed.com",
-        "password": "alaa@talaat@123",
+        "password": "Pi26Ko",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 22,
         "name": "Dr Alan Abdulqader",
+        "username": "alanabdulqader",
         "email": "alan-abd@euromed.com",
-        "password": "alan@abd@123",
+        "password": "Jj32Wa",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 23,
         "name": "Dr Alan Kurdo",
+        "username": "alankurdo",
         "email": "alan-kurdo@euromed.com",
-        "password": "alan@kurdo@123",
+        "password": "Dh71Xu",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 24,
         "name": "Dr Ali Abdulkhaleq",
+        "username": "aliabdulkhaleq",
         "email": "ali-abd@euromed.com",
-        "password": "ali@abd@123",
+        "password": "Tp49Rs",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 25,
         "name": "Dr Ali Elias",
+        "username": "alielias",
         "email": "ali-elias@euromed.com",
-        "password": "ali@elias@123",
+        "password": "Oj56Lk",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 26,
         "name": "Dr Ali Muhammed",
+        "username": "alimuhammed",
         "email": "ali-mhd@euromed.com",
-        "password": "ali@mhd@123",
+        "password": "Tg31Iy",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 27,
         "name": "Dr Arjuman Fawzi",
+        "username": "arjumanfawzi",
         "email": "arjuman-fawzi@euromed.com",
-        "password": "arjuman@fawzi@123",
+        "password": "Td65Pl",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 28,
         "name": "Dr Aza Baban",
+        "username": "azababan",
         "email": "aza-baban@euromed.com",
-        "password": "aza@baban@123",
+        "password": "Nx31Cy",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 29,
         "name": "Dr Bahez Abdullah",
+        "username": "bahezabdullah",
         "email": "bahez-abd@euromed.com",
-        "password": "bahez@abd@123",
+        "password": "Ea68Sn",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 30,
         "name": "Dr Bayakh Azad",
+        "username": "bayakhazad",
         "email": "bayakh-azad@euromed.com",
-        "password": "bayakh@azad@123",
+        "password": "Du67Wm",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 31,
         "name": "Dr Rebin Kayani",
+        "username": "rebinkayani",
         "email": "rebin-kayani@euromed.com",
-        "password": "rebin@kayani@123",
+        "password": "Vq17Ut",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 32,
         "name": "Dr Dedawan Nameq",
+        "username": "dedawannameq",
         "email": "dedawan-nameq@euromed.com",
-        "password": "dedawan@nameq@123",
+        "password": "Ni79Km",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 33,
         "name": "Dr Essam Khalaf",
+        "username": "essamkhalaf",
         "email": "essam-khalaf@euromed.com",
-        "password": "essam@khalaf@123",
+        "password": "Ij39Ex",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 34,
         "name": "Dr Fayzullah Khoshnaw",
+        "username": "fayzullahkhoshnaw",
         "email": "fayzullah-khoshnaw@euromed.com",
-        "password": "fayzullah@khoshnaw@123",
+        "password": "Sb13Uj",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 35,
         "name": "Dr Ghivara Masoud",
+        "username": "ghivaramasoud",
         "email": "ghivara-masoud@euromed.com",
-        "password": "ghivara@masoud@123",
+        "password": "Zo21Pi",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 36,
         "name": "Dr Hawar Aqrawi",
+        "username": "hawaraqrawi",
         "email": "hawar-aqrawi@euromed.com",
-        "password": "hawar@aqrawi@123",
+        "password": "Ao29Yc",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 37,
         "name": "Dr Hazhar Khoshnaw",
+        "username": "hazharkhoshnaw",
         "email": "hazhar-khoshnaw@euromed.com",
-        "password": "hazhar@khoshnaw@123",
+        "password": "Ou12Ox",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 38,
         "name": "Dr Hazheen Talaat",
+        "username": "hazheentalaat",
         "email": "hazheen-talaat@euromed.com",
-        "password": "hazheen@talaat@123",
+        "password": "Vn95Fh",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 39,
         "name": "Dr Hemin Mustafa",
+        "username": "heminmustafa",
         "email": "hemin-mustafa@euromed.com",
-        "password": "hemin@mustafa@123",
+        "password": "Ic27Bl",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 40,
         "name": "Dr Hewa Rustom",
+        "username": "hewarustom",
         "email": "hewa-rustom@euromed.com",
-        "password": "hewa@rustom@123",
+        "password": "Ou14Vs",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 41,
         "name": "Dr Karwan Ahmad",
+        "username": "karwanahmad",
         "email": "karwan-ahmad@euromed.com",
-        "password": "karwan@ahmad@123",
+        "password": "Sd80Cn",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 42,
         "name": "Dr Lawin Omar",
+        "username": "lawinomar",
         "email": "lawin-omar@euromed.com",
-        "password": "lawin@omar@123",
+        "password": "Eh16Hs",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 43,
         "name": "Dr Mahmoud Samir",
+        "username": "mahmoudsamir",
         "email": "mahmoud-samir@euromed.com",
-        "password": "mahmoud@samir@123",
+        "password": "Ep44Jx",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 44,
         "name": "Dr Mariawan Salim",
+        "username": "mariawansalim",
         "email": "mariawan-salim@euromed.com",
-        "password": "mariawan@salim@123",
+        "password": "Nk35Ai",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 45,
         "name": "Dr Marwan Zebari",
+        "username": "marwanzebari",
         "email": "marwan-zebari@euromed.com",
-        "password": "marwan@zebari@123",
+        "password": "Zv76Vk",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 46,
         "name": "Dr Masoud Mustafa",
+        "username": "masoudmustafa",
         "email": "masoud-mustafa@euromed.com",
-        "password": "masoud@mustafa@123",
+        "password": "Xt73Wt",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 47,
         "name": "Dr Mrimal Sharma",
+        "username": "mrimalsharma",
         "email": "mrimal-sharma@euromed.com",
-        "password": "mrimal@sharma@123",
+        "password": "Ej42Xg",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 48,
         "name": "Dr Muhammed Abdullah",
+        "username": "muhammedabdullah",
         "email": "mhd-abdullah@euromed.com",
-        "password": "mhd@abdullah@123",
+        "password": "So99Pf",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 49,
         "name": "Dr Mustafa Jurjes",
+        "username": "mustafajurjes",
         "email": "mustafa-jurjes@euromed.com",
-        "password": "mustafa@jurjes@123",
+        "password": "Qg84Wo",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 50,
         "name": "Dr Muzafar Ahmad",
+        "username": "muzafarahmad",
         "email": "muzafar-ahmad@euromed.com",
-        "password": "muzafar@ahmad@123",
+        "password": "Ll49Ka",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 51,
         "name": "Dr Rebar Nazem",
+        "username": "rebarnazem",
         "email": "rebar-nazem@euromed.com",
-        "password": "rebar@nazem@123",
+        "password": "Jd26Em",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 52,
         "name": "Dr Omar Abdullah",
+        "username": "omarabdullah",
         "email": "omar-abd@euromed.com",
-        "password": "omar@abd@123",
+        "password": "Sv62Gj",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 53,
         "name": "Dr Omar Farouq",
+        "username": "omarfarouq",
         "email": "omar-farouq@euromed.com",
-        "password": "omar@farouq@123",
+        "password": "Cp29Ch",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 54,
         "name": "Dr Rojgar Anwar",
+        "username": "rojgaranwar",
         "email": "rojgar-anwar@euromed.com",
-        "password": "rojgar@anwar@123",
+        "password": "Qq52Kf",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 55,
         "name": "Dr Muzahem Muhi Aldeen",
+        "username": "muzahemmuhialdeen",
         "email": "muzahem-muhi@euromed.com",
-        "password": "muzahem@muhi@123",
+        "password": "Uz64Eh",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 56,
         "name": "Dr Saber Hamid",
+        "username": "saberhamid",
         "email": "saber-hamid@euromed.com",
-        "password": "saber@hamid@123",
+        "password": "Fb41Ej",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 57,
         "name": "Dr Sadeq Ashraf",
+        "username": "sadeqashraf",
         "email": "sadeq-ashraf@euromed.com",
-        "password": "sadeq@ashraf@123",
+        "password": "Ca83Yo",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 58,
         "name": "Dr Shwan Muhammed",
+        "username": "shwanmuhammed",
         "email": "shwan-Muhammed@euromed.com",
-        "password": "shwan@Muhammed@123",
+        "password": "Jg22Pt",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 59,
         "name": "Dr Said Ali",
+        "username": "saidali",
         "email": "said-ali@euromed.com",
-        "password": "said@ali@123",
+        "password": "De63Gc",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 60,
         "name": "Dr Samih Kakamam",
+        "username": "samihkakamam",
         "email": "samih-kakamam@euromed.com",
-        "password": "samih@kakamam@123",
+        "password": "Wr71Cb",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 61,
         "name": "Dr Sarkawt Sartep",
+        "username": "sarkawtsartep",
         "email": "sarkawt-sartep@euromed.com",
-        "password": "sarkawt@sartep@123",
+        "password": "Av55Ir",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 62,
         "name": "Dr Shvan Abdullah",
+        "username": "shvanabdullah",
         "email": "shvan-abdullah@euromed.com",
-        "password": "shvan@abdullah@123",
+        "password": "Pn56Jc",
         "role": "doctor",
         "is_active": true
     },
     {
         "id": 63,
         "name": "Dr Thuqaf Altebiati",
+        "username": "thuqafaltebiati",
         "email": "thuqaf-altebiati@euromed.com",
-        "password": "thuqaf@altebiati@123",
+        "password": "Px81Kh",
         "role": "doctor",
         "is_active": true
     }

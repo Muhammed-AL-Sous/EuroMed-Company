@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\HasTranslatableRules;
+use App\Support\UsernameNormalizer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -14,6 +15,17 @@ class UpdateUserRequest extends FormRequest
     public function authorize(): bool
     {
         return $this->user()?->hasRole('admin') ?? false;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if (is_string($this->input('username'))) {
+            $this->merge([
+                'username' => UsernameNormalizer::normalize(
+                    $this->input('username')
+                ),
+            ]);
+        }
     }
 
     public function rules(): array
@@ -33,6 +45,17 @@ class UpdateUserRequest extends FormRequest
                     'max:100',
                 ],
 
+                'username' => [
+                    'sometimes',
+                    'required',
+                    'string',
+                    'min:3',
+                    'max:50',
+                    'regex:/^[a-z0-9]+$/',
+                    Rule::unique('users', 'username')
+                        ->ignore($user),
+                ],
+
                 'email' => [
                     'sometimes',
                     'required',
@@ -46,7 +69,7 @@ class UpdateUserRequest extends FormRequest
                     'sometimes',
                     'nullable',
                     'confirmed',
-                    Password::min(8)
+                    Password::min(6)
                         ->letters()
                         ->numbers(),
                 ],
