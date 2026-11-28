@@ -570,8 +570,8 @@ const OperationDetailsPage = () => {
                   leading-6 text-slate-300 sm:text-sm
                 "
               >
-                Verify the official medical hardware, manufacturer lot codes,
-                and surgical materials used in your operation.
+                Verify the official medical hardware and surgical materials used
+                in your operation.
               </motion.p>
             )}
           </div>

@@ -32,7 +32,7 @@ const useCompanyIntroLogic = () => {
     "Comprehensive Inventory Stored in Erbil HQ",
     "Expert Surgical Support & Product Training",
     "Rapid Emergency Delivery to Operating Rooms",
-    "Direct Partnerships With European & Global Manufacturers",
+    "Direct Partnerships With Usa, European & Global Manufacturers",
   ];
   return {
     stats,
