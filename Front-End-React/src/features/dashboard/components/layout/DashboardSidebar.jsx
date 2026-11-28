@@ -3,7 +3,7 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 import * as Collapsible from "@radix-ui/react-collapsible";
 
 // React Router
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 
 // Icons
 import { ChevronDown, CircleHelp, LogOut, X } from "lucide-react";
@@ -83,11 +83,13 @@ const DashboardSidebar = ({ isOpen, setIsOpen, sidebarLinks = [] }) => {
             border-b border-slate-800 p-6
           "
         >
-          <img
-            src="/images/EuroMed-Logo-layout.png"
-            alt="EuroMed"
-            className="w-40"
-          />
+          <Link to="/">
+            <img
+              src="/images/EuroMed-Logo-layout.png"
+              alt="EuroMed"
+              className="w-40"
+            />
+          </Link>
           <button
             type="button"
             onClick={() => setIsOpen(false)}

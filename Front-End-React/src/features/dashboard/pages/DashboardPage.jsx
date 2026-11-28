@@ -131,6 +131,8 @@ export default function DashboardPage() {
       <DashboardCharts
         monthlyOperations={data?.monthly_operations ?? []}
         materialDemand={data?.material_demand_by_category ?? []}
+        operationsByType={data?.operations_by_type ?? []}
+        isDoctor={scope === "doctor"}
       />
 
       {/* Recent Operations */}

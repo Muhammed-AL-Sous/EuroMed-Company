@@ -2,23 +2,38 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 import { useReactToPrint } from "react-to-print";
 import { useVerifyPatientOperationMutation } from "../features/patients/PatientOperationApiSlice";
+import reportCss from "./OperationReport.css?inline";
+
+const getErrorMessage = (error) =>
+  error?.data?.message ||
+  "We couldn't find an operation matching the provided information. Please check the operation code and date.";
+
+const collectStyles = () =>
+  Array.from(document.styleSheets)
+    .map((sheet) => {
+      try {
+        return Array.from(sheet.cssRules)
+          .map((rule) => rule.cssText)
+          .join("\n");
+      } catch {
+        return "";
+      }
+    })
+    .join("\n");
 
 const useOperationDetailsPageLogic = () => {
-  const getErrorMessage = (error) =>
-    error?.data?.message ||
-    "We couldn't find an operation matching the provided information. Please check the operation code and date.";
-
   const [searchParams] = useSearchParams();
   const urlCode = searchParams.get("code") || "";
   const urlDate = searchParams.get("date") || "";
   const [code, setCode] = useState(urlCode);
   const [date, setDate] = useState(urlDate);
   const [errorMessage, setErrorMessage] = useState("");
+  const [pdfError, setPdfError] = useState("");
   const [operationData, setOperationData] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const printRef = useRef(null);
   const requestVersion = useRef(0);
-
+  const downloadLock = useRef(false);
   const [verifyPatientOperation, { isLoading }] =
     useVerifyPatientOperationMutation();
 
@@ -28,31 +43,31 @@ const useOperationDetailsPageLogic = () => {
     if (!normalizedCode || !date || isLoading) return;
     const version = ++requestVersion.current;
     setErrorMessage("");
+    setPdfError("");
     setOperationData(null);
-
     try {
       const response = await verifyPatientOperation({
         code: normalizedCode,
         date,
       }).unwrap();
       if (requestVersion.current !== version) return;
-      if (response?.status && response?.data) {
-        setOperationData(response.data);
-      } else {
-        setErrorMessage(response?.message || getErrorMessage(null));
-      }
+      if (response?.status && response?.data) setOperationData(response.data);
+      else setErrorMessage(response?.message || getErrorMessage(null));
     } catch (error) {
-      if (requestVersion.current === version) {
+      if (requestVersion.current === version)
         setErrorMessage(getErrorMessage(error));
-      }
     }
   };
 
   useEffect(() => {
-    if (!urlCode.trim() || !urlDate) return;
+    const normalizedCode = urlCode.trim().toUpperCase();
+
+    if (!normalizedCode || !urlDate) return;
+
     const version = ++requestVersion.current;
+
     const request = verifyPatientOperation({
-      code: urlCode.trim().toUpperCase(),
+      code: normalizedCode,
       date: urlDate,
     });
 
@@ -60,6 +75,9 @@ const useOperationDetailsPageLogic = () => {
       .unwrap()
       .then((response) => {
         if (requestVersion.current !== version) return;
+
+        setPdfError("");
+
         if (response?.status && response?.data) {
           setOperationData(response.data);
           setErrorMessage("");
@@ -70,84 +88,80 @@ const useOperationDetailsPageLogic = () => {
       })
       .catch((error) => {
         if (requestVersion.current !== version) return;
+
         setOperationData(null);
+        setPdfError("");
         setErrorMessage(getErrorMessage(error));
       });
 
     return () => {
-      if (requestVersion.current === version) requestVersion.current += 1;
+      if (requestVersion.current === version) {
+        requestVersion.current += 1;
+      }
+
       request.abort();
     };
   }, [urlCode, urlDate, verifyPatientOperation]);
 
+  const documentTitle = operationData
+    ? `Operation-${operationData.patient_access_code}`
+    : "Operation-Certificate";
+
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: operationData
-      ? `Operation-${operationData.patient_access_code}`
-      : "Operation-Certificate",
-    pageStyle: `
-    @page {
-      size: A4 portrait;
-      margin: 10mm;
-    }
-
-    @media print {
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: auto;
-        overflow: visible;
-      }
-    }
-  `,
+    documentTitle,
+    pageStyle: reportCss,
+    onPrintError: () =>
+      setPdfError("Failed to print the report. Please try again."),
   });
 
   const handleDownloadPdf = async () => {
-    if (!printRef.current || !operationData || isDownloading) return;
+    if (!printRef.current || !operationData || downloadLock.current) return;
+    downloadLock.current = true;
     setIsDownloading(true);
-    setErrorMessage("");
+    setPdfError("");
+    const version = requestVersion.current;
     let objectUrl;
-
+    let anchor;
     try {
-      const contentHtml = printRef.current.cloneNode(true).outerHTML;
-      const stylesheets = Array.from(document.styleSheets)
-        .map((sheet) => {
-          try {
-            return Array.from(sheet.cssRules)
-              .map((rule) => rule.cssText)
-              .join("\n");
-          } catch {
-            // Cross-origin stylesheets cannot be read by the browser.
-            return "";
-          }
-        })
-        .join("\n");
-
+      const clone = printRef.current.cloneNode(true);
+      clone.classList.add("pdf-export");
+      clone.querySelectorAll("img").forEach((img) => {
+        img.loading = "eager";
+      });
       const response = await fetch("/api/operations/pdf", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/pdf",
         },
         body: JSON.stringify({
-          html: contentHtml,
-          css: stylesheets,
+          html: clone.outerHTML,
+          css: `${collectStyles()}\n${reportCss}`,
         }),
       });
-
-      if (!response.ok) throw new Error("Failed to generate PDF");
+      if (
+        !response.ok ||
+        !response.headers.get("content-type")?.includes("application/pdf")
+      ) {
+        throw new Error("Invalid PDF response");
+      }
       const blob = await response.blob();
+      if (requestVersion.current !== version) return;
       objectUrl = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
+      anchor = document.createElement("a");
       anchor.href = objectUrl;
-      anchor.download = `Operation-${operationData.patient_access_code}.pdf`;
+      anchor.download = `${documentTitle}.pdf`;
       document.body.appendChild(anchor);
       anchor.click();
-      anchor.remove();
     } catch (error) {
       console.error("PDF generation error:", error);
-      setErrorMessage("Failed to download PDF. Please try again.");
+      if (requestVersion.current === version)
+        setPdfError("Failed to download PDF. Please try again.");
     } finally {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      anchor?.remove();
+      if (objectUrl) setTimeout(() => URL.revokeObjectURL(objectUrl), 10000);
+      downloadLock.current = false;
       setIsDownloading(false);
     }
   };
@@ -158,6 +172,7 @@ const useOperationDetailsPageLogic = () => {
     date,
     setDate,
     errorMessage,
+    pdfError,
     operationData,
     isDownloading,
     printRef,

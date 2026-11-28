@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   ClipboardList,
   Download,
-  Hash,
   KeyRound,
   Layers3,
   LoaderCircle,
@@ -22,6 +21,7 @@ import {
   UserRound,
 } from "lucide-react";
 import useOperationDetailsPageLogic from "./useOperationDetailsPageLogic.js";
+import "./OperationReport.css";
 
 // ---------------------------------------------------------
 // Constants and formatting helpers
@@ -77,7 +77,6 @@ const DetailsCard = ({ children, className = "" }) => (
       report-card
       rounded-xl border border-slate-200
       bg-white p-5 shadow-sm sm:p-6
-      print:break-inside-auto
       print:rounded-md
       print:p-3
       print:shadow-none
@@ -89,7 +88,7 @@ const DetailsCard = ({ children, className = "" }) => (
 );
 
 const SectionHeader = ({ icon: Icon, title, subtitle, right }) => (
-  <div className="flex flex-wrap items-center justify-between gap-3">
+  <div className="report-section-header flex flex-wrap items-center justify-between gap-3">
     <div className="flex min-w-0 items-center gap-3">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-700">
         <Icon size={20} aria-hidden="true" />
@@ -97,7 +96,9 @@ const SectionHeader = ({ icon: Icon, title, subtitle, right }) => (
       <div className="min-w-0">
         <h2 className="text-base font-bold text-slate-800">{title}</h2>
         {subtitle && (
-          <p className="mt-0.5 text-xs text-slate-500">{subtitle}</p>
+          <p className="report-subtitle mt-0.5 text-xs text-slate-500">
+            {subtitle}
+          </p>
         )}
       </div>
     </div>
@@ -106,7 +107,9 @@ const SectionHeader = ({ icon: Icon, title, subtitle, right }) => (
 );
 
 const InfoField = ({ icon: Icon, label, value, mono = false }) => (
-  <div className="min-w-0 space-y-1.5">
+  <div
+    className={`report-field min-w-0 space-y-1.5 ${showValue(value).trim() === "—" || !showValue(value).trim() ? "report-empty" : ""}`}
+  >
     <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
       {Icon && <Icon size={15} aria-hidden="true" className="shrink-0" />}
       <span>{label}</span>
@@ -121,7 +124,7 @@ const InfoField = ({ icon: Icon, label, value, mono = false }) => (
 
 const Notes = ({ label, children, tone = "neutral" }) => (
   <div
-    className={`mt-5 rounded-lg border p-4 ${
+    className={`report-notes mt-5 rounded-lg border p-4 ${
       tone === "info"
         ? "border-sky-100 bg-sky-50"
         : "border-slate-100 bg-slate-50"
@@ -151,9 +154,9 @@ const OperationReport = ({ operation, reportRef }) => {
   return (
     <div
       ref={reportRef}
-      className="space-y-5 bg-slate-50 p-1 print:bg-white print:p-0"
+      className="operation-report space-y-5 bg-slate-50 p-1 print:bg-white print:p-0"
     >
-      <div className="rounded-xl bg-slate-900 p-5 text-white sm:p-6 print:rounded-none">
+      <div className="report-banner rounded-xl bg-slate-900 p-5 text-white sm:p-6 print:rounded-none">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-emerald-300">
@@ -183,7 +186,7 @@ const OperationReport = ({ operation, reportRef }) => {
           title="Operation Information"
           subtitle="General details of the medical procedure"
         />
-        <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="report-summary report-fields mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5 sm:grid-cols-2 xl:grid-cols-4">
           <InfoField
             icon={KeyRound}
             label="Operation Code"
@@ -209,11 +212,11 @@ const OperationReport = ({ operation, reportRef }) => {
 
       <div
         className="
-    grid grid-cols-1 gap-5
+    report-people grid grid-cols-1 gap-5
     lg:grid-cols-3
     print:grid-cols-3
     print:gap-2
-    print:items-start
+    print:items-stretch
   "
       >
         {operation.patient && (
@@ -225,7 +228,7 @@ const OperationReport = ({ operation, reportRef }) => {
             />
             <div
               className="
-  mt-5 grid grid-cols-1 gap-5
+  report-fields mt-5 grid grid-cols-1 gap-5
   border-t border-slate-100 pt-5
   sm:grid-cols-2
   print:mt-2
@@ -267,7 +270,7 @@ const OperationReport = ({ operation, reportRef }) => {
             />
             <div
               className="
-  mt-5 grid grid-cols-1 gap-5
+  report-fields mt-5 grid grid-cols-1 gap-5
   border-t border-slate-100 pt-5
   sm:grid-cols-2
   print:mt-2
@@ -281,16 +284,13 @@ const OperationReport = ({ operation, reportRef }) => {
                 label="Doctor Name"
                 value={getName(operation.doctor.name)}
               />
-              <InfoField
-                icon={Hash}
-                label="Doctor ID"
-                value={operation.doctor.id}
-              />
-              <InfoField label="User ID" value={operation.doctor.user_id} />
+              {getName(operation.doctor.specialization) !== "—" && (
+                <InfoField
+                  label="Specialization"
+                  value={getName(operation.doctor.specialization)}
+                />
+              )}
             </div>
-            <Notes label="Specialization">
-              {getName(operation.doctor.specialization)}
-            </Notes>
           </DetailsCard>
         )}
 
@@ -303,7 +303,7 @@ const OperationReport = ({ operation, reportRef }) => {
             />
             <div
               className="
-  mt-5 grid grid-cols-1 gap-5
+  report-fields mt-5 grid grid-cols-1 gap-5
   border-t border-slate-100 pt-5
   sm:grid-cols-2
   print:mt-2
@@ -331,7 +331,7 @@ const OperationReport = ({ operation, reportRef }) => {
         )}
       </div>
 
-      <DetailsCard>
+      <DetailsCard className="report-materials">
         <SectionHeader
           icon={Package}
           title="Surgical Materials & Products"
@@ -347,7 +347,7 @@ const OperationReport = ({ operation, reportRef }) => {
             </div>
           }
         />
-        <div className="mt-5 overflow-x-auto rounded-lg border border-slate-200 print:mt-2 print:overflow-visible">
+        <div className="report-table-wrapper mt-5 overflow-x-auto rounded-lg border border-slate-200 print:mt-2 print:overflow-visible">
           <table className="w-full min-w-155 border-collapse text-center text-sm">
             <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
               <tr>
@@ -411,9 +411,9 @@ const OperationReport = ({ operation, reportRef }) => {
                           {imageUrl ? (
                             <img
                               src={imageUrl}
-                              alt={item?.name || "Product"}
+                              alt={getName(item.product?.name)}
                               className="w-15 h-10 object-contain"
-                              loading="lazy"
+                              loading="eager"
                             />
                           ) : (
                             <Package size={22} className="text-slate-400" />
@@ -454,6 +454,7 @@ const OperationDetailsPage = () => {
     errorMessage,
     operationData,
     isDownloading,
+    pdfError,
     printRef,
     isLoading,
     handleVerify,
@@ -860,12 +861,12 @@ const OperationDetailsPage = () => {
                       inline-flex items-center gap-2
                       rounded-lg border border-slate-200
                       bg-white px-4 py-2.5 text-sm
-                      font-semibold text-slate-700
-                      transition-colors hover:bg-slate-50
+                      font-semibold text-slate-700 cursor-pointer
+                      transition-colors hover:bg-slate-100
                     "
                   >
                     <Printer size={17} />
-                    Print Certificate
+                    Print Operation Details
                   </button>
 
                   {/* Download PDF Button */}
@@ -893,6 +894,15 @@ const OperationDetailsPage = () => {
                   </button>
                 </div>
               </div>
+
+              {pdfError && (
+                <p
+                  role="alert"
+                  className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 print:hidden"
+                >
+                  {pdfError}
+                </p>
+              )}
 
               {/* Operation Report */}
 

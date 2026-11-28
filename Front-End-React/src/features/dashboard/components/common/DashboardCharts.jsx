@@ -11,6 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
 import useDashboardChartsLogic from "./useDashboardChartsLogic.js";
 
 const COLORS = [
@@ -31,12 +32,21 @@ const chartTitleClass =
 export default function DashboardCharts({
   monthlyOperations = [],
   materialDemand = [],
+  operationsByType = [],
+  isDoctor = false,
 }) {
-  const { operationsData, categoryData, hasMaterialData } =
-    useDashboardChartsLogic({
-      monthlyOperations: monthlyOperations,
-      materialDemand: materialDemand,
-    });
+  const {
+    operationsData,
+    categoryData,
+    hasMaterialData,
+    chartTitle,
+    quantityLabel,
+  } = useDashboardChartsLogic({
+    monthlyOperations,
+    materialDemand,
+    operationsByType,
+    isDoctor,
+  });
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
@@ -87,7 +97,10 @@ export default function DashboardCharts({
                   border: "1px solid #e2e8f0",
                   boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
                 }}
-                formatter={(value) => [value, "Operations"]}
+                formatter={(value) => [
+                  Number(value).toLocaleString("en-US"),
+                  "Operations",
+                ]}
               />
 
               <Bar
@@ -102,13 +115,15 @@ export default function DashboardCharts({
         </div>
       </section>
 
-      {/* Material Demand Donut Chart */}
+      {/* Role-Based Donut Chart */}
       <section className={`${chartCardClass} lg:col-span-4`}>
-        <h3 className={chartTitleClass}>Material Demand Share</h3>
+        <h3 className={chartTitleClass}>{chartTitle}</h3>
 
         {!hasMaterialData ? (
           <div className="flex h-72 items-center justify-center text-sm text-slate-500">
-            No material usage data available.
+            {isDoctor
+              ? "No operation type data available."
+              : "No material usage data available."}
           </div>
         ) : (
           <div className="h-72 w-full">
@@ -136,7 +151,10 @@ export default function DashboardCharts({
                 </Pie>
 
                 <Tooltip
-                  formatter={(value) => [value, "Used Quantity"]}
+                  formatter={(value) => [
+                    Number(value).toLocaleString("en-US"),
+                    quantityLabel,
+                  ]}
                   contentStyle={{
                     borderRadius: "12px",
                     border: "1px solid #e2e8f0",

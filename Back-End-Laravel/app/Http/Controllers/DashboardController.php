@@ -11,6 +11,28 @@ class DashboardController extends Controller
 {
     use ApiResponse;
 
+    private function getOperationsByType(int $doctorId)
+    {
+        return DB::table('operations')
+            ->join(
+                'operation_types',
+                'operations.operation_type_id',
+                '=',
+                'operation_types.id'
+            )
+            ->where('operations.doctor_id', $doctorId)
+            ->selectRaw('
+            operation_types.name as type,
+            COUNT(operations.id) as count
+        ')
+            ->groupBy(
+                'operation_types.id',
+                'operation_types.name'
+            )
+            ->orderByDesc('count')
+            ->get();
+    }
+
     public function overview(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -24,6 +46,8 @@ class DashboardController extends Controller
             $canViewAll || $user->hasRole('doctor'),
             403
         );
+
+        $isDoctor = $user->hasRole('doctor');
 
         // Doctors only access their own operations.
         // ID 0 produces empty results if the profile is missing.
@@ -230,6 +254,10 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $operationsByType = $isDoctor
+            ? $this->getOperationsByType($doctorId)
+            : [];
+
         return $this->success([
             'viewer' => [
                 'role' => $canViewAll
@@ -242,7 +270,11 @@ class DashboardController extends Controller
             'monthly_operations' => $monthlyOperations,
             'top_products' => $topProducts,
             'recent_operations' => $recentOperations,
-            'material_demand_by_category' => $materialDemand,
+            'material_demand_by_category' => $isDoctor
+                ? []
+                : $materialDemand,
+
+            'operations_by_type' => $operationsByType,
         ]);
     }
 }
