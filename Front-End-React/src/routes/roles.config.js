@@ -454,14 +454,10 @@ export const ROLES_CONFIG = {
     prefix: "doctor",
 
     sidebar: [
-      { icon: BarChart2, label: "Dashboard", to: "/doctor" },
       {
-        path: "operations/create",
-        element: CreateOperationPage,
-      },
-      {
-        path: "operations/:id",
-        element: OperationDetailsPage,
+        to: "/doctor",
+        label: "Dashboard",
+        icon: BarChart2,
       },
       {
         label: "Operations",
@@ -475,9 +471,9 @@ export const ROLES_CONFIG = {
         ],
       },
       {
+        to: "/doctor/update-account",
         label: "Edit Account",
         icon: Settings,
-        to: "/doctor/update-account",
       },
     ],
 
@@ -534,10 +530,10 @@ export const ROLES_CONFIG = {
     prefix: "staff",
 
     sidebar: [
-      { icon: BarChart2, label: "Dashboard", to: "/staff" },
       {
-        path: "operations/:id",
-        element: OperationDetailsPage,
+        to: "/staff",
+        label: "Dashboard",
+        icon: BarChart2,
       },
       {
         label: "Operations",
@@ -551,9 +547,9 @@ export const ROLES_CONFIG = {
         ],
       },
       {
+        to: "/staff/update-account",
         label: "Edit Account",
         icon: Settings,
-        to: "/staff/update-account",
       },
     ],
 

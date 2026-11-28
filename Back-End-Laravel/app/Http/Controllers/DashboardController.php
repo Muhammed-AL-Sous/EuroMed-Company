@@ -63,10 +63,10 @@ class DashboardController extends Controller
                 'oi.product_id'
             )
             ->join(
-                'categories as c',
+                'subcategories as c',
                 'c.id',
                 '=',
-                'p.category_id'
+                'p.subcategory_id'
             )
             ->select([
                 'c.id',

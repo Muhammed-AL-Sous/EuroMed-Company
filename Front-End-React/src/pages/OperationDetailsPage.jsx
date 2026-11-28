@@ -1,5 +1,7 @@
-import { motion } from "motion/react";
+import { useEffect, useRef } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import {
+  ArrowUp,
   AlertCircle,
   Building2,
   CalendarDays,
@@ -442,6 +444,7 @@ const OperationReport = ({ operation, reportRef }) => {
 // ---------------------------------------------------------
 // Public patient verification portal
 // ---------------------------------------------------------
+
 const OperationDetailsPage = () => {
   const {
     code,
@@ -458,170 +461,443 @@ const OperationDetailsPage = () => {
     handleDownloadPdf,
   } = useOperationDetailsPageLogic();
 
+  // ==================================================
+  // Refs & UI State
+  // ==================================================
+
+  const resultRef = useRef(null);
+  const searchFormRef = useRef(null);
+
+  const prefersReducedMotion = useReducedMotion();
+
+  const hasResult = Boolean(operationData) && !isLoading && !errorMessage;
+
+  // ==================================================
+  // Automatic Scroll To Operation Details
+  // ==================================================
+
+  useEffect(() => {
+    if (!hasResult) return;
+
+    const frame = requestAnimationFrame(() => {
+      resultRef.current?.focus({
+        preventScroll: true,
+      });
+
+      resultRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion ? "instant" : "smooth",
+        block: "start",
+      });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [hasResult, operationData, prefersReducedMotion]);
+
+  // ==================================================
+  // Scroll Back To Search Form
+  // ==================================================
+
+  const handleScrollToSearch = () => {
+    searchFormRef.current?.scrollIntoView({
+      behavior: prefersReducedMotion ? "instant" : "smooth",
+      block: "start",
+    });
+
+    searchFormRef.current
+      ?.querySelector("#operation-code")
+      ?.focus({ preventScroll: true });
+  };
+
+  // ==================================================
+  // Render
+  // ==================================================
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20 }}
+      initial={{
+        opacity: 0,
+        y: prefersReducedMotion ? 0 : -20,
+      }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{
+        duration: prefersReducedMotion ? 0 : 0.5,
+      }}
     >
       <main className="min-h-screen bg-slate-50 py-8 sm:py-12">
         <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-          {/* Intro banner */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 text-center text-white shadow-sm sm:p-9">
-            <span className="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/15 px-3 py-1.5 text-[10px] sm:text-xs font-bold text-sky-300">
+          {/* ==========================================
+              Intro Banner
+          ========================================== */}
+
+          <div
+            className={`
+              rounded-2xl border border-slate-800
+              bg-slate-900 text-center text-white shadow-sm
+              ${hasResult ? "p-4 sm:p-5" : "p-6 sm:p-9"}
+            `}
+          >
+            <span
+              className="
+                inline-flex items-center gap-2 rounded-full
+                border border-sky-400/30 bg-sky-500/15
+                px-3 py-1.5 text-[10px] font-bold
+                text-sky-300 sm:text-xs
+              "
+            >
               <ShieldCheck size={14} aria-hidden="true" />
               Secure Verification Portal
             </span>
-            <h1 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ">
+
+            <h1
+              className={`
+                font-bold tracking-tight
+                ${
+                  hasResult
+                    ? "mt-2 text-xl sm:text-2xl"
+                    : "mt-4 text-2xl sm:text-3xl md:text-4xl"
+                }
+              `}
+            >
               Patient Operation &amp; Material Portal
             </h1>
-            <p className="mx-auto mt-3 max-w-3xl text-xs sm:text-sm leading-6 text-slate-300">
-              Verify the official medical hardware, manufacturer lot codes, and
-              surgical materials used in your operation.
-            </p>
+
+            {!hasResult && (
+              <motion.p
+                initial={{ opacity: prefersReducedMotion ? 1 : 0 }}
+                animate={{ opacity: 1 }}
+                className="
+                  mx-auto mt-3 max-w-3xl text-xs
+                  leading-6 text-slate-300 sm:text-sm
+                "
+              >
+                Verify the official medical hardware, manufacturer lot codes,
+                and surgical materials used in your operation.
+              </motion.p>
+            )}
           </div>
 
-          {/* Code + date verification (never included in print/PDF). */}
-          <DetailsCard>
-            <SectionHeader
-              icon={Search}
-              title="Verify Your Operation"
-              subtitle="Enter the operation code and date to view your medical record."
-            />
-            <form
-              onSubmit={handleVerify}
-              className="mt-5 grid grid-cols-1 items-end gap-4 border-t border-slate-100 pt-5 md:grid-cols-12"
+          {/* ==========================================
+              Verification Form
+          ========================================== */}
+
+          <div ref={searchFormRef} className="scroll-mt-36">
+            <DetailsCard>
+              <SectionHeader
+                icon={Search}
+                title="Verify Your Operation"
+                subtitle="Enter the operation code and date to view your medical record."
+              />
+
+              <form
+                onSubmit={handleVerify}
+                aria-busy={isLoading}
+                className="
+                  mt-5 grid grid-cols-1 items-end gap-4
+                  border-t border-slate-100 pt-5
+                  md:grid-cols-12
+                "
+              >
+                {/* Operation Code */}
+
+                <div className="md:col-span-5">
+                  <label
+                    htmlFor="operation-code"
+                    className="
+                      mb-2 block text-sm font-medium
+                      text-slate-700
+                    "
+                  >
+                    Operation Code
+                  </label>
+
+                  <div className="relative">
+                    <KeyRound
+                      size={18}
+                      aria-hidden="true"
+                      className="
+                        pointer-events-none absolute left-3
+                        top-1/2 -translate-y-1/2
+                        text-slate-400
+                      "
+                    />
+
+                    <input
+                      id="operation-code"
+                      type="text"
+                      required
+                      autoComplete="off"
+                      placeholder="A0001"
+                      value={code}
+                      onChange={(event) =>
+                        setCode(event.target.value.toUpperCase())
+                      }
+                      disabled={isLoading}
+                      className={`${INPUT_CLASS} pl-10 font-mono`}
+                    />
+                  </div>
+                </div>
+
+                {/* Operation Date */}
+
+                <div className="md:col-span-4">
+                  <label
+                    htmlFor="operation-date"
+                    className="
+                      mb-2 block text-sm font-medium
+                      text-slate-700
+                    "
+                  >
+                    Operation Date
+                  </label>
+
+                  <div className="relative">
+                    <CalendarDays
+                      size={18}
+                      aria-hidden="true"
+                      className="
+                        pointer-events-none absolute left-3
+                        top-1/2 -translate-y-1/2
+                        text-slate-400
+                      "
+                    />
+
+                    <input
+                      id="operation-date"
+                      type="date"
+                      required
+                      value={date}
+                      onChange={(event) => setDate(event.target.value)}
+                      disabled={isLoading}
+                      className={`${INPUT_CLASS} pl-10`}
+                    />
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+
+                <div className="md:col-span-3">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="
+                      inline-flex min-h-10 w-full
+                      items-center justify-center gap-2
+                      rounded-xl bg-sky-700 px-4 py-2.5
+                      text-sm font-semibold text-white
+                      transition-colors hover:bg-sky-800
+                      disabled:cursor-not-allowed
+                      disabled:opacity-60
+                    "
+                  >
+                    {isLoading ? (
+                      <LoaderCircle size={17} className="animate-spin" />
+                    ) : (
+                      <Search size={17} />
+                    )}
+
+                    {isLoading ? "Verifying..." : "View Details"}
+                  </button>
+                </div>
+              </form>
+
+              {/* Loading Message */}
+
+              {isLoading && (
+                <motion.div
+                  initial={{ opacity: prefersReducedMotion ? 1 : 0 }}
+                  animate={{ opacity: 1 }}
+                  role="status"
+                  className="
+                    mt-5 flex items-center gap-3 rounded-xl
+                    border border-sky-100 bg-sky-50
+                    p-4 text-sm text-sky-700
+                  "
+                >
+                  <LoaderCircle size={20} className="shrink-0 animate-spin" />
+
+                  <div>
+                    <p className="font-semibold">Verifying your operation...</p>
+
+                    <p className="mt-1 text-xs">
+                      Please wait while we retrieve your medical record.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Error Message */}
+
+              {errorMessage && !isLoading && (
+                <motion.div
+                  initial={{
+                    opacity: prefersReducedMotion ? 1 : 0,
+                    y: prefersReducedMotion ? 0 : -5,
+                  }}
+                  animate={{ opacity: 1, y: 0 }}
+                  role="alert"
+                  className="
+                    mt-5 flex items-start gap-3 rounded-xl
+                    border border-red-200 bg-red-50
+                    p-4 text-sm text-red-700
+                  "
+                >
+                  <AlertCircle
+                    size={18}
+                    aria-hidden="true"
+                    className="mt-0.5 shrink-0"
+                  />
+
+                  <div>
+                    <p className="font-semibold">Verification Failed</p>
+
+                    <p className="mt-1">{errorMessage}</p>
+                  </div>
+                </motion.div>
+              )}
+            </DetailsCard>
+          </div>
+
+          {/* ==========================================
+              Operation Results
+          ========================================== */}
+
+          {hasResult && (
+            <motion.section
+              ref={resultRef}
+              tabIndex={-1}
+              aria-labelledby="operation-result-title"
+              initial={{
+                opacity: prefersReducedMotion ? 1 : 0,
+                y: prefersReducedMotion ? 0 : 10,
+              }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: prefersReducedMotion ? 0 : 0.35,
+                ease: "easeOut",
+              }}
+              className="scroll-mt-36 space-y-5 outline-none"
             >
-              <div className="md:col-span-5">
-                <label
-                  htmlFor="operation-code"
-                  className="mb-2 block text-sm font-medium text-slate-700"
-                >
-                  Operation Code
-                </label>
-                <div className="relative">
-                  <KeyRound
-                    size={18}
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                  />
-                  <input
-                    id="operation-code"
-                    type="text"
-                    required
-                    autoComplete="off"
-                    placeholder="A0001"
-                    value={code}
-                    onChange={(event) =>
-                      setCode(event.target.value.toUpperCase())
-                    }
-                    disabled={isLoading}
-                    className={`${INPUT_CLASS} pl-10 font-mono`}
-                  />
+              {/* Success Message */}
+
+              <div
+                role="status"
+                className="
+                  flex flex-col gap-4 rounded-xl
+                  border border-emerald-200 bg-emerald-50
+                  p-4 sm:flex-row sm:items-center
+                  sm:justify-between sm:p-5
+                  print:hidden
+                "
+              >
+                <div className="flex items-center gap-4">
+                  <div
+                    className="
+                      flex h-12 w-12 shrink-0 items-center
+                      justify-center rounded-full
+                      bg-emerald-100 text-emerald-600
+                    "
+                  >
+                    <CheckCircle2 size={26} aria-hidden="true" />
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold text-emerald-800">
+                      Operation Successfully Verified
+                    </h3>
+
+                    <p className="mt-1 text-xs text-emerald-700 sm:text-sm">
+                      Your official medical record has been found and is ready
+                      to view.
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="md:col-span-4">
-                <label
-                  htmlFor="operation-date"
-                  className="mb-2 block text-sm font-medium text-slate-700"
-                >
-                  Operation Date
-                </label>
-                <div className="relative">
-                  <CalendarDays
-                    size={18}
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                  />
-                  <input
-                    id="operation-date"
-                    type="date"
-                    required
-                    value={date}
-                    onChange={(event) => setDate(event.target.value)}
-                    disabled={isLoading}
-                    className={`${INPUT_CLASS} pl-10`}
-                  />
-                </div>
-              </div>
-              <div className="md:col-span-3">
+
                 <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  type="button"
+                  onClick={handleScrollToSearch}
+                  className="
+                    inline-flex shrink-0 items-center
+                    justify-center gap-2 rounded-lg
+                    border border-emerald-200 bg-white
+                    px-4 py-2.5 text-xs font-semibold
+                    text-emerald-700 transition-colors
+                    hover:bg-emerald-100
+                  "
                 >
-                  {isLoading ? (
-                    <LoaderCircle size={17} className="animate-spin" />
-                  ) : (
-                    <Search size={17} />
-                  )}
-                  {isLoading ? "Verifying..." : "View Details"}
+                  <ArrowUp size={16} />
+                  Search Again
                 </button>
               </div>
-            </form>
 
-            {errorMessage && (
+              {/* Report Header & Actions */}
+
               <div
-                role="alert"
-                className="mt-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+                className="
+                  flex flex-wrap items-center
+                  justify-between gap-4 print:hidden
+                "
               >
-                <AlertCircle
-                  size={18}
-                  aria-hidden="true"
-                  className="mt-0.5 shrink-0"
-                />
-                <p>{errorMessage}</p>
-              </div>
-            )}
-          </DetailsCard>
-
-          {operationData && (
-            <>
-              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold text-emerald-700">
-                    Verification successful
-                  </p>
-                  <h2 className="mt-1 text-lg font-bold text-slate-800">
+                  <h2
+                    id="operation-result-title"
+                    className="text-xl font-bold text-slate-800"
+                  >
                     Operation Details
                   </h2>
+
+                  <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+                    View, print or download your verified operation record.
+                  </p>
                 </div>
+
                 <div className="flex flex-wrap gap-2">
+                  {/* Print Button */}
+
                   <button
                     type="button"
-                    onClick={() => handlePrint()}
-                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    onClick={handlePrint}
+                    className="
+                      inline-flex items-center gap-2
+                      rounded-lg border border-slate-200
+                      bg-white px-4 py-2.5 text-sm
+                      font-semibold text-slate-700
+                      transition-colors hover:bg-slate-50
+                    "
                   >
                     <Printer size={17} />
                     Print Certificate
                   </button>
+
+                  {/* Download PDF Button */}
+
                   <button
                     type="button"
                     disabled={isDownloading}
                     onClick={handleDownloadPdf}
-                    className="inline-flex items-center gap-2 rounded-lg bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="
+                      inline-flex items-center gap-2
+                      rounded-lg bg-sky-700 px-4 py-2.5
+                      text-sm font-semibold text-white
+                      transition-colors hover:bg-sky-800
+                      disabled:cursor-not-allowed
+                      disabled:opacity-60
+                    "
                   >
                     {isDownloading ? (
                       <LoaderCircle size={17} className="animate-spin" />
                     ) : (
                       <Download size={17} />
                     )}
+
                     {isDownloading ? "Generating..." : "Download PDF"}
                   </button>
                 </div>
               </div>
-              <OperationReport
-                reportRef={printRef}
-                className="
-    operation-report
-    space-y-5 bg-slate-50 p-1
-    print:space-y-2
-    print:bg-white
-    print:p-0
-  "
-                operation={operationData}
-              />
-            </>
+
+              {/* Operation Report */}
+
+              <OperationReport reportRef={printRef} operation={operationData} />
+            </motion.section>
           )}
         </div>
       </main>

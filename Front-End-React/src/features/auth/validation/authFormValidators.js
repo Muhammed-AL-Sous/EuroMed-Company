@@ -14,6 +14,39 @@ export function collectAuthEmailErrors(email, fieldKey = "email") {
   return out;
 }
 
+export const AUTH_USERNAME_REGEX = /^[a-zA-Z0-9._-]+$/;
+
+export function collectAuthUsernameErrors(username, fieldKey = "username") {
+  const trimmed = typeof username === "string" ? username.trim() : "";
+
+  if (!trimmed) {
+    return {
+      [fieldKey]: "The Username Field is Required.",
+    };
+  }
+
+  if (!AUTH_USERNAME_REGEX.test(trimmed)) {
+    return {
+      [fieldKey]: "Invalid Username Format.",
+    };
+  }
+
+  return {};
+}
+
+export function collectAuthLoginPasswordErrors(
+  password,
+  fieldKey = "password",
+) {
+  if (typeof password !== "string" || !password.length) {
+    return {
+      [fieldKey]: "The Password Field is Required.",
+    };
+  }
+
+  return {};
+}
+
 export function collectAuthPasswordPolicyErrors(
   password,
   fieldKey = "password",
@@ -59,11 +92,11 @@ export function mergeFieldErrors(...parts) {
   return Object.assign({}, ...parts);
 }
 
-/** @param {{ email: string, password: string }} values */
+/** @param {{ username: string, password: string }} values */
 export function getLoginFormErrors(values) {
   return mergeFieldErrors(
-    collectAuthEmailErrors(values.email),
-    collectAuthPasswordPolicyErrors(values.password),
+    collectAuthUsernameErrors(values.username),
+    collectAuthLoginPasswordErrors(values.password),
   );
 }
 

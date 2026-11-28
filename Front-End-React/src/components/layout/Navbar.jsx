@@ -101,7 +101,7 @@ export default function Navbar() {
                 className={`inline-flex items-center gap-1 ${authButtonClass}`}
               >
                 <LayoutDashboard size={18} />
-                {user.name.split(" ")[0]}
+                {user.name}
               </Link>
               <button
                 onClick={handleLogout}

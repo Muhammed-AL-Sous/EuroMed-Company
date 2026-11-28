@@ -29,9 +29,8 @@ class AuthLoginRequest extends FormRequest
             'username' => [
                 'required',
                 'string',
-                'min:3',
-                'max:50',
-                'regex:/^[a-z0-9]+$/',
+                'max:255',
+                'regex:/^[a-zA-Z0-9._-]+$/',
             ],
             'password' => ['required', 'string'],
             'email' => ['nullable', 'string', 'email'],

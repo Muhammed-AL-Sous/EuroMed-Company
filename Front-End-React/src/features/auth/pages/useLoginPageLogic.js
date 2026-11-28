@@ -30,11 +30,13 @@ const useLoginPageLogic = () => {
   };
 
   const patchClearFieldError = (prevErrors, fieldName) => {
-    if (!prevErrors || !prevErrors[fieldName]) return prevErrors;
-    return {
-      ...prevErrors,
-      [fieldName]: null,
-    };
+    if (!prevErrors?.[fieldName]) return prevErrors;
+
+    const nextErrors = { ...prevErrors };
+
+    delete nextErrors[fieldName];
+
+    return nextErrors;
   };
 
   const handleChange = (e) => {
@@ -53,8 +55,10 @@ const useLoginPageLogic = () => {
     if (!isValid) return;
 
     try {
-      const loginPromise = login(loginForm).unwrap();
-      const response = await loginPromise;
+      const response = await login({
+        ...loginForm,
+        username: loginForm.username.trim(),
+      }).unwrap();
       const { user } = response.data;
       dispatch(
         setCredentials({
